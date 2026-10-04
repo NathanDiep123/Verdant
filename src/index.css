@@ -143,6 +143,32 @@
   }
 }
 
+/* Unlayered so they beat leaflet.css. Controls and attribution follow the tokens. */
+.leaflet-bar {
+  border: 1px solid var(--border);
+  box-shadow: none;
+}
+.leaflet-bar a,
+.leaflet-bar a:hover {
+  background-color: var(--card);
+  color: var(--foreground);
+  border-bottom: 1px solid var(--border);
+}
+.leaflet-bar a:hover {
+  background-color: var(--muted);
+}
+.leaflet-bar a:last-child {
+  border-bottom: 0;
+}
+.leaflet-container .leaflet-control-attribution {
+  background: color-mix(in srgb, var(--card) 90%, transparent);
+  color: var(--muted-foreground);
+  font-size: 11px;
+}
+.leaflet-control-attribution a {
+  color: var(--muted-foreground);
+}
+
 /* Very High marker pulse. Set --pulse-color on the marker element. */
 @keyframes verdant-pulse {
   from {
