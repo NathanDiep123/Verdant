@@ -51,7 +51,7 @@ export function CoimbraSatelliteChart() {
         className="h-[280px] w-full md:h-[320px]"
       >
         <ResponsiveContainer width="100%" height="100%">
-          <ComposedChart data={data} margin={{ top: 8, right: 16, bottom: 0, left: -12 }}>
+          <ComposedChart data={data} margin={{ top: 8, right: 28, bottom: 0, left: -12 }}>
             <ReferenceLine y={0} stroke="var(--border)" />
             <XAxis
               dataKey="month"
