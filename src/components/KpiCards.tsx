@@ -1,3 +1,5 @@
+import { Link } from "react-router";
+import { ArrowRight } from "lucide-react";
 import { RiskBadge } from "@/components/RiskBadge";
 import { OfficialDataCard } from "@/components/OfficialDataCard";
 import type { SiteRow } from "@/components/SamplingPriorityList";
@@ -18,11 +20,13 @@ function Cell({ title, children }: { title: string; children: React.ReactNode })
 export function KpiCards({
   rows,
   reportCount,
+  siteCount,
   regionName,
   showOfficial,
 }: {
   rows: SiteRow[];
   reportCount: number;
+  siteCount: number;
   regionName: string;
   showOfficial: boolean;
 }) {
@@ -39,6 +43,18 @@ export function KpiCards({
         showOfficial ? "lg:grid-cols-[repeat(4,1fr)_1.5fr]" : "lg:grid-cols-4"
       }`}
     >
+      <div className="border-l-[3px] border-l-primary bg-card p-4">
+        <p className="text-sm font-medium text-muted-foreground">Citizen reports</p>
+        <p className="mt-2 font-mono text-[28px] leading-[1.2] font-semibold tabular-nums">{reportCount}</p>
+        <p className="mt-1 text-sm text-muted-foreground">From {siteCount} {siteCount === 1 ? "site" : "sites"}</p>
+        <Link
+          to="/report"
+          className="mt-2 inline-flex items-center gap-1 text-sm font-medium text-primary underline-offset-4 hover:underline"
+        >
+          Add a report
+          <ArrowRight className="size-4" strokeWidth={1.75} aria-hidden />
+        </Link>
+      </div>
       <Cell title="Region status">
         {rows.length ? <RiskBadge category={status} size="md" /> : <span className="text-sm">No sites</span>}
         <p className="mt-2 text-sm text-muted-foreground">Highest category at {regionName}</p>
@@ -54,9 +70,6 @@ export function KpiCards({
         ) : (
           <span className="text-sm">No sites</span>
         )}
-      </Cell>
-      <Cell title="Citizen reports">
-        <p className="font-mono text-[28px] leading-[1.2] font-semibold tabular-nums">{reportCount}</p>
       </Cell>
       <Cell title="Areas Requiring Attention">
         <p className="font-mono text-[28px] leading-[1.2] font-semibold tabular-nums">{attention}</p>

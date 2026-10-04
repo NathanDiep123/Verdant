@@ -1,7 +1,7 @@
 import { useState, type ReactNode } from "react";
-import { NavLink } from "react-router";
-import { Menu } from "lucide-react";
-import { Button } from "@/components/ui/button";
+import { Link, NavLink, useLocation } from "react-router";
+import { Menu, MessageSquarePlus } from "lucide-react";
+import { Button, buttonVariants } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTitle } from "@/components/ui/sheet";
 import { Footer } from "@/components/Footer";
 import { RegionSwitch } from "@/components/RegionSwitch";
@@ -16,6 +16,7 @@ const NAV = [
 
 export function Layout({ children }: { children: ReactNode }) {
   const [open, setOpen] = useState(false);
+  const onReportPage = useLocation().pathname.startsWith("/report");
   return (
     <div className="flex min-h-screen flex-col">
       <header className="sticky top-0 z-40 border-b border-border bg-card">
@@ -51,7 +52,13 @@ export function Layout({ children }: { children: ReactNode }) {
               </NavLink>
             ))}
           </nav>
-          <div className="ml-auto">
+          <div className="ml-auto flex items-center gap-3 md:gap-4">
+            {!onReportPage && (
+              <Link to="/report" className={cn(buttonVariants(), "hidden h-9 px-3 md:inline-flex")}>
+                <MessageSquarePlus strokeWidth={1.75} aria-hidden />
+                Report what you see
+              </Link>
+            )}
             <RegionSwitch />
           </div>
         </div>

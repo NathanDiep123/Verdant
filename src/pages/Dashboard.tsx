@@ -1,5 +1,6 @@
 import { useMemo } from "react";
 import { CoimbraSatelliteChart } from "@/components/CoimbraSatelliteChart";
+import { CommunityReportsFeed } from "@/components/CommunityReportsFeed";
 import { KpiCards } from "@/components/KpiCards";
 import { RiskMap } from "@/components/RiskMap";
 import { SamplingPriorityList, type SiteRow } from "@/components/SamplingPriorityList";
@@ -36,6 +37,9 @@ export default function Dashboard() {
         <h1 className="text-[28px] leading-[1.1] font-bold tracking-[-0.02em] md:text-[40px]">
           Where to sample first at {config.name}
         </h1>
+        <p className="max-w-[68ch] text-base text-muted-foreground">
+          Scores combine satellite signals, environmental data and reports from people at the shore.
+        </p>
         <div>
           <span className="inline-block rounded-sm border border-dashed px-2 py-0.5 font-mono text-xs text-muted-foreground">
             {dataLabel}
@@ -44,6 +48,7 @@ export default function Dashboard() {
         <KpiCards
           rows={rows}
           reportCount={reports.length}
+          siteCount={new Set(reports.map((r) => r.siteId)).size}
           regionName={config.name}
           showOfficial={regionId === "lake-mead"}
         />
@@ -57,6 +62,8 @@ export default function Dashboard() {
           <SamplingPriorityList rows={rows} />
         </div>
       </div>
+
+      <CommunityReportsFeed reports={reports} sites={sites} regionName={config.name} />
 
       {regionId === "coimbra" && <CoimbraSatelliteChart />}
     </div>
