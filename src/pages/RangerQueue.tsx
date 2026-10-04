@@ -16,6 +16,7 @@ import {
 import { scoreSite } from "@/engine/score";
 import { useRegion } from "@/state/RegionContext";
 import { cn } from "@/lib/utils";
+import { EnglishOnlyNote } from "@/components/EnglishOnlyNote";
 import type { CitizenReport, ReportStatus, SiteResult } from "@/types";
 
 const OUTCOME_NOTE: Record<
@@ -218,6 +219,7 @@ export default function RangerQueue() {
 
   return (
     <div className="flex flex-col gap-8">
+      <EnglishOnlyNote />
       <header className="flex flex-col gap-3">
         <h1 className="text-[1.875rem] leading-[1.05] tracking-[-0.015em] md:text-[2.5rem]">
           Report queue

@@ -5,6 +5,7 @@ import CityCard from "@/components/CityCard";
 import { CoimbraSatelliteChart } from "@/components/CoimbraSatelliteChart";
 import { siteConfigs } from "@/config/sites";
 import { useRegion } from "@/state/RegionContext";
+import { EnglishOnlyNote } from "@/components/EnglishOnlyNote";
 
 const cityIds = ["benevento", "coimbra", "ghent", "oslo", "toulouse"];
 
@@ -24,6 +25,7 @@ export default function OahCities() {
 
   return (
     <div className="flex flex-col gap-8 md:gap-12">
+      <EnglishOnlyNote />
       <header className="flex flex-col gap-4">
         <div className="relative">
           <ContourField className="pointer-events-none absolute -top-6 right-0 hidden h-40 w-64 text-olive/25 md:block" />

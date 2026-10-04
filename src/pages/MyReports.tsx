@@ -12,6 +12,7 @@ import {
 import { recordLine, reportCode, trackRecord } from "@/lib/reportLoop";
 import { cn } from "@/lib/utils";
 import { useRegion } from "@/state/RegionContext";
+import { EnglishOnlyNote } from "@/components/EnglishOnlyNote";
 import type { CitizenReport } from "@/types";
 
 const headline = "font-heading text-[1.25rem] leading-[1.3]";
@@ -123,6 +124,7 @@ export function MyReports() {
 
   return (
     <div>
+      <EnglishOnlyNote className="mb-6" />
       <h1 className="text-[1.875rem] leading-[1.05] tracking-[-0.015em] md:text-[2.5rem]">
         My reports
       </h1>
