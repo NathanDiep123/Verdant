@@ -11,9 +11,11 @@ Deadline: **2026-10-04 21:00 PDT**. Internal submission target: **20:45 PDT**. F
 
 **Goal:** a deployed web prototype and a 3–5 minute demo video. Together they show an explainable, multi-hazard early-warning tool for freshwater One Health risk. Lake Mead is the pilot site. The same engine then runs on a OneAquaHealth (OAH) city through a single site configuration.
 
+**Central goal, citizen science (user, 2026-10-04):** people at the shore are one of Verdant's sensors. A citizen report is visible everywhere a score is visible: in the header, on the dashboard, on the map, in the Sampling priority list, on the site page and in the score itself. Section 20 specifies how; the video and the Devpost text give it the longest single segment and paragraph.
+
 **Tagline:** "See the bloom before it becomes a warning."
 
-**One-sentence pitch:** "Verdant is an explainable early-warning platform that combines satellite imagery, environmental conditions, and citizen observations to identify emerging harmful algal bloom risk and prioritize monitoring across Lake Mead, and it runs on any OneAquaHealth city through one site configuration."
+**One-sentence pitch:** "Verdant is an explainable early-warning platform that combines citizen observations from people at the shore with satellite imagery and environmental conditions to identify emerging harmful algal bloom risk and prioritize monitoring across Lake Mead, and it runs on any OneAquaHealth city through one site configuration."
 
 ## 2. The presentation-first rule
 
@@ -31,10 +33,10 @@ These are the weights and exact criterion titles from the Devpost rules page.
 
 | Criterion (weight) | Features and assets that answer it |
 |---|---|
-| **Impact & Alignment** (30%) | Sampling priority list with a recommended first sampling target; cited opening statistic (Section 19); One Health panel (environment, human, animal) on the site detail page; multi-hazard pathways; citizen report form; manager action recommendations; the "Verdant for OneAquaHealth cities" page; video segment 6; Devpost paragraph 1 |
-| **Innovation & Creativity** (20%) | Live score change when a citizen report is submitted; per-factor contribution bars ("Why is risk elevated?"); one-switch region swap from Lake Mead to Coimbra; Devpost paragraph 2 |
+| **Impact & Alignment** (30%) | Sampling priority list with a recommended first sampling target; cited opening statistic (Section 19); One Health panel (environment, human, animal) on the site detail page; multi-hazard pathways; citizen report form built on the OneAquaHealth citizen-science stream questions; "Community reports" feed, report pins on the map and "Community observations" on the site page (Section 20); manager action recommendations; the "Verdant for OneAquaHealth cities" page; video segment 6; Devpost paragraphs 1 and "Citizen science" |
+| **Innovation & Creativity** (20%) | Before/after score moment when a citizen report is submitted (79 counting to 81, Section 20 Task 20.7); the site page stating how many points citizen evidence adds; per-factor contribution bars ("Why is risk elevated?"); one-switch region swap from Lake Mead to Coimbra; Devpost paragraph 2 |
 | **Technical Implementation** (20%) | Tested TypeScript risk engine (`src/engine/`); site-agnostic `SiteConfig`; Resilience Map CSV parser; FHIR-shaped JSON export; public GitHub repo with README; Devpost paragraph 3 |
-| **Usability & User Experience** (15%) | Four-page app with one clear navigation path; colour-coded map; risk meter; plain-language explanations; disclaimers placed next to every score; mobile layout; Devpost paragraph 4 |
+| **Usability & User Experience** (15%) | "Report what you see" call to action in the header on every page (Section 20); four-page app with one clear navigation path; colour-coded map; risk meter; plain-language explanations; disclaimers placed next to every score; mobile layout; Devpost paragraph 4 |
 | **Feasibility & Scalability** (15%) | Site configs for all five OAH cities; Methodology page architecture diagram; data-source cards; official Lake Mead elevation card; "Data sources and citations" table; future-work list naming field-sample validation; Devpost paragraph 5 |
 
 ## 4. Scope
@@ -48,6 +50,7 @@ These are the weights and exact criterion titles from the Devpost rules page.
 6. Risk engine with unit tests.
 7. FHIR-shaped JSON export of sites, risk scores and citizen reports.
 8. README, Devpost text, demo video, deployed URL.
+9. Citizen science prominence per Section 20: header call to action, "Community reports" feed and KPI, report pins on the map, report-count badges in the Sampling priority list, "Community observations" on the site page, before/after score moment on the report page. Reports live in React state only; a page reload drops submitted reports, by design.
 
 **Out of scope (closed list):** live satellite ingestion; live weather APIs; authentication; database or backend; photo storage; real-time notifications; machine-learning models; a FHIR server; a separate agency dashboard; a before/after imagery slider.
 
@@ -180,6 +183,7 @@ type SiteConfig = {
 ## 8. Pages
 
 Routes use react-router. The navigation order is Dashboard · Report a Bloom · OAH Cities · Methodology. The active region (`lake-mead` | `coimbra`) lives in React context and is shown in the header as a two-state switch.
+- Header citizen-science call to action: Section 20, Task 20.2.
 
 1. **`/` Dashboard.**
    - KPI cards:
@@ -192,6 +196,7 @@ Routes use react-router. The navigation order is Dashboard · Report a Bloom · 
    - **Sampling priority list**: table | Rank | Site | Risk | Leading pathway | Trend | Reports | Action |, ranked by site score descending (rank 1 = highest score). The heading text is exactly "Sampling priority list".
    - The rank-1 row carries the tag "Recommended first sampling target", rendered inside the "Verdant recommendation" label style (Section 8.3).
    - "Prototype demonstration data" label, or the A3 label on Coimbra.
+   - Citizen science additions (subtitle, "Citizen reports" KPI first, "Community reports" feed, report pins, report badges): Section 20, Tasks 20.3, 20.4, 20.5.
 2. **`/site/:id` Site detail.**
    - Name, site score, category, trend, last updated, recommended action.
    - Risk meter.
@@ -202,6 +207,7 @@ Routes use react-router. The navigation order is Dashboard · Report a Bloom · 
    - Manager actions with the label "Verdant recommendation", shown next to the label "Official advisory: none issued" (Section 8.3). When the site is rank 1 in the Sampling priority list, the Verdant recommendation block also reads "Recommended first sampling target".
    - Disclaimer (Section 8.2).
    - "Export FHIR JSON" button.
+   - "Community observations" section: Section 20, Task 20.6.
 3. **`/report` Report a Bloom.**
    - Fields:
      - site (select);
@@ -212,6 +218,7 @@ Routes use react-router. The navigation order is Dashboard · Report a Bloom · 
    - Warning above the submit button: "A citizen report does not confirm a harmful algal bloom. Laboratory or agency testing is required for confirmation."
    - On submit, `applyCitizenReport` updates the site in context, the report is added to the list, and the success state shows "Report received. Your observation has been added to the community monitoring layer." with a link to the updated site.
    - Note: "Why citizen observations matter".
+   - Intro copy, OAH source line, `?site=` preselect and the before/after score moment: Section 20, Task 20.7.
 4. **`/oah-cities` Verdant for OneAquaHealth cities.**
    - Intro: "Lake Mead serves as Verdant's pilot site, but the architecture is designed to support other lakes, reservoirs, and urban freshwater ecosystems using the same satellite and environmental monitoring workflow."
    - Five city cards (Benevento, Coimbra, Ghent, Oslo, Toulouse), each showing its `dataStatus` badge and its pathways.
@@ -483,22 +490,25 @@ Speakers are A (Frontend/Map), B (Data/Risk Model) and C (Product/Citizen Scienc
 | Time | Speaker | Screen | Script |
 |---|---|---|---|
 | 0:00–0:25 | C | Title card with the statistic and the on-screen source line "Source: CDC, MMWR 69(50), Dec 18, 2020" (Section 19.2 row C1), then a Lake Mead photo, then Dashboard | Spoken, exactly: "Across the United States, 18 states reported 421 harmful algal bloom events, 389 cases of human illness and 413 cases of animal illness from 2016 to 2018." Then: "At Lake Mead, the National Park Service warns that bloom toxins can make people sick and can kill dogs. Monitoring cannot continuously cover every part of the lake." |
-| 0:25–0:45 | C | Dashboard | Verdant, Track 6 Resilience Informatics: an explainable early warning that combines satellite, environmental and citizen signals. |
-| 0:45–1:30 | A | Risk map, popups, Sampling priority list, official elevation card | The map, the categories, Areas Requiring Attention, the Sampling priority list with Callville Bay as the recommended first sampling target, the official Reclamation elevation card beside the labelled prototype values, and Boulder Basin led by heat and low water, which shows the multi-hazard view. |
-| 1:30–2:15 | B | `/site/callville-bay` | 79, Very High, Increasing. Why is risk elevated: the contribution bars. The Verdant recommendation "Recommend field sampling" and "Recommended first sampling target", next to "Official advisory: none issued". The disclaimer. |
-| 2:15–2:45 | C | `/report` | Submit a report; Callville rises to 81 live. Spoken, exactly: "Citizen reports add coverage between agency samples." The confirmation warning text. |
-| 2:45–3:05 | B | One Health panel | Environment, human health and animal health; visitor guidance. |
-| 3:05–3:40 | A | `/oah-cities` → Run on Coimbra → Dashboard | Lake Mead is the pilot. The same engine runs on a OneAquaHealth city through one site config and a Resilience Map export. Benevento, Ghent, Oslo and Toulouse are configured next. |
-| 3:40–3:50 | A | The "Export FHIR JSON" button on the site detail page of the Coimbra rank-1 site, clicked once; the download bar shows `verdant-coimbra-fhir.json` | Spoken, exactly (this is the only FHIR mention in the video, 10 seconds or less): "One click exports every score and citizen report as FHIR-shaped JSON for the OneAquaHealth implementation guide." |
-| 3:50–4:15 | B | `/methodology` diagram | Architecture, Sentinel-2 NDCI as a proxy rather than toxin detection, and the scale path. |
-| 4:15–4:30 | C | Dashboard | "Verdant does not replace environmental experts. It helps them know where to look first." |
+| 0:25–0:40 | C | Dashboard, cursor resting on the header button "Report what you see" | Verdant, Track 6 Resilience Informatics: an explainable early warning that combines satellite, environmental and citizen signals. Spoken, exactly: "Agencies sample a few points a few times a month. People at the shore see the water every day, so Verdant treats them as sensors." |
+| 0:40–1:15 | A | Risk map with the community report pins visible, popups, Sampling priority list, official elevation card | The map, the categories, the square community report pins next to the site markers, Areas Requiring Attention, the Sampling priority list with Callville Bay as the recommended first sampling target and its 3 reports, the official Reclamation elevation card beside the labelled prototype values, and Boulder Basin led by heat and low water, which shows the multi-hazard view. |
+| 1:15–1:50 | B | `/site/callville-bay` | 79, Very High, Increasing. Why is risk elevated: the contribution bars. The Verdant recommendation "Recommend field sampling" and "Recommended first sampling target", next to "Official advisory: none issued". The disclaimer. |
+| 1:50–2:50 | C | Citizen science segment, in this order: (1) Dashboard "Community reports" feed, 5 s; (2) `/site/callville-bay` "Community observations" showing "Citizen evidence: 64/100, adds 9.6 points to the Algal bloom score.", then click "Add an observation at Callville Bay"; (3) `/report` with Callville Bay preselected: the intro, the OAH source line, two answers, the warning, "Submit report"; (4) the success state counting 79 to 81 and "Citizen evidence 64 to 74"; (5) "View updated site": the section now reads 74/100 and 11.1 points; (6) "See it on the dashboard": the new report on top of the feed tagged "Submitted in this session", a fourth pin at Callville Bay, Callville Bay at 81 in the Sampling priority list | Spoken, exactly: "Citizen reports add coverage between agency samples." Then: "The form uses the OneAquaHealth citizen-science stream questions. Each report raises that site's citizen evidence, and the score shows exactly how many points the community adds." Then read the warning on screen: "A citizen report does not confirm a harmful algal bloom. Laboratory or agency testing is required for confirmation." |
+| 2:50–3:05 | B | One Health panel | Environment, human health and animal health; visitor guidance. |
+| 3:05–3:35 | A | `/oah-cities` → Run on Coimbra → Dashboard | Lake Mead is the pilot. The same engine runs on a OneAquaHealth city through one site config and a Resilience Map export. Benevento, Ghent, Oslo and Toulouse are configured next. |
+| 3:35–3:45 | A | The "Export FHIR JSON" button on the site detail page of the Coimbra rank-1 site, clicked once; the download bar shows `verdant-coimbra-fhir.json` | Spoken, exactly (this is the only FHIR mention in the video, 10 seconds or less): "One click exports every score and citizen report as FHIR-shaped JSON for the OneAquaHealth implementation guide." |
+| 3:45–4:10 | B | `/methodology` diagram | Architecture, Sentinel-2 NDCI as a proxy rather than toxin detection, and the scale path. |
+| 4:10–4:30 | C | Dashboard, "Community reports" feed in view | Spoken, exactly: "Anyone at the shore can add to this map. Verdant does not replace environmental experts. It helps them know where to look first." |
+
+Recording note for 1:50–2:50: record steps (1) to (6) in one take after a page reload, so the feed, the pins and the score start from the seed state (Callville Bay 79, 3 reports, 7 reports in total).
 
 ## 14. Devpost description (draft; task 10.1 finalizes it)
 
 - **Track alignment:** Track 6, Resilience Informatics. Verdant turns scattered environmental and citizen signals into early warning and monitoring priorities for freshwater sites.
 - **Inspiration / What it does / How we built it / Challenges / Accomplishments / What we learned / What's next:** these are written in task 10.1 from Sections 1, 7, 8 and 9.
 - **Impact & Alignment.** Verdant links freshwater conditions to human and animal health. Every score names its hazard pathway, its evidence and a next step for rangers, water agencies, researchers, residents and visitors. Lake Mead is the pilot; the same engine runs on OneAquaHealth's Coimbra data and is configured for Benevento, Ghent, Oslo and Toulouse.
-- **Innovation & Creativity.** A citizen report changes the risk score on screen. Every score breaks down into factor contributions. One configuration switch moves Verdant from a US reservoir to a European urban stream network.
+- **Citizen science.** Agencies sample a few points a few times a month; people at the shore see the water every day. Verdant treats their reports as one of its sensors. The report form uses the OneAquaHealth citizen-science stream questions. Every report shows up in the dashboard's "Community reports" feed, as a pin on the map and in the site's "Community observations", and it raises that site's citizen evidence by 10 points, so a manager can read exactly how much the community moved the score (Callville Bay: 79 to 81). Reports never confirm a bloom: the form says so above the submit button, and the score only tells experts where to sample first.
+- **Innovation & Creativity.** A citizen report changes the risk score on screen, and the site page states how many points citizen evidence adds. Every score breaks down into factor contributions. One configuration switch moves Verdant from a US reservoir to a European urban stream network.
 - **Technical Implementation.** A tested TypeScript risk engine with fixed, published weights and partial-data coverage. A Resilience Map CSV parser. FHIR-shaped JSON export aligned to the OneAquaHealth FHIR IG profiles. React, TypeScript, Leaflet and Recharts.
 - **Usability & User Experience.** Four pages, one path from map to explanation to action. Disclaimers sit next to every score, and the layout works on a phone in the field.
 - **Feasibility & Scalability.** Adding a city takes a CSV export, a column map and a site config. There is no backend to run. All scores are unvalidated today; the first future-work step is comparing them with in-situ field-sample results. Further future work: live Sentinel-2 and weather feeds, validated local models, agency integration, FHIR server submission.
@@ -535,7 +545,7 @@ Speakers are A (Frontend/Map), B (Data/Risk Model) and C (Product/Citizen Scienc
 
 ## 17. Cut list (in order; each cut fires on its trigger)
 
-1. FHIR export button (Task 9.2). Trigger: 18:45 PDT and Phase 8 not done. The Methodology page then describes the export as future work, and video segment 3:40–3:50 shows the Methodology future-work item "FHIR server submission" with the spoken sentence "FHIR export to the OneAquaHealth implementation guide is next on our roadmap."
+1. FHIR export button (Task 9.2). Trigger: 18:45 PDT and Phase 8 not done. The Methodology page then describes the export as future work, and video segment 3:35–3:45 shows the Methodology future-work item "FHIR server submission" with the spoken sentence "FHIR export to the OneAquaHealth implementation guide is next on our roadmap."
 2. Photo preview on the report form. Trigger: Task 5.2 not done at 17:00 PDT.
 3. Contribution bars become a plain sorted list. Trigger: Task 4.1 not done at 16:30 PDT.
 4. Coimbra switch becomes a static screenshot card on `/oah-cities`. Trigger: Task 2.4 or 6.1 not done at 17:45 PDT. Video segment 3:05–3:40 then narrates over the card.
@@ -549,12 +559,13 @@ The never-cut list: the map, the risk engine and its tests, the site detail page
 
 - **Problem:** monitoring cannot continuously cover every part of a lake or an urban stream network.
 - **Solution:** combine satellite, environmental and citizen observations into an explainable, multi-hazard risk score.
+- **Citizen science:** people at the shore are sensors between agency samples; every report is visible on the map, in the feed and on the site page, and the score states how many points it adds.
 - **Impact:** experts see where follow-up monitoring is needed first.
 - **One Health:** protects aquatic ecosystems, recreational users, pets, wildlife and downstream communities.
 - **Responsible AI:** supports human decisions and never diagnoses or confirms toxic blooms.
 - **Scale:** Lake Mead is the pilot; OneAquaHealth cities run on the same engine through one site config.
 
-**Final pitch:** "Verdant transforms scattered environmental signals into actionable early warning. By combining satellite observations, environmental conditions, and citizen science, Verdant helps identify where harmful algal bloom risk may be increasing across Lake Mead, and the same engine already runs on OneAquaHealth's urban streams, so experts know where to look first."
+**Final pitch:** "Verdant transforms scattered environmental signals into actionable early warning. By combining reports from people at the shore with satellite observations and environmental conditions, Verdant helps identify where harmful algal bloom risk may be increasing across Lake Mead, and the same engine already runs on OneAquaHealth's urban streams, so experts know where to look first."
 
 ## 19. Data sources and citations
 
@@ -586,3 +597,112 @@ The never-cut list: the map, the risk engine and its tests, the site detail page
 - **Built by:** Task 2.2 writes it to `lakeMeadOfficial` in `src/data/citations.ts`; Task 3.2 renders it as the "Official data" card on the Dashboard (Section 8 item 1), shown only when the region is `lake-mead`.
 - **Shown with:** the source line "Source: U.S. Bureau of Reclamation, Lower Colorado River Operations. Accessed 2026-10-04." and a link to the C3 URL.
 - **Done-check:** Task 3.2 browser check and Task 12.1 QA confirm the card text matches this subsection.
+
+## 20. Citizen science prominence
+
+**Why:** the user, 2026-10-04: "make the citizen science part of it a lot more apparent - thats one of the central goals". A judge who watches the video or opens the site sees, without scrolling past the first screen, that people at the shore feed the score.
+
+### 20.1 Rules for this section
+
+1. Every task here is executed by an execution-tier agent (`model: "sonnet"`). TDD applies only to Task 20.1. Every other task is visual and is verified with `npm run dev` in the browser at 1440 px and 375 px.
+2. Every agent follows Section 11 (design direction) and names `impeccable`, applies the `ponytail` ladder, reads graphify-first (AGENTS.md point 8; when no graph exists the agent says so and reads the named files directly), and runs `no-ai-slop` on any user-facing text it writes beyond the exact strings below. Exact strings in this section are copied verbatim and are never reworded.
+3. No backend, no storage, no new dependency. Reports stay in `RegionContext` state (`reports`, `addReport`); a reload resets to the 7 seed reports. `src/state/RegionContext.tsx`, `src/engine/` and `src/data/` are not edited by any Section 20 task, except Task 20.8's one citation row and its count assertion.
+4. Existing exact strings stay unchanged: the nav label "Report a Bloom"; the KPI title "Citizen reports"; the priority-list column "Reports"; the heading "Sampling priority list"; the warning "A citizen report does not confirm a harmful algal bloom. Laboratory or agency testing is required for confirmation."; the success sentence "Report received. Your observation has been added to the community monitoring layer."; the link "View updated site"; the note heading "Why citizen observations matter"; every Section 8.2 and 8.3 string.
+5. Citizen-report visuals use the accent `--primary` (`#174C6B`) and the square shape: a report pin is a 12px square with 2px radius, `--primary` fill, 2px `#FBFCFB` border. It never uses a risk colour and is never round, so it is never confused with a site marker (Section 11.4: only site markers are round).
+6. Data tags shown on every report item and pin, in the Section 11.4 data-label style (Mono 12px, dashed border): `synthetic-demo` renders as "Demo report"; `user-submitted` renders as "Submitted in this session".
+7. Coimbra has no seed reports. Every Section 20 surface shows its empty-state string on Coimbra and works once a report is submitted there.
+8. Start condition: the orchestrator dispatches Task 20.1 as soon as the Coimbra update in `src/` (Section 19.2 / A3 work) has landed, so no two agents edit `src/pages/Dashboard.tsx` or `src/pages/SiteDetail.tsx` at once. Time box for the whole section: 75 minutes, finished before the 18:15 PDT feature freeze; Task 8.1 polish then covers these screens.
+
+### 20.2 Order, parallelism and file ownership
+
+- **Step 1 (sequential, one agent):** Task 20.1.
+- **Step 2 (three agents in parallel, after 20.1 is done):** no two agents share a file.
+
+| Agent | Tasks | Owns these files (no other agent edits them) |
+|---|---|---|
+| Step 1 agent | 20.1 | `src/lib/communityReports.ts` (new), `src/lib/communityReports.test.ts` (new), `src/components/CommunityReportItem.tsx` (new) |
+| Agent A | 20.2, 20.3 | `src/components/Layout.tsx`, `src/pages/Dashboard.tsx`, `src/components/KpiCards.tsx`, `src/components/CommunityReportsFeed.tsx` (new) |
+| Agent B | 20.4, 20.5 | `src/components/RiskMap.tsx`, `src/components/SamplingPriorityList.tsx` |
+| Agent C | 20.6, 20.7 | `src/pages/SiteDetail.tsx`, `src/pages/Report.tsx`, `src/lib/useCountUp.ts` (new) |
+| Orchestrator, inline | 20.8 | `src/data/citations.ts`, PLAN.md Section 19.2 (one row) |
+
+Agent B reads reports with `useRegion().reports` inside `RiskMap.tsx`, so `Dashboard.tsx` (Agent A) needs no new prop for the pins.
+
+### 20.3 Tasks
+
+- **20.1 Shared report helpers and item component.** Effort S. TDD applies.
+  - Files: `src/lib/communityReports.ts`, `src/lib/communityReports.test.ts`, `src/components/CommunityReportItem.tsx`.
+  - Exports from `communityReports.ts`:
+    - `newestFirst(reports)`: a new array sorted by `createdAt` descending.
+    - `reportSummary(report)`: `observationTypes.join(", ")`, cut to 80 characters with "..." appended when longer; "No details given" when the array is empty.
+    - `REPORT_TAG_LABEL`: `{ "synthetic-demo": "Demo report", "user-submitted": "Submitted in this session", "prototype": "Demo report" }`.
+    - `formatReportTime(iso)`: `new Date(iso).toLocaleString("en-US", { month: "short", day: "numeric", hour: "2-digit", minute: "2-digit", hour12: false, timeZone: "America/Los_Angeles" })`.
+    - `citizenEvidence(result)`: from the leading pathway of a `SiteResult`, returns `{ value, points, pathwayId }` for the `citizen_evidence` contribution, `points` rounded to one decimal; returns `null` when the factor is missing.
+  - `CommunityReportItem({ report, siteName, showSite })`: one row, hairline bottom border, padding 12px 0. Line 1: site name as a link to `/site/:id` (Sans 600 14px, only when `showSite`), then `formatReportTime` in Mono 12px muted. Line 2: `reportSummary` in 14px ink. Line 3: the tag label (rule 6) and, when `animalsPresent`, the plain text "Animals present" in 12px muted. A lucide `MessageSquare` icon (14px, stroke 1.75, `--primary`) sits left of line 1.
+  - Tests: Callville seed report 1 summarizes to "Green surface layer, Unusual odor"; `newestFirst(lakeMeadReports)[0].id` is `report-5` (2026-10-03T11:20Z); a 120-character summary ends with "..." and is 83 characters long; `citizenEvidence(scoreSite(callville))` returns value 64, points 9.6, pathway `algal_bloom`; after `applyCitizenReport` it returns 74 and 11.1.
+  - Done: `npx vitest run src/lib` passes and `npm run build` exits 0.
+
+- **20.2 Header call to action.** Effort S. Agent A.
+  - File: `src/components/Layout.tsx`.
+  - Visible result: at 768 px and wider, a primary button "Report what you see" with a lucide `MessageSquarePlus` icon (16px, stroke 1.75) sits in the header immediately left of the region switch, on every page. It links to `/report`. It is hidden on `/report` itself. Below 768 px the button is not shown (the Sheet nav keeps "Report a Bloom"). The nav labels and order stay exactly as Section 8.
+  - Done: the button shows on `/`, `/site/callville-bay`, `/oah-cities`, `/methodology`; clicking it opens `/report`; the header stays on one line at 1440 px and 768 px.
+
+- **20.3 Dashboard: subtitle, KPI order, "Community reports" feed.** Effort M. Agent A.
+  - Files: `src/pages/Dashboard.tsx`, `src/components/KpiCards.tsx`, `src/components/CommunityReportsFeed.tsx` (new).
+  - Subtitle: directly under the H1, 16px muted ink, max 68ch, exactly: "Scores combine satellite signals, environmental data and reports from people at the shore."
+  - KPI strip: the "Citizen reports" cell moves to the first position (before "Region status"). It keeps its title and Mono 28px count, and adds the line "From {n} sites" (n = distinct `siteId` count; "From 1 site" when n is 1) in 14px muted, then a text link "Add a report" in `--primary` with an `ArrowRight` icon, linking to `/report`. The cell gets a 3px left border in `--primary`. The other cells keep their content and order.
+  - Feed: a new full-width band below the map and priority-list row (above the Coimbra satellite chart when present), bordered `bg-card`, 12-column grid at 1024 px and up:
+    - Left, `col-span-8`: H2 "Community reports" (28px Sans 600), then the line "Observations from people at the shore. Each new report raises that site's citizen evidence by 10 points, capped at 100." (14px muted), then the 5 newest reports (`newestFirst`) as `CommunityReportItem` with `showSite`. A newly submitted report appears on top with the Section 11.7 1200ms `--muted` to transparent background fade. Empty state, exactly: "No community reports for {region name} yet. Reports filed here appear in this list and on the map."
+    - Right, `col-span-4`, separated by a vertical hairline: H3 "Between agency samples" (20px Sans 600); the paragraph, exactly: "Agencies sample a few points a few times a month. People at the shore see the water every day. Your report goes straight into the score, and the site page shows how many points it adds."; a primary button "Report what you see" (same icon as 20.2) linking to `/report`; under it, 12px muted, exactly: "Reports never confirm a bloom. They tell experts where to look."
+    - At 375 px the two parts stack, the right part second.
+  - Done: on Lake Mead the KPI strip starts with "Citizen reports 7", "From 4 sites"; the feed lists 5 reports, newest first, each tagged "Demo report"; after submitting a Callville Bay report and returning to `/`, the count reads 8 and the new report is on top tagged "Submitted in this session"; on Coimbra the feed shows the empty-state string; no horizontal scroll at 375 px.
+
+- **20.4 Map: community report pins and layer toggle.** Effort M. Agent B.
+  - File: `src/components/RiskMap.tsx`.
+  - Pins: one Leaflet `Marker` per report in `useRegion().reports` whose site is in `rows`, at its site's lat/lon, with a `divIcon` drawn per rule 5. Pins fan out around the site marker at a fixed pixel offset (not a coordinate offset, so they never move onto land differently at each zoom): pin k of n at angle `-90° + k × 360° / max(n, 4)`, radius = site marker diameter ÷ 2 + 10px, set through `iconAnchor`. `zIndexOffset` is above every site marker. `title` = "Community report at {site name}".
+  - Pin popup (same popup style as 11.5): "Community report" (14px Sans 600, `--primary`), site name (20px Sans 600), `formatReportTime`, `reportSummary`, the tag label, and the link "View site" to `/site/:id`.
+  - Toggle: a shadcn `Switch` with label "Community reports ({count})" in a `bg-card` hairline box at the map's top-left, `z-[1000]`; on by default; off hides the pins.
+  - Legend: one row appended to the existing legend: the square pin swatch, then "Community report" (Sans 500), no range.
+  - Done: on Lake Mead 7 square accent pins show (3 around Callville Bay, 2 around Las Vegas Bay, 1 each at Overton Arm and Boulder Basin) and none overlaps its site marker's score numeral at the default zoom; the toggle hides and shows them and reads "Community reports (7)"; submitting a Callville Bay report adds a fourth pin there and the toggle reads 8; the site-marker popups are unchanged.
+
+- **20.5 Priority list: report-count badges.** Effort S. Agent B.
+  - File: `src/components/SamplingPriorityList.tsx`.
+  - The "Reports" cell (desktop table) and the reports line (stacked list) render a lucide `MessageSquare` icon (14px, stroke 1.75) plus the count in Mono 14px. When the count is above 0, icon and count are `--primary` and the cell links to `/site/:id#community`; at 0 they are muted with no link. The column heading stays "Reports".
+  - Done: Callville Bay shows 3 in accent, Echo Bay and Temple Basin show 0 muted; after a Callville submission it shows 4.
+
+- **20.6 Site page: "Community observations".** Effort S. Agent C.
+  - File: `src/pages/SiteDetail.tsx`.
+  - A section with `id="community"` placed directly after the "Why is risk elevated?" and 7-day chart row, before "Pathway scores":
+    - H2 "Community observations" (28px Sans 600).
+    - The evidence line in the "Verdant recommendation" label style from 11.4 but with the label "Citizen evidence" (12px Sans 600 `--primary`), content 14px, exactly: "Citizen evidence: {value}/100, adds {points} points to the {pathway label} score." (values from `citizenEvidence(result)`; `{points}` in Mono). When `citizenEvidence` returns null: "No citizen evidence in this score yet."
+    - The site's reports from `useRegion().reports`, `newestFirst`, as `CommunityReportItem` without `showSite`. Empty state, exactly: "No community reports for this site yet."
+    - A primary button "Add an observation at {site name}" with the `MessageSquarePlus` icon, linking to `/report?site={id}`.
+  - Done: `/site/callville-bay` shows "Citizen evidence: 64/100, adds 9.6 points to the Algal bloom score." and 3 reports; after one submission it shows 74/100, 11.1 points and 4 reports; `/site/temple-basin` shows the empty-state string; the score numeral and all Section 8.3 labels are unchanged.
+
+- **20.7 Report page: framing, OAH source, preselect, before/after moment.** Effort M. Agent C.
+  - Files: `src/pages/Report.tsx`, `src/lib/useCountUp.ts` (new).
+  - Intro: the paragraph under the H1 "Report a Bloom" becomes, exactly: "Agencies sample a few points a few times a month. You see the water today. Your report raises this site's citizen evidence and can move it up the Sampling priority list." Under it, the source line in the Section 11.4 data-label style, exactly: "Questions from the OneAquaHealth citizen-science stream survey, via a public copy not yet checked against the official OAH app." (cited by row C10, Task 20.8).
+  - Preselect: `?site={id}` from `useSearchParams` sets the initial site when that id exists in the region.
+  - Observation text: each answered field is stored as `"{label}: {answers joined by ", "}"` (for example "Filamentous algae: lots"), so the feed and pins read cleanly.
+  - `useCountUp(target)`: when `target` changes, the displayed number counts from the previous value to the new one over 600ms ease-out with `requestAnimationFrame` writing to a ref; under `prefers-reduced-motion: reduce` it jumps to the target. The aside score numeral uses it.
+  - Success state, in this order: the unchanged success sentence; a before/after block: the label "{site name} risk score" (14px muted), then the old score in Mono 28px muted with a line-through, a lucide `ArrowRight`, and the new score in Mono 72px (48px below 768 px) counting up with `useCountUp`, then the new `RiskBadge`; the line, exactly: "Citizen evidence {before} to {after}. Your report added {delta} points to this score." (`{delta}` = new minus old site score, which is 2 for Callville Bay); the unchanged link "View updated site"; and a second link "See it on the dashboard" to `/`. The warning stays above the submit button.
+  - Done: from `/site/callville-bay` → "Add an observation at Callville Bay", the form opens with Callville Bay selected; submitting shows 79 struck through, 81 counting up, "Citizen evidence 64 to 74. Your report added 2 points to this score."; both links work; reduced motion shows 81 at once.
+
+- **20.8 Citation row for the form source.** Effort S. Orchestrator, inline, after the Coimbra agent releases Section 19.2.
+  - Files: `src/data/citations.ts` and PLAN.md Section 19.2 (README copies it in Task 9.1).
+  - Row C10: item "C10 Citizen-science stream questions (report form, Task 20.7)"; claim "Seven citizen-science questions (foam, riparian vegetation, filamentous algae, hydrology, diptera, ticks, wildlife) as used in a OneAquaHealth citizen-science form; reproduced in a public hackathon repository and not verified against the official OAH app"; source "`codes.js` in the AquaLink repository"; publisher "GitHub user Sravya1802 (public repository)"; URL `https://github.com/Sravya1802/aqualink`; accessed 2026-10-04.
+  - Done: `citations.length` is 10 and the `src/data/citations.test.ts` count assertion is updated to 10 in the same change; the Methodology table shows C10.
+
+### 20.4 Cut order (first cut first; trigger: Section 20 not done at 18:00 PDT)
+
+1. 20.5 badges: the "Reports" cell stays a plain number.
+2. 20.4 toggle: pins stay, always on; the legend row stays.
+3. 20.7 count-up: the success block shows "79" struck through and "81" without animation.
+4. 20.4 pins entirely: video 0:40–1:15 drops the pin mention and step (6) drops the fourth pin.
+5. 20.3 KPI reorder: "Citizen reports" stays in its old position.
+
+Never cut from this section: 20.1, 20.2, the 20.3 feed and subtitle, 20.6, the 20.7 intro, source line, preselect and before/after numbers, 20.8.
+
+### 20.5 Done-check for the whole section
+
+The orchestrator runs `npm run build` and `npx vitest run`, then walks the Section 13 1:50–2:50 sequence steps (1) to (6) on `npm run dev` after a reload, and confirms every string in Section 20.3 appears as written, at 1440 px and 375 px, with no console errors.
