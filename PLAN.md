@@ -343,7 +343,7 @@ Risk badge (one component, `RiskBadge`): tint background, ink text, 1px border i
 - Radius: 4px (`rounded-sm`) on every rectangle (buttons, inputs, panels, popups, badges). Markers and meter pointer are the only round shapes. No `rounded-xl`, no pills.
 - Shadow: none on page elements; panels are separated by 1px `border` hairlines. One shadow token, `0 6px 24px rgb(20 33 31 / 0.14)`, used only on Leaflet popups, `Select`/dropdown content and `Sheet`.
 - Dashboard @1440: row 1 = KPI strip, one bordered band split into 5 cells by vertical hairlines: Region status, Highest-risk site, Citizen reports, Areas Requiring Attention, then the Official data cell (4px left border in `--primary`, "Official data" badge, value Mono 28px, source line Mono 12px with link). Row 2 = 12-col grid: map `col-span-7`, height 620px; "Sampling priority list" `col-span-5`, same height, scroll inside if needed. Data label "Prototype demonstration data" sits directly above the KPI strip, left-aligned. @375: KPI strip becomes 2x2 grid, official cell full width beneath, map full width 380px tall, priority list renders as stacked rows (rank + site + badge on line 1; leading pathway, trend, reports, action on line 2). No horizontal scroll.
-- Priority list: rank in Mono 20px muted, site Sans 600, `RiskBadge`, trend as lucide `TrendingUp`/`TrendingDown`/`MoveRight` + word, action text. Rows separated by one bottom hairline (no top borders). Rank-1 row has no risk-tinted background; it gets a 3px left `--primary` border and the "Verdant recommendation" label block containing "Recommended first sampling target".
+- Priority list (Section 22 amends: at 1024px and up the table has 5 columns, Rank | Site with leading pathway beneath | Risk with trend beneath | Reports | Action, headers "Site / Leading pathway" and "Risk / Trend"; site names never wrap): rank in Mono 20px muted, site Sans 600, `RiskBadge`, trend as lucide `TrendingUp`/`TrendingDown`/`MoveRight` + word, action text. Rows separated by one bottom hairline (no top borders). Rank-1 row has no risk-tinted background; it gets a 3px left `--primary` border and the "Verdant recommendation" label block containing "Recommended first sampling target".
 - "Verdant recommendation" label style: 3px left border `--primary`, padding 8px 12px, label 12px Sans 600 in `--primary`, content 14px ink. "Official advisory: none issued" sits beside it as plain 14px muted text with 1px dashed `--border` box. Never coloured red/orange.
 - Data labels: "Prototype demonstration data" and the A3 Coimbra label = Mono 12px muted ink, 1px dashed border, 4px radius, padding 2px 8px. "Official data" = solid `--primary` background, `--primary-foreground` text, Mono 12px.
 - Site detail @1440: hero band, 2 columns 5/7. Left: H1 site name, meta line (trend, last updated) 14px muted, then score numeral 72px + `RiskBadge` on one baseline. Right: risk meter (11.6) on top, then the recommendation pair (Verdant recommendation | Official advisory). Below: 7/5 grid, "Why is risk elevated?" with explanation sentence and contribution bars left, 7-day chart right (Recharts line, stroke `--foreground` 2px, dots coloured by category, no gridlines except a hairline at y=25/50/75 for category bounds, y 0-100). Then the three pathway scores as one bordered strip split by vertical hairlines (not three cards). Then One Health panel: three columns (Environment, Human health, Animal health) each with lucide icon (`Leaf`, `User`, `PawPrint`) + 14px text, visitor guidance below full width. Then disclaimer, then "Export FHIR JSON" secondary button (outline, `Download` icon). @375: everything single column in that order; score numeral 48px.
@@ -355,7 +355,7 @@ Risk badge (one component, `RiskBadge`): tint background, ink text, 1px border i
 - Tiles: Esri World Light Gray Canvas (free, no key; built on OpenStreetMap and other data), URL `https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Light_Gray_Base/MapServer/tile/{z}/{y}/{x}`, `maxZoom: 16`, attribution `Tiles &copy; Esri, HERE, Garmin, &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors`; CARTO Positron was dropped because its tiles show an "API key required" watermark.
 - Map frame: 1px `--border`, 4px radius, `bg-card`; zoom control top-right; scroll-wheel zoom off on mobile.
 - Markers: Leaflet `divIcon`, circle sized per 11.3, fill = risk solid, 2px `#FBFCFB` stroke plus 1px outer `#14211F` at 40% (box-shadow ring), site score centred in Mono 600 12px (13px for High/Very High). Very High also carries the pulse ring (11.7). Larger markers render above smaller (`zIndexOffset` = score × 10).
-- Legend: bottom-left inside the map, `bg-card` hairline box, four rows of marker swatch + icon + category word + range (Mono 12px).
+- Legend (Section 22 amends: below 768px the legend sits under the map frame as one wrapped row, not over the map): bottom-left inside the map, `bg-card` hairline box, four rows of marker swatch + icon + category word + range (Mono 12px).
 - Popup: `bg-card`, 4px radius, the one shadow token, padding 12px, width 240px. Content: site name 20px Sans 600; `RiskBadge`; leading pathway and trend 14px; "View analysis" text link in `--primary` with `ArrowRight` icon. Restyle Leaflet's default popup tip and close button to these tokens in `src/index.css` `@layer base` (no new CSS file).
 
 **11.6 Risk meter and contribution bars.**
@@ -882,3 +882,108 @@ Never cut: 21.1, the 21.2 shared state (with or without persistence), 21.4, 21.5
 ### 21.9 Done-check for the whole section
 
 The orchestrator runs `npm run build` and `npx vitest run`, clicks "Reset demo data", reloads, walks the Section 13 1:30–2:55 steps (1) to (6) on `npm run dev`, and confirms every exact string in Section 21.5 at 1440 px and 375 px with no console errors.
+
+## 22. UI improvement pass
+
+**Why (user, 2026-10-04, verbatim):** "next lets work on the ui, its not bad but could use substantial improvement". Written 15:55 PDT by the planning-tier agent from a headless-Chrome audit (1440x900 and 390x844, every route, the full report flow, Coimbra). Screenshots live outside the repo in the session scratchpad `ui-audit/`. Section 11 stays the direction; this section sharpens it. Fonts stay (Schibsted Grotesk + IBM Plex Mono read well in every screenshot; the audit gives no reason to change them, so the Section 11.2 import line is unchanged). Colour tokens stay unchanged. Section 11.4 (priority list) and 11.5 (legend) carry one-line amendments pointing here.
+
+**Assumptions (no user available):** the video is recorded at 1440x900 in Chrome on the production build; every exact string in Sections 8, 20 and 21 stays verbatim; no new dependency, no new CSS file, Leaflet and all demo logic stay.
+
+### Findings, ranked by impact on the demo video
+
+1. **Dashboard @1440x900: the map, the hero of video 0:40-1:05, starts at y=520 and shows only 380px above the fold.** The title block and a 210px-tall KPI band with half-empty cells push it down.
+2. **Dashboard map: the initial view clips the sites.** Las Vegas Bay and Boulder Basin sit on the bottom edge, the east basin is empty grey, and the "+" zoom button is hidden under the "Community reports" toggle (both top-left; Section 11.5 said zoom top-right).
+3. **Dashboard: the Sampling priority list is cramped.** Seven columns in 620px: "Callville Bay", "Leading pathway", "Las Vegas Bay" and every action wrap to two lines, so the rank-1 row, a key video frame, reads as clutter.
+4. **Mobile dashboard: the legend covers about 45% of the 380px map;** markers are cut at the left edge and the attribution runs into the legend.
+5. **Site detail: the score is said twice.** The 72px "79" sits next to a badge that repeats "79". The contribution bars end at about 35% of the row while their values sit at the far right, so bar and number never read together. The hero's right column floats.
+6. **Every page: "outline" buttons look grey and disabled.** The outline variant uses `bg-background` (page grey) on `bg-card` surfaces: Back, File another report, Start review, Reset demo data, Add a follow-up report.
+7. **Report Step 2: raw lowercase options ("none", "sewage-smell", "oil-sheen") in a 2-column grid leave orphan tiles ("lots" alone on a row);** "Step 2 of 3" is the only progress cue; the long step has no visual rhythm.
+8. **Report aside hides under the header** (`lg:sticky lg:top-6` under a 60px sticky header). In dev, StrictMode fires the step-scroll effect on mount, so `/report` opens scrolled past its H1 (production unaffected; the fix is one line).
+9. **Report queue: no button hierarchy.** Five identical grey buttons per row; the two the video clicks ("Request field sample", "Confirmed by field sample") do not stand out. The demonstration label stretches the full 1312px as a dashed bar. Decided rows leave the right half empty except the seed note.
+10. **My reports: the payoff line "You got it right." is a plain 20px line,** the same weight as "The ranger needs one more detail."; the record band is a small 600px strip; the right 400px of the page is empty.
+11. **Report success: the aside repeats 81 next to the before/after block,** and two text links plus two buttons read as four equal choices.
+12. **OAH Cities: the five 120x64 locator boxes are near-empty frames with one dot** and look broken.
+13. **Coimbra dashboard:** central markers overlap (a "46" hidden under "54"); acceptable once the map fits its bounds.
+14. **Methodology:** readable and solid; only the shared button and spacing fixes reach it.
+
+### Design decisions (absolute)
+
+- **Typography:** families, scale and import unchanged (Section 11.2). Choice-button labels render with `first-letter:uppercase`; the stored strings are unchanged.
+- **Colour:** tokens unchanged. New uses, token-derived only: selected choice buttons `bg-primary/10` plus the existing 2px `--primary` border; the "Confirmed by field sample" ranger button `border-primary text-primary`; the confirmed outcome block in My reports `bg-primary/5`.
+- **Buttons:** the shadcn `outline` variant becomes `border-border bg-card hover:bg-muted`.
+- **Spacing rhythm:** Layout `main` gets `pt-8 pb-16` (32px top, 64px bottom) and pages drop their own top padding; section gap stays 48px desktop, 32px mobile.
+- **Dashboard @1440:** title block (H1 40px, subtitle max 68ch, data label beneath). KPI band cells padding 16px, top-aligned, band height at most 132px: "From {n} sites" and "Add a report" sit on one line; the official cell's source URL displays as "usbr.gov" (`href` unchanged, full URL in `title`). 24px gap from KPI band to the map row. Result: map top edge at y ≤ 380 at 1440x900. Row 2 stays map `col-span-7` + list `col-span-5`, 620px tall.
+- **Map:** on load and on region switch the map fits the bounds of the region's sites with 40px padding (`fitBounds`, max zoom = config zoom + 1), so every marker sits inside the frame. Zoom control top-right; toggle top-left; attribution 11px muted on `bg-card/90`. Below 768px: map 420px tall, scroll-wheel zoom off, legend under the frame as one wrapped row.
+- **Priority list @1024+:** 5 columns, Rank | Site / Leading pathway | Risk / Trend | Reports | Action. Site name Sans 600 `whitespace-nowrap` with the leading pathway 13px muted beneath; `RiskBadge` with the trend icon and word 13px beneath; Action 13px. The rank-1 row keeps its 3px `--primary` left border and the "Verdant recommendation" block. Below 1024px the stacked rows stay.
+- **Site detail hero:** the badge beside the 72px numeral renders without the score (`RiskBadge` without `score`). The hero sits in a `bg-card` band, hairline border, 24px padding; the right column (meter, then the recommendation pair) is vertically centred against the left.
+- **Contribution bars:** columns label 180px | bar followed by its value. The value block (Mono 12px "34.8 pts", "87 × 0.40" beneath) sits 8px after the bar's end. Bar length rule unchanged.
+- **Report flow:** a 3-segment progress rule (segments 4px tall, 4px gaps, `--primary` for reached steps, `--border` otherwise, total width 120px) sits beside "Step {n} of 3". Choice sets of exactly three short options render as a 3-column row; others stay 2 columns. Aside `lg:top-[84px]`. The step-scroll effect runs only when `step` or `done` differs from the previous value held in a ref, so StrictMode cannot scroll on mount. Success: at 1024px and up the aside is hidden; the two text links sit on one line above "Track it in My reports" (primary) and "File another report" (outline).
+- **Report queue:** each row's buttons form two groups: "Start review" and "Request field sample" (outline); then, 12px apart, a 12px muted label "Outcome" followed by "Confirmed by field sample" (outline with `border-primary text-primary`), "Not a bloom", "Needs more info" (outline). The data label is `w-fit`. Decided rows are a single column, max 72ch, with the score-weight or seed note under the status tag.
+- **My reports:** the record band spans the content width, values Mono 40px. "You got it right." becomes 24px Sans 700 with a lucide `CircleCheck` 24px `--primary` before it; the confirmed block gets `bg-primary/5`. Content grid 8/4 (message left, timeline right) across the full container.
+- **OAH Cities:** the locator SVGs are removed; each row keeps name, country, Mono coordinates, data-status label and pathways.
+- **Motion:** unchanged (Section 11.7); no new animation.
+
+### Order, agents and file ownership
+
+Every agent: `model: "sonnet"`, follows Sections 11 and 22, names `impeccable`, applies the `ponytail` ladder, reads graphify-first (`graphify-out/graph.json` exists as of 15:50 PDT), runs `no-ai-slop` on new user-facing text (this section adds only "Outcome" and the "usbr.gov" link text), keeps every exact string of Sections 8, 20 and 21 verbatim, adds no dependency and no CSS file, appends its `PROGRESS.md` entry, and puts no AI attribution in commits. TDD does not apply (visual work).
+
+- **Step 1 (sequential, start 16:05, done by 16:30 PDT):** Agent S, Task 22.1. Only Agent S edits `src/index.css`, `src/components/ui/button.tsx`, `src/components/Layout.tsx`, `src/components/Footer.tsx`, `src/components/RiskBadge.tsx`.
+- **Step 2 (three agents in parallel after Step 1 lands, 16:30 to 17:30 PDT):**
+
+| Agent | Tasks | Owns (no other agent edits these) |
+|---|---|---|
+| A | 22.2, 22.3 | `src/pages/Dashboard.tsx`, `src/components/KpiCards.tsx`, `src/components/OfficialDataCard.tsx`, `src/components/RiskMap.tsx`, `src/components/SamplingPriorityList.tsx`, `src/components/CommunityReportsFeed.tsx`, `src/components/CommunityReportItem.tsx` |
+| B | 22.4, 22.5 | `src/pages/SiteDetail.tsx`, `src/components/ContributionBars.tsx`, `src/components/RiskMeter.tsx`, `src/pages/Report.tsx`, `src/components/BloomGuide.tsx` |
+| C | 22.6, 22.7 | `src/pages/RangerQueue.tsx`, `src/pages/MyReports.tsx`, `src/components/ReportTimeline.tsx`, `src/components/ReportStatusTag.tsx`, `src/pages/OahCities.tsx`, `src/components/CityCard.tsx`, `src/pages/Methodology.tsx` |
+
+No Section 22 task edits `src/engine/`, `src/lib/`, `src/data/`, `src/state/`, `src/fhir/`, `src/types.ts` or `src/App.tsx`.
+
+### Tasks
+
+Every done-check also requires `npx tsc -b`, `npm run build` (exit 0) and `npx vitest run` (all green), plus screenshots at 1440x900 and 390x844 of the named routes with no horizontal scroll and no console errors (headless Chrome over DevTools on a dev server on its own port, as the audit did).
+
+- **22.1 Shared shell and tokens.** Agent S. Effort S.
+  - Files: `src/components/ui/button.tsx` (outline variant); `src/components/Layout.tsx` (`main` `pt-8 pb-16`); `src/index.css` (`.leaflet-control-attribution` 11px muted on `bg-card/90`; `.leaflet-bar a` `bg-card`, `--border` hairlines; nothing else); `Footer.tsx` and `RiskBadge.tsx` only if a decision needs them.
+  - Visible result: every outline button shows a near-white fill with a hairline border; Leaflet controls match the tokens. Pages may show doubled top padding until Step 2 removes theirs.
+  - Done: `/my-reports` "Reset demo data" and `/report` Step 2 "Back" read as live buttons at both widths.
+- **22.2 Dashboard fold and KPI band.** Agent A. Effort M.
+  - Files: `Dashboard.tsx`, `KpiCards.tsx`, `OfficialDataCard.tsx`.
+  - Visible result: per the Dashboard decision; at 1440x900 the map top is at y ≤ 380 and the full rank-1 row is in the first screen.
+  - Done: fold screenshot of `/` at 1440x900 confirms both; 390 keeps the 2x2 KPI grid and the full-width official cell.
+- **22.3 Map framing and priority list.** Agent A. Effort M.
+  - Files: `RiskMap.tsx`, `SamplingPriorityList.tsx`, `CommunityReportsFeed.tsx` and `CommunityReportItem.tsx` (spacing only, if needed).
+  - Visible result: per the Map and Priority list decisions.
+  - Done: screenshots of `/` on Lake Mead and Coimbra at 1440 and 390 show every marker inside the frame, both zoom buttons visible, no wrapped site names in the desktop table, the legend under the map at 390, and the Callville Bay popup still opening.
+- **22.4 Site detail hero and contribution bars.** Agent B. Effort S.
+  - Files: `SiteDetail.tsx`, `ContributionBars.tsx`, `RiskMeter.tsx` (only if centring needs it).
+  - Visible result: per the Site detail and Contribution bars decisions; every 8.2, 8.3 and 20.6 string unchanged.
+  - Done: `/site/callville-bay` at 1440 shows "79" once in the hero and values next to bar ends; at 390 label above bar, value right of bar.
+- **22.5 Report flow polish.** Agent B. Effort M.
+  - Files: `Report.tsx`, `BloomGuide.tsx` (spacing only).
+  - Visible result: per the Report flow decision; stored option strings unchanged.
+  - Done: walk `/report?site=callville-bay` Steps 1 to 3 and submit at 1440 and 390: the progress rule advances, none/some/lots sit in one row, selected choices show the tint, the page opens at its H1 in `npm run dev`, success shows 79 struck through and 81 counting with no aside at 1440.
+- **22.6 Report queue and My reports.** Agent C. Effort M.
+  - Files: `RangerQueue.tsx`, `MyReports.tsx`, `ReportTimeline.tsx`, `ReportStatusTag.tsx` (only if needed).
+  - Visible result: per the Report queue and My reports decisions; every 21.5 and 21.6 string unchanged.
+  - Done: after "Reset demo data" and one Callville submission, `/rangers` shows the separated outcome group with "Confirmed by field sample" in primary outline and a `w-fit` label; after "Request field sample" then "Confirmed by field sample", `/my-reports` shows "You got it right." with its icon and record 3 of 4.
+- **22.7 OAH Cities and Methodology tidy.** Agent C. Effort S.
+  - Files: `OahCities.tsx`, `CityCard.tsx`, `Methodology.tsx` (top-padding fix only).
+  - Visible result: city rows without locator boxes; "Run Verdant on Coimbra" still switches region and opens `/`.
+  - Done: screenshots of `/oah-cities` and `/methodology` at both widths.
+
+### Cut order (first cut first)
+
+1. 22.7. Trigger: not started by 17:15 PDT.
+2. 22.5 progress rule and 3-up rows (keep the aside offset and the scroll fix). Trigger: 22.5 not done at 17:30 PDT.
+3. 22.4 hero band (keep the badge without score and the bar values). Trigger: 22.4 not done at 17:30 PDT.
+4. 22.6 My reports layout (keep the "You got it right." emphasis). Trigger: not done at 17:40 PDT.
+5. 22.3 priority list restructure (keep `fitBounds` and zoom top-right). Trigger: not done at 17:45 PDT.
+6. At 18:00 PDT any unfinished task's files are reverted to their last green state, never left half-styled.
+
+Never cut: 22.1, 22.2, the map `fitBounds` and zoom position, the ranger button hierarchy.
+
+### Verification protocol
+
+1. After each agent returns, the orchestrator runs `npx tsc -b`, `npm run build`, `npx vitest run` and checks the agent's screenshots against its done-check.
+2. At 17:40 PDT one execution-tier agent runs an `impeccable` polish pass over every route at 1440 and 390 (Section 11.9 checklist plus the decisions above), fixing only spacing, alignment and token mismatches.
+3. By 18:00 PDT the orchestrator clicks "Reset demo data", reloads, and walks the full Section 13 video path at 1440x900 on the production build (`npm run build` then `npx vite preview`): dashboard fold, Callville popup, `/site/callville-bay`, Community observations, the three report steps, success 79 to 81, Report queue clicks, My reports "You got it right." with record 3 of 4, dashboard Callville at 82, One Health panel, OAH Cities to Coimbra, the Coimbra rank-1 "Export FHIR JSON", the Methodology diagram. Every exact string of Sections 8, 20 and 21 present, no console errors, no horizontal scroll at 390.
