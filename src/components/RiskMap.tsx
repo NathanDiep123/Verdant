@@ -154,7 +154,7 @@ export function RiskMap({ rows, center, zoom }: { rows: SiteRow[]; center: [numb
             zIndexOffset={r.result.siteScore * 10}
             title={`${r.site.name}, risk ${r.result.siteScore}, ${r.result.category}`}
           >
-            <Popup>
+            <Popup autoPanPaddingTopLeft={[16, 64]}>
               <p className="border-b border-dashed pb-2 font-heading text-xl leading-[1.3]">{r.site.name}</p>
               <div className="mt-2">
                 <RiskBadge category={r.result.category} score={r.result.siteScore} size="md" />

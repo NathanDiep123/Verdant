@@ -3,6 +3,7 @@ import { Link, useSearchParams } from "react-router";
 import {
   ArrowRight,
   Ban,
+  Leaf,
   Bird,
   Camera,
   Check,
@@ -14,7 +15,6 @@ import {
   LocateFixed,
   Palette,
   TriangleAlert,
-  Turtle,
   Waves,
   Wind,
   type LucideIcon,
@@ -76,7 +76,7 @@ const OPTION_ICON: Record<string, LucideIcon> = {
   "oil-sheen": Droplets,
   none: Ban,
   fish: Fish,
-  amphibians: Turtle,
+  amphibians: Leaf,
   birds: Bird,
 };
 

@@ -22,7 +22,7 @@ export function Layout({ children }: { children: ReactNode }) {
   const onReportPage = useLocation().pathname.startsWith("/report");
   return (
     <div className="flex min-h-screen flex-col">
-      <header className="sticky top-0 z-40 border-b border-border bg-card/95">
+      <header className="sticky top-0 z-40 border-b border-border bg-card">
         <div className="mx-auto flex h-[60px] max-w-[1360px] items-center gap-3 px-4 md:px-6 xl:gap-8">
           <Button
             variant="ghost"

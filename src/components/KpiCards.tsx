@@ -47,7 +47,7 @@ export function KpiCards({
         <p className="text-[0.8125rem] leading-[1.4] text-muted-foreground">Citizen reports</p>
         <p className="mt-1 font-heading text-[1.75rem] leading-[1.15] tracking-[-0.01em] tabular-nums">{reportCount}</p>
         <div className="mt-1 flex flex-wrap items-center justify-between gap-x-3 text-[0.8125rem]">
-          <span className="text-muted-foreground">From {siteCount} {siteCount === 1 ? "site" : "sites"}</span>
+          <span className="text-muted-foreground">{siteCount === 0 ? "No reports yet" : `From ${siteCount} ${siteCount === 1 ? "site" : "sites"}`}</span>
           <Link
             to="/report"
             className="inline-flex items-center gap-1 font-medium text-primary underline-offset-4 hover:underline"
