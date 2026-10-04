@@ -306,3 +306,8 @@
     transition-duration: 0.01ms !important;
   }
 }
+
+/* Leaflet's own link colour is unlayered and beats utilities; keep popup links on the primary token. */
+.leaflet-container .leaflet-popup-content a {
+  color: var(--primary);
+}

@@ -103,7 +103,7 @@ function Outcome({
         status === "confirmed" && "bg-primary/5 px-4 py-3",
       )}
     >
-      {status === "confirmed" && <TapeCorner side="right" />}
+      {status === "confirmed" && <TapeCorner side="right" className="right-3 top-1" />}
       <p className="mb-1 font-mono text-xs font-medium text-primary">{label}</p>
       {body}
     </div>
