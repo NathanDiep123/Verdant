@@ -1,0 +1,8 @@
+node_modules/
+dist/
+.superpowers/
+graphify-out/
+.claude/
+.codex/
+.vercel/
+*.log
