@@ -6,6 +6,8 @@ import SiteDetail from "@/pages/SiteDetail";
 import Report from "@/pages/Report";
 import OahCities from "@/pages/OahCities";
 import Methodology from "@/pages/Methodology";
+import MyReports from "@/pages/MyReports";
+import RangerQueue from "@/pages/RangerQueue";
 
 export default function App() {
   return (
@@ -16,6 +18,8 @@ export default function App() {
             <Route path="/" element={<Dashboard />} />
             <Route path="/site/:id" element={<SiteDetail />} />
             <Route path="/report" element={<Report />} />
+            <Route path="/my-reports" element={<MyReports />} />
+            <Route path="/rangers" element={<RangerQueue />} />
             <Route path="/oah-cities" element={<OahCities />} />
             <Route path="/methodology" element={<Methodology />} />
           </Routes>
