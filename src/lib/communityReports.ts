@@ -1,12 +1,14 @@
+import { LOCALE, type Lang } from "../i18n/lang";
+import { REPORT_MISC } from "../i18n/shared";
 import type { CitizenReport, DataTag, PathwayId, SiteResult } from "../types";
 
 export function newestFirst(reports: CitizenReport[]): CitizenReport[] {
   return [...reports].sort((a, b) => b.createdAt.localeCompare(a.createdAt));
 }
 
-export function reportSummary(report: CitizenReport): string {
+export function reportSummary(report: CitizenReport, lang: Lang = "en"): string {
   const text = report.observationTypes.join(", ");
-  if (!text) return "No details given";
+  if (!text) return REPORT_MISC[lang].noDetails;
   return text.length > 80 ? `${text.slice(0, 80)}...` : text;
 }
 
@@ -16,8 +18,8 @@ export const REPORT_TAG_LABEL: Record<DataTag, string> = {
   prototype: "Demo report",
 };
 
-export function formatReportTime(iso: string): string {
-  return new Date(iso).toLocaleString("en-US", {
+export function formatReportTime(iso: string, lang: Lang = "en"): string {
+  return new Date(iso).toLocaleString(LOCALE[lang], {
     month: "short",
     day: "numeric",
     hour: "2-digit",

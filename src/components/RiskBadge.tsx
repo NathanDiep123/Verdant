@@ -1,4 +1,6 @@
 import { CATEGORY_STYLE } from "@/lib/risk";
+import { RISK_WORD } from "@/i18n/shared";
+import { useLang } from "@/state/LanguageContext";
 import { cn } from "@/lib/utils";
 import type { Category } from "@/types";
 
@@ -27,7 +29,8 @@ export function RiskBadge({
   size?: "sm" | "md" | "lg";
   className?: string;
 }) {
-  const { icon: Icon, label } = CATEGORY_STYLE[category];
+  const { lang } = useLang();
+  const { icon: Icon } = CATEGORY_STYLE[category];
   return (
     <span
       className={cn(
@@ -41,7 +44,7 @@ export function RiskBadge({
       {score !== undefined && (
         <span className="font-mono font-medium tabular-nums">{Math.round(score)}</span>
       )}
-      <span className="uppercase font-semibold tracking-[0.06em]">{label}</span>
+      <span className="uppercase font-semibold tracking-[0.06em]">{RISK_WORD[lang][category]}</span>
     </span>
   );
 }

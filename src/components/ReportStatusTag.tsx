@@ -1,6 +1,7 @@
 import { CircleCheck, CircleHelp, CircleX, FlaskConical, Inbox, Search, type LucideIcon } from "lucide-react";
 import type { ReportStatus } from "@/types";
-import { STATUS_LABEL } from "@/lib/reportLoop";
+import { STATUS } from "@/i18n/shared";
+import { useLang } from "@/state/LanguageContext";
 
 const ICON: Record<ReportStatus, LucideIcon> = {
   received: Inbox,
@@ -21,11 +22,12 @@ const STYLE: Record<ReportStatus, string> = {
 };
 
 export function ReportStatusTag({ status }: { status: ReportStatus }) {
+  const { lang } = useLang();
   const Icon = ICON[status];
   return (
     <span className={`stamp inline-flex items-center gap-1.5 bg-card px-2 py-0.5 font-sans text-xs font-semibold [--stamp-bg:var(--card)] ${STYLE[status]}`}>
       <Icon size={14} strokeWidth={1.75} aria-hidden="true" />
-      {STATUS_LABEL[status]}
+      {STATUS[lang][status]}
     </span>
   );
 }

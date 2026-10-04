@@ -47,6 +47,27 @@ describe("communityReports", () => {
     expect(formatReportTime("2026-10-03T11:20:00Z")).toBe("Oct 3, 04:20");
   });
 
+  it("formats time per language", () => {
+    const iso = "2026-10-03T11:20:00Z";
+    const opts: Intl.DateTimeFormatOptions = {
+      month: "short",
+      day: "numeric",
+      hour: "2-digit",
+      minute: "2-digit",
+      hour12: false,
+      timeZone: "America/Los_Angeles",
+    };
+    expect(formatReportTime(iso, "en")).toBe("Oct 3, 04:20");
+    expect(formatReportTime(iso, "pt")).toBe(new Date(iso).toLocaleString("pt-PT", opts));
+    expect(formatReportTime(iso, "es")).toBe(new Date(iso).toLocaleString("es-ES", opts));
+  });
+
+  it("localizes the empty-summary fallback", () => {
+    const empty = { ...lakeMeadReports[0], observationTypes: [] };
+    expect(reportSummary(empty, "pt")).toBe("Sem detalhes");
+    expect(reportSummary(empty, "es")).toBe("Sin detalles");
+  });
+
   it("reads citizen evidence from the leading pathway", () => {
     expect(citizenEvidence(scoreSite(callville, config))).toEqual({ value: 64, points: 9.6, pathwayId: "algal_bloom" });
     expect(citizenEvidence(scoreSite(applyCitizenReport(callville), config))).toEqual({
