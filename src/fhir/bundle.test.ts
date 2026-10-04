@@ -1,6 +1,10 @@
 import { describe, expect, it } from "vitest";
 import type { CitizenReport, SiteConfig, SiteResult } from "../types";
 import { toFhirBundle } from "./bundle";
+import { siteConfigs } from "../config/sites";
+import { lakeMeadSites } from "../data/lakeMead";
+import { lakeMeadReports } from "../data/lakeMeadReports";
+import { scoreSite } from "../engine/score";
 
 const config: SiteConfig = {
   id: "demo",
@@ -60,5 +64,24 @@ describe("toFhirBundle", () => {
     expect(locations).toHaveLength(2);
     expect(observations.filter((o) => o.code?.text === "Verdant site risk score")).toHaveLength(2);
     expect(observations.filter((o) => o.category?.text === "citizen-science")).toHaveLength(3);
+  });
+});
+
+describe("toFhirBundle Lake Mead seed", () => {
+  const lm = siteConfigs["lake-mead"];
+  const b = toFhirBundle(lm, lakeMeadSites.map((s) => scoreSite(s, lm)), lakeMeadReports);
+  const rs = b.entry.map((e) => e.resource);
+  const obs = rs.filter((r) => r.resourceType === "Observation");
+
+  it("has 6 Locations, 6 score and 7 report Observations", () => {
+    expect(rs.filter((r) => r.resourceType === "Location")).toHaveLength(6);
+    expect(obs.filter((o) => o.code?.text === "Verdant site risk score")).toHaveLength(6);
+    expect(obs.filter((o) => o.category?.text === "citizen-science")).toHaveLength(7);
+  });
+
+  it("tags sites/scores prototype and reports with their data tag", () => {
+    for (const r of rs.slice(0, 12)) expect(r.meta.tag.map((t) => t.code)).toContain("prototype");
+    for (const o of obs.filter((o) => o.category?.text === "citizen-science"))
+      expect(o.meta.tag.map((t) => t.code)).toContain("synthetic-demo");
   });
 });
