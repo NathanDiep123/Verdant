@@ -94,6 +94,15 @@ export const citations: Citation[] = [
     url: "https://github.com/Sravya1802/aqualink",
     accessed: A,
   },
+  {
+    id: "C11",
+    item: "C11 Bloom vs look-alike guide (report form \"Is it a bloom?\", Task 21.3; video 0:25–0:40)",
+    claim: "Cyanobacteria blooms can look like blue or green paint spilled into the water, a coloured crust along the shoreline, puffy surface scums, or swirls beneath the surface; duckweed, long strands of green algae and filamentous macro-algae are sometimes confused with them",
+    source: "\"Identifying Cyanobacteria Blooms\"",
+    publisher: "Illinois Environmental Protection Agency",
+    url: "https://epa.illinois.gov/topics/water-quality/monitoring/algal-bloom/identifying.html",
+    accessed: A,
+  },
 ];
 
 export const lakeMeadOfficial = {
