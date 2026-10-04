@@ -16,7 +16,7 @@ export function RiskMeter({ score, category }: { score: number; category: Catego
           {SEGMENTS.map((s) => (
             <div
               key={s.key}
-              className="h-3.5 rounded-sm transition-colors duration-300"
+              className="h-3.5 rounded-[2px] transition-colors duration-300"
               style={{ background: `var(--risk-${s.key}${s.category === category ? "" : "-tint"})` }}
             />
           ))}

@@ -20,15 +20,15 @@ const COLUMNS = [
 
 export function OneHealthPanel({ lakeMead }: { lakeMead: boolean }) {
   return (
-    <section aria-labelledby="one-health" className="border-t border-border pt-6">
-      <h2 id="one-health" className="text-[28px] font-semibold leading-tight">
+    <section aria-labelledby="one-health" className="">
+      <h2 id="one-health" className="text-[1.75rem] leading-[1.15] tracking-[-0.01em]">
         One Health
       </h2>
       <div className="mt-6 grid gap-6 md:grid-cols-3 md:gap-8">
         {COLUMNS.map(({ icon: Icon, title, text }) => (
           <div key={title}>
-            <h3 className="flex items-center gap-2 text-xl font-semibold">
-              <Icon className="size-5" strokeWidth={1.75} aria-hidden />
+            <h3 className="flex items-center gap-2 text-xl leading-[1.3]">
+              <Icon className="size-5 text-olive" strokeWidth={1.75} aria-hidden />
               {title}
             </h3>
             <p className="mt-2 text-sm leading-[1.45] text-muted-foreground">{text}</p>
@@ -36,7 +36,7 @@ export function OneHealthPanel({ lakeMead }: { lakeMead: boolean }) {
         ))}
       </div>
       <div className="mt-6 max-w-[68ch]">
-        <h3 className="text-xl font-semibold">Visitor guidance</h3>
+        <h3 className="text-xl leading-[1.3]">Visitor guidance</h3>
         <p className="mt-2 leading-[1.55]">
           {lakeMead
             ? "The National Park Service reports that harmful blue-green algae blooms occur at Lake Mead, most often from August through December. Exposure can cause nausea, vomiting and breathing problems, and dogs and other animals can become seriously ill or die. Where water looks green, scummy or discolored, a cautious choice is to stay out, keep pets away, and follow posted park notices."

@@ -38,7 +38,7 @@ export function TrendChart({ history, category }: { history: number[]; category:
               y1={b.y1}
               y2={b.y2}
               fill={`var(--risk-${b.key}-tint)`}
-              fillOpacity={0.7}
+              fillOpacity={0.6}
               stroke="none"
               ifOverflow="hidden"
             />
@@ -59,7 +59,7 @@ export function TrendChart({ history, category }: { history: number[]; category:
             type="linear"
             dataKey="score"
             stroke="var(--foreground)"
-            strokeWidth={2}
+            strokeWidth={1.75}
             isAnimationActive={false}
             dot={(p: DotProps) => (
               <circle
