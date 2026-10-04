@@ -2,12 +2,23 @@
 
 **See the bloom before it becomes a warning.**
 
-Verdant is an explainable early-warning prototype for freshwater One Health risk. It combines satellite-derived, environmental and citizen-reported signals into a risk score for each monitoring site, and it tells a manager which site to sample first. Lake Mead is the pilot. The same engine runs on a OneAquaHealth city through one site configuration.
+Verdant is an explainable early-warning prototype for freshwater One Health risk. It combines satellite-derived, environmental and citizen-reported signals into a risk score for each monitoring site, and it tells a ranger which site to sample first. Citizens report what they see, rangers review each report, and reporters see what their report led to. Lake Mead is the pilot. The same engine runs on a OneAquaHealth city through one site configuration.
 
 Built for the OneAquaHealth IEEE Global Hackathon 2026, Track 6.
 
-- Live demo: (added at deploy)
+- Live demo: https://verdant.albert14059.workers.dev
+- Source: https://github.com/heliaval/Verdant
 - Demo video: (added after recording)
+
+### Pages
+
+- **Dashboard**: risk map with community report pins, KPI cards, Community reports feed, Sampling priority list.
+- **Site detail**: risk meter, pathway scores, factor contributions, 7-day trend, Community observations, FHIR export.
+- **Report a Bloom**: three-step guided report with a photo and an "Is it a bloom?" picture guide. A "Report what you see" button sits on every page.
+- **My reports**: each report's status timeline and outcome, for example "You got it right."
+- **Report queue**: ranger triage of each report, with the reporter's track record.
+- **OAH Cities**: five city cards, with Coimbra running the same engine and a satellite signal chart.
+- **Methodology**: pipeline, equations, architecture diagram, data sources, limitations, citations.
 
 ### Screenshots
 
@@ -17,17 +28,27 @@ Built for the OneAquaHealth IEEE Global Hackathon 2026, Track 6.
 
 ![Report a Bloom page with the citizen report form](docs/screenshots/report.png)
 
+![My reports page with a status timeline for each report](docs/screenshots/my-reports.png)
+
+![Ranger report queue with each reporter's track record](docs/screenshots/rangers.png)
+
 ![Verdant for OneAquaHealth cities page with five city cards](docs/screenshots/oah-cities.png)
+
+![Coimbra dashboard with the satellite signal chart](docs/screenshots/coimbra-dashboard.png)
 
 ![Methodology page with the architecture diagram](docs/screenshots/methodology.png)
 
 ![Dashboard at phone width](docs/screenshots/dashboard-mobile.png)
 
+![Report a Bloom at phone width](docs/screenshots/report-mobile.png)
+
+![My reports at phone width](docs/screenshots/my-reports-mobile.png)
+
 ## 2. Problem and solution
 
-Monitoring cannot continuously cover every part of a lake or an urban stream network. Harmful algal blooms are a real exposure for people and animals. Across the United States, 18 states reported 421 harmful algal bloom events, 389 cases of human illness and 413 cases of animal illness during 2016–2018 (CDC, MMWR 69(50); this is a national figure, and no Lake Mead-specific count was found). At Lake Mead, the National Park Service says blooms occur there, that toxins can make people sick and can seriously sicken or kill dogs and other animals, and that blooms are most common from August through December.
+Rangers cannot watch every cove of a lake, so they depend on citizen reports. Those reports are often unreliable: a photo of duckweed or green paint can look like a bloom, and a ranger has no quick way to tell. Reporters, in turn, rarely hear what happened to their report. Harmful algal blooms are a real exposure for people and animals. Across the United States, 18 states reported 421 harmful algal bloom events, 389 cases of human illness and 413 cases of animal illness during 2016–2018 (CDC, MMWR 69(50); this is a national figure, and no Lake Mead-specific count was found). At Lake Mead, the National Park Service says blooms occur there, that toxins can make people sick and can seriously sicken or kill dogs and other animals, and that blooms are most common from August through December.
 
-Verdant combines satellite, environmental and citizen observations into an explainable, multi-hazard risk score. Each score names the hazard pathway that drives it, shows how much each factor contributes, and ends in a recommended next step. Experts see where follow-up monitoring is needed first. Verdant supports human decisions. It does not diagnose or confirm toxic blooms.
+Verdant closes that loop. Reporting is easy: a three-step guided report with a photo and an "Is it a bloom?" picture guide. Rangers triage each report in a Report queue that shows the reporter's track record. Reporters see what their report led to in My reports, with a status timeline and an outcome such as "You got it right." Reports feed an explainable, multi-hazard risk score alongside satellite and environmental inputs. Each score names the hazard pathway that drives it, shows how much each factor contributes, and ends in a recommended next step. Verdant supports human decisions. It does not diagnose or confirm toxic blooms. A report never confirms a bloom by itself.
 
 ## 3. Track 6 alignment
 
@@ -60,11 +81,11 @@ Each site is scored on one or more hazard pathways. A pathway is a set of factor
 
 **Trend.** The last value of the 7-day history minus the first: +5 or more is Increasing, −5 or less is Decreasing, anything else is Stable.
 
-A citizen report raises a site's `citizen_evidence` factor by 10, capped at 100, and the score updates on screen.
+**Review-weighted evidence.** A new citizen report adds 10 points to a site's `citizen_evidence` factor (capped at 100) and the score updates on screen. A report confirmed by field sample adds 20. A report ruled Not a bloom adds 0. Example: Callville Bay goes from 79 to 81 on submit, to 82 once confirmed, and back to 79 if ruled Not a bloom. All ranger outcomes and seed reports are demonstration data.
 
 ## 5. Data
 
-- **Lake Mead: prototype data.** Six sites (Callville Bay, Las Vegas Bay, Boulder Basin, Echo Bay, Overton Arm, Temple Basin) carry Verdant's own factor scores, a 7-day score history and seven seed citizen reports tagged `synthetic-demo`. These are not measurements. Every screen that shows them is labelled "Prototype demonstration data".
+- **Lake Mead: prototype data.** Six sites (Callville Bay, Las Vegas Bay, Boulder Basin, Echo Bay, Overton Arm, Temple Basin) carry Verdant's own factor scores, a 7-day score history and seed citizen reports tagged `synthetic-demo` (shown in the Community reports feed, as map pins and as Community observations on site pages). These are not measurements. Every screen that shows them is labelled "Prototype demonstration data".
 - **Lake Mead: one official data element.** The Dashboard shows the U.S. Bureau of Reclamation Lake Mead elevation, 1,037.93 ft on 2026-10-03, as a fixed snapshot with an "Official data" badge and a source link. The app does not fetch it live. It sits beside the prototype values and is never labelled as prototype.
 - **Coimbra: real satellite summary, synthetic site scores.** Coimbra is the OneAquaHealth city used to show transferability. The one export available from the Resilience Map (https://apps.oneaquahealth.eu/resmap/) is an area-level Earth-observation summary: monthly NDVI and NDWI for Coimbra as a whole, 2020-01 to 2026-09 (citation C9). Verdant charts the last 24 months with values on the OAH Cities page and on the Coimbra Dashboard. The export has no per-site, pathogen, contamination or ecosystem columns, so the 20 Coimbra sites (C1 to C20, named after the Resilience Map sites) carry synthetic factor values at approximate positions. They are labelled "Synthetic demo, structured as a Resilience Map export" and are not measurements. The PapaParse-based parser for per-site exports stays in place and is tested on a fixture.
 - **Benevento, Ghent, Oslo and Toulouse** are config-only: a map center, zoom and pathways, with no sites yet.
@@ -123,9 +144,10 @@ All Verdant scores are unvalidated. The weights are fixed and published, but no 
 
 - Lake Mead scores come from prototype factor values, not live satellite or weather data.
 - A citizen report does not confirm a harmful algal bloom. Laboratory or agency testing is required for confirmation.
+- Ranger outcomes, reporter track records and seed reports are demonstration data. Nothing here measures how reliable citizen reports are.
 - The report form's observation types are placeholders marked to be replaced with the OneAquaHealth protocol fields (citation C8). The official protocol fields could not be retrieved.
 - The FHIR profile ids are unverified (see section 8).
-- Reports and score changes live in the browser session. Nothing is stored.
+- Reports and score changes are kept in your own browser only. There is no server or database.
 
 ## 11. Future work
 
@@ -134,7 +156,7 @@ All Verdant scores are unvalidated. The weights are fixed and published, but no 
 3. Live weather APIs.
 4. Agency monitoring integration.
 5. Validated local risk models.
-6. Mobile citizen reporting.
+6. Native mobile citizen reporting.
 7. Automated alerts.
 8. FHIR server submission.
 
