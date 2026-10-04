@@ -94,7 +94,7 @@ function Equation({ id }: { id: PathwayId }) {
 
 export default function Methodology() {
   return (
-    <div className="w-full py-8 md:py-12 lg:grid lg:grid-cols-[220px_minmax(0,1fr)] lg:gap-12">
+    <div className="w-full lg:grid lg:grid-cols-[220px_minmax(0,1fr)] lg:gap-12">
       <nav aria-label="On this page" className="hidden lg:block">
         <ul className="sticky top-20 flex flex-col gap-2 border-l border-border text-sm font-medium">
           {SECTIONS.map(([id, label]) => (

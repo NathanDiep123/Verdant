@@ -1,3 +1,4 @@
+import { CircleCheck } from "lucide-react";
 import { Link } from "react-router";
 import { Button, buttonVariants } from "@/components/ui/button";
 import { ReportStatusTag } from "@/components/ReportStatusTag";
@@ -13,6 +14,7 @@ import { useRegion } from "@/state/RegionContext";
 import type { CitizenReport } from "@/types";
 
 const headline = "text-xl font-semibold leading-snug";
+const payoff = "text-2xl font-bold leading-tight";
 
 function Outcome({
   report,
@@ -44,7 +46,14 @@ function Outcome({
     case "confirmed":
       body = (
         <>
-          <p className={headline}>You got it right.</p>
+          <p className={cn(payoff, "flex items-center gap-2")}>
+            <CircleCheck
+              className="size-6 shrink-0 text-primary"
+              strokeWidth={2}
+              aria-hidden
+            />
+            You got it right.
+          </p>
           <p className="mt-1 text-sm">{`A field sample confirmed a bloom at ${siteName}. ${prioritized}`}</p>
           {note && <p className="mt-1 text-sm text-muted-foreground">{note}</p>}
         </>
@@ -87,7 +96,12 @@ function Outcome({
       break;
   }
   return (
-    <div className="border-l-[3px] border-primary px-3 py-2">
+    <div
+      className={cn(
+        "border-l-[3px] border-primary px-3 py-2",
+        status === "confirmed" && "bg-primary/5 px-4 py-3",
+      )}
+    >
       <p className="mb-1 text-xs font-semibold text-primary">{label}</p>
       {body}
     </div>
@@ -106,7 +120,7 @@ export function MyReports() {
   ];
 
   return (
-    <div className="py-8 md:py-12">
+    <div>
       <h1 className="text-[28px] font-bold leading-[1.1] tracking-[-0.02em] md:text-[40px]">
         My reports
       </h1>
@@ -115,16 +129,16 @@ export function MyReports() {
         hand on the Report queue page.
       </p>
 
-      <dl className="mt-6 grid max-w-[560px] grid-cols-3 divide-x divide-border rounded-sm border border-border bg-card">
+      <dl className="mt-6 grid grid-cols-3 divide-x divide-border rounded-sm border border-border bg-card">
         {cells.map(([label, value]) => (
           <div
             key={label}
-            className="flex flex-col-reverse justify-end gap-2 p-3 md:p-4"
+            className="flex flex-col-reverse justify-end gap-2 p-4 md:p-6"
           >
             <dt className="text-xs text-muted-foreground md:text-sm">
               {label}
             </dt>
-            <dd className="font-mono text-[28px] font-semibold leading-none tabular-nums">
+            <dd className="font-mono text-[32px] font-semibold leading-none tabular-nums md:text-[40px]">
               {value}
             </dd>
           </div>
@@ -133,7 +147,7 @@ export function MyReports() {
       <p className="mt-3 text-base">Your record: {recordLine(rec)}</p>
 
       {mine.length === 0 ? (
-        <div className="mt-8 max-w-[960px] border-t border-border pt-6">
+        <div className="mt-8 border-t border-border pt-6">
           <p className="text-base">
             You have not filed a report in {config.name} yet.
           </p>
@@ -142,15 +156,15 @@ export function MyReports() {
           </Link>
         </div>
       ) : (
-        <ul className="mt-8 max-w-[960px] list-none border-t border-border p-0">
+        <ul className="mt-8 list-none border-t border-border p-0">
           {mine.map((r) => {
             const name = siteName(r.siteId);
             return (
               <li
                 key={r.id}
-                className="grid gap-4 border-b border-border py-6 md:grid-cols-[minmax(0,1fr)_320px] md:gap-12"
+                className="grid gap-4 border-b border-border py-6 md:grid-cols-12 md:gap-12"
               >
-                <div className="space-y-3">
+                <div className="space-y-3 md:col-span-8">
                   <div className="flex flex-wrap items-baseline gap-x-3 gap-y-1">
                     <span className="font-mono text-xs text-muted-foreground">
                       {reportCode(r)}
@@ -169,14 +183,16 @@ export function MyReports() {
                   <ReportStatusTag status={r.status ?? "received"} />
                   <Outcome report={r} siteName={name} />
                 </div>
-                <ReportTimeline report={r} />
+                <div className="md:col-span-4">
+                  <ReportTimeline report={r} />
+                </div>
               </li>
             );
           })}
         </ul>
       )}
 
-      <div className="mt-6 flex max-w-[960px] flex-col items-start gap-4 pt-2">
+      <div className="mt-6 flex flex-col items-start gap-4 pt-2">
         <Link
           to="/rangers"
           className="text-sm font-medium text-primary underline underline-offset-4"

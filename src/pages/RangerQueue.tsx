@@ -18,7 +18,7 @@ import { cn } from "@/lib/utils";
 import type { CitizenReport, ReportStatus, SiteResult } from "@/types";
 
 const DATA_LABEL =
-  "inline-block max-w-full rounded-sm border border-dashed px-2 py-0.5 font-mono text-xs text-muted-foreground";
+  "w-fit max-w-full rounded-sm border border-dashed px-2 py-0.5 font-mono text-xs text-muted-foreground";
 
 const OUTCOME_NOTE: Record<
   "confirmed" | "not-bloom" | "more-info",
@@ -105,7 +105,12 @@ export default function RangerQueue() {
       <li key={r.id} className="border-b last:border-b-0">
         <Flash fresh={fresh}>
           <article
-            className="grid gap-3 py-4 md:px-2 lg:grid-cols-[minmax(0,1fr)_minmax(0,30rem)] lg:gap-x-10"
+            className={cn(
+              "grid gap-3 py-4 md:px-2",
+              withActions
+                ? "lg:grid-cols-[minmax(0,1fr)_minmax(0,37rem)] lg:gap-x-10"
+                : "max-w-[72ch]",
+            )}
             aria-label={`Report ${reportCode(r)}`}
           >
             <div className="flex min-w-0 flex-col gap-2">
@@ -142,57 +147,71 @@ export default function RangerQueue() {
                   {r.rangerNote}
                 </p>
               )}
-            </div>
-            <div className="flex min-w-0 flex-col gap-2 lg:justify-center">
-              {withActions && (
-                <div className="flex flex-wrap gap-2">
-                  {st === "received" && (
-                    <Button
-                      variant="outline"
-                      className="h-9 px-3"
-                      onClick={() => act(r, "reviewing")}
-                    >
-                      Start review
-                    </Button>
-                  )}
-                  {(st === "received" || st === "reviewing") && (
-                    <Button
-                      variant="outline"
-                      className="h-9 px-3"
-                      onClick={() => act(r, "sample-requested")}
-                    >
-                      Request field sample
-                    </Button>
-                  )}
-                  <Button
-                    variant="outline"
-                    className="h-9 px-3"
-                    onClick={() => act(r, "confirmed")}
-                  >
-                    Confirmed by field sample
-                  </Button>
-                  <Button
-                    variant="outline"
-                    className="h-9 px-3"
-                    onClick={() => act(r, "not-bloom")}
-                  >
-                    Not a bloom
-                  </Button>
-                  <Button
-                    variant="outline"
-                    className="h-9 px-3"
-                    onClick={() => act(r, "more-info")}
-                  >
-                    Needs more info
-                  </Button>
-                </div>
+              {!withActions && (
+                <p className="text-xs text-muted-foreground">
+                  {r.dataTag === "user-submitted"
+                    ? `Score weight: ${EVIDENCE_WEIGHT[st]} points of citizen evidence.`
+                    : "Demo report: its evidence is already in the prototype values."}
+                </p>
               )}
-              <p className="text-xs text-muted-foreground">
-                {r.dataTag === "user-submitted"
-                  ? `Score weight: ${EVIDENCE_WEIGHT[st]} points of citizen evidence.`
-                  : "Demo report: its evidence is already in the prototype values."}
-              </p>
             </div>
+            {withActions && (
+              <div className="flex min-w-0 flex-col gap-2 lg:justify-center">
+                <div className="flex flex-col items-start gap-3">
+                  <div className="flex flex-wrap gap-2 empty:hidden">
+                    {st === "received" && (
+                      <Button
+                        variant="outline"
+                        className="h-9 px-3"
+                        onClick={() => act(r, "reviewing")}
+                      >
+                        Start review
+                      </Button>
+                    )}
+                    {(st === "received" || st === "reviewing") && (
+                      <Button
+                        variant="outline"
+                        className="h-9 px-3"
+                        onClick={() => act(r, "sample-requested")}
+                      >
+                        Request field sample
+                      </Button>
+                    )}
+                  </div>
+                  <div className="flex flex-wrap items-center gap-2">
+                    <span className="text-xs text-muted-foreground">
+                      Outcome
+                    </span>
+                    <Button
+                      variant="outline"
+                      className="h-9 border-primary px-3 text-primary"
+                      onClick={() => act(r, "confirmed")}
+                    >
+                      Confirmed by field sample
+                    </Button>
+                    <Button
+                      variant="outline"
+                      className="h-9 px-3"
+                      onClick={() => act(r, "not-bloom")}
+                    >
+                      Not a bloom
+                    </Button>
+                    <Button
+                      variant="outline"
+                      className="h-9 px-3"
+                      onClick={() => act(r, "more-info")}
+                    >
+                      Needs more info
+                    </Button>
+                  </div>
+                </div>
+                <p className="text-xs text-muted-foreground">
+                  {r.dataTag === "user-submitted"
+                    ? `Score weight: ${EVIDENCE_WEIGHT[st]} points of citizen evidence.`
+                    : "Demo report: its evidence is already in the prototype values."}
+                </p>
+              </div>
+            )}
           </article>
         </Flash>
       </li>
@@ -200,7 +219,7 @@ export default function RangerQueue() {
   }
 
   return (
-    <div className="flex flex-col gap-8 py-8 md:py-12">
+    <div className="flex flex-col gap-8">
       <header className="flex flex-col gap-3">
         <h1 className="text-[28px] font-bold leading-[1.1] tracking-[-0.02em] md:text-[40px]">
           Report queue

@@ -22,7 +22,7 @@ export default function OahCities() {
   };
 
   return (
-    <div className="flex flex-col gap-8 py-8 md:gap-12 md:py-12">
+    <div className="flex flex-col gap-8 md:gap-12">
       <header className="flex flex-col gap-4">
         <h1 className="text-[28px] font-bold leading-[1.1] tracking-[-0.02em] md:text-[40px]">Verdant for OneAquaHealth cities</h1>
         <p className="max-w-[68ch] text-base leading-[1.55]">
