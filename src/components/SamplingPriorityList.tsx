@@ -1,6 +1,6 @@
 import { Fragment } from "react";
 import { Link } from "react-router";
-import { MoveRight, TrendingDown, TrendingUp } from "lucide-react";
+import { MessageSquare, MoveRight, TrendingDown, TrendingUp } from "lucide-react";
 import { RiskBadge } from "@/components/RiskBadge";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { PATHWAYS } from "@/engine/pathways";
@@ -18,6 +18,24 @@ export function TrendLabel({ trend, stacked }: { trend: Trend; stacked?: boolean
       <Icon className="size-4 shrink-0" strokeWidth={1.75} aria-hidden />
       {trend}
     </span>
+  );
+}
+
+function ReportCount({ id, count }: { id: string; count: number }) {
+  const body = (
+    <>
+      <MessageSquare className="size-3.5 shrink-0" strokeWidth={1.75} aria-hidden />
+      <span className="sr-only">Reports: </span>
+      {count}
+    </>
+  );
+  const cls = "inline-flex items-center gap-1.5 font-mono text-sm tabular-nums";
+  return count > 0 ? (
+    <Link to={`/site/${id}#community`} className={`${cls} text-primary hover:underline`}>
+      {body}
+    </Link>
+  ) : (
+    <span className={`${cls} text-muted-foreground`}>{body}</span>
   );
 }
 
@@ -73,7 +91,9 @@ export function SamplingPriorityList({ rows }: { rows: SiteRow[] }) {
                 <TableCell className="px-1.5 py-3">
                   <TrendLabel trend={r.trend} stacked />
                 </TableCell>
-                <TableCell className="px-1.5 py-3 font-mono text-sm tabular-nums">{r.reportCount}</TableCell>
+                <TableCell className="px-1.5 py-3">
+                  <ReportCount id={r.site.id} count={r.reportCount} />
+                </TableCell>
                 <TableCell className="py-3 pr-3 pl-1.5 text-sm whitespace-normal">{recommend(r.result.category)}</TableCell>
               </TableRow>
               {i === 0 && (
@@ -105,9 +125,7 @@ export function SamplingPriorityList({ rows }: { rows: SiteRow[] }) {
                 <p>{PATHWAYS[r.result.leadingPathway].label}</p>
                 <div className="mt-1 flex flex-wrap items-center gap-x-4 gap-y-1">
                   <TrendLabel trend={r.trend} />
-                  <span className="font-mono tabular-nums">
-                    {r.reportCount} {r.reportCount === 1 ? "report" : "reports"}
-                  </span>
+                  <ReportCount id={r.site.id} count={r.reportCount} />
                 </div>
                 <p className="mt-1 text-muted-foreground">{recommend(r.result.category)}</p>
                 {i === 0 && <FirstTarget />}
