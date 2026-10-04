@@ -1,0 +1,91 @@
+import type { Citation } from "../types";
+
+/** Single source for the Section 19.2 citations table. */
+const A = "2026-10-04";
+
+export const citations: Citation[] = [
+  {
+    id: "C1",
+    item: "C1 Opening statistic (video 0:00–0:25)",
+    claim: "Across the United States, 18 states reported 421 harmful algal bloom events, 389 cases of human illness and 413 cases of animal illness during 2016–2018 (national figure; no Lake Mead-specific count was found)",
+    source: "Roberts et al., \"Surveillance for Harmful Algal Bloom Events and Associated Human and Animal Illnesses — One Health Harmful Algal Bloom System, United States, 2016–2018\", MMWR 69(50), published 2020-12-18",
+    publisher: "U.S. Centers for Disease Control and Prevention",
+    url: "https://www.cdc.gov/mmwr/volumes/69/wr/mm6950a2.htm",
+    accessed: A,
+  },
+  {
+    id: "C2",
+    item: "C2 Lake Mead bloom risk (video 0:00–0:25, One Health panel)",
+    claim: "Harmful blue-green algae blooms occur at Lake Mead NRA; exposure symptoms include nausea, vomiting and breathing problems; dogs and other animals can become seriously ill or die from HAB toxins; blooms are most common from August through December",
+    source: "\"Harmful Blue-Green Algae Blooms (HABs) - Lake Mead National Recreation Area\", page last updated 2026-05-14",
+    publisher: "U.S. National Park Service",
+    url: "https://www.nps.gov/lake/planyourvisit/harmful-blue-green-algae-blooms-habs.htm",
+    accessed: A,
+  },
+  {
+    id: "C3",
+    item: "C3 Official Lake Mead data element (dashboard card)",
+    claim: "Lake Mead elevation 1,037.93 ft on 2026-10-03 (daily operations report)",
+    source: "\"Lower Colorado River Operations\"",
+    publisher: "U.S. Bureau of Reclamation, Lower Colorado Region",
+    url: "https://www.usbr.gov/lc/region/g4000/hourly/levels.html",
+    accessed: A,
+  },
+  {
+    id: "C4",
+    item: "C4 NDCI reference (Methodology NDCI note)",
+    claim: "NDCI is a normalized difference of red-edge and red reflectance for estimating chlorophyll-a in turbid productive waters",
+    source: "Mishra, S. and Mishra, D. R., \"Normalized difference chlorophyll index: A novel model for remote estimation of chlorophyll-a concentration in turbid productive waters\", Remote Sensing of Environment 117: 394–406 (2012)",
+    publisher: "Elsevier",
+    url: "https://doi.org/10.1016/j.rse.2011.10.016",
+    accessed: A,
+  },
+  {
+    id: "C5",
+    item: "C5 Sentinel-2 bands (Methodology NDCI note)",
+    claim: "Sentinel-2 MSI band B4 (red, central wavelength 664.6 nm on Sentinel-2A, 10 m) and band B5 (vegetation red edge, 704.1 nm on Sentinel-2A, 20 m)",
+    source: "\"S2 Mission\", SentiWiki",
+    publisher: "European Space Agency / Copernicus",
+    url: "https://sentiwiki.copernicus.eu/web/s2-mission",
+    accessed: A,
+  },
+  {
+    id: "C6",
+    item: "C6 OAH FHIR IG (FHIR export, A5)",
+    claim: "IG \"OneAquaHealth Project\", id `hl7.eu.fhir.oah`, canonical `http://hl7.eu/fhir/ig/oah`, version 0.1.0-ci-build",
+    source: "`sushi-config.yaml` in the `hl7-eu/oah` repository",
+    publisher: "HL7 Europe / OneAquaHealth Project",
+    url: "https://github.com/hl7-eu/oah",
+    accessed: A,
+  },
+  {
+    id: "C7",
+    item: "C7 OAH Resilience Map (Coimbra data, OAH-cities page)",
+    claim: "Source of the Coimbra CSV export (A3)",
+    source: "\"Resilience Map\" web application",
+    publisher: "OneAquaHealth Project (served from the oneaquahealth.eu domain; the page names no publisher)",
+    url: "https://apps.oneaquahealth.eu/resmap/",
+    accessed: A,
+  },
+  {
+    id: "C8",
+    item: "C8 OAH citizen-science / field protocol (report form, A4)",
+    claim: "Harmonized OneAquaHealth procedures for sampling-site characterization and ecosystem-health and biological indicators",
+    source: "Calapez, A. R. et al., \"OneAquaHealth Field Sampling Protocols for Urban Stream Ecosystems\", 2026-05-22, DOI 10.5281/zenodo.20344421",
+    publisher: "Zenodo (OneAquaHealth, Horizon Europe)",
+    url: "https://zenodo.org/records/20344421",
+    accessed: A,
+  },
+];
+
+export const lakeMeadOfficial = {
+  label: "Lake Mead elevation",
+  value: "1,037.93",
+  unit: "ft",
+  asOf: "2026-10-03",
+  displayText: "Lake Mead elevation: 1,037.93 ft (Oct 3, 2026)",
+  sourceLine:
+    "Source: U.S. Bureau of Reclamation, Lower Colorado River Operations. Accessed 2026-10-04.",
+  url: "https://www.usbr.gov/lc/region/g4000/hourly/levels.html",
+  accessed: A,
+};
