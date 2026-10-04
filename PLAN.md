@@ -1195,3 +1195,131 @@ Cuts, first cut first:
 7. At 18:15 PDT every unfinished task's files revert to the last green commit (`git checkout <sha> -- <files>`), never left half-styled; the video records from that state at 19:15.
 
 Never cut: 23.1 base, 23.2 StatHero and the fold, the 23.5b grouping, tile shapes, instruction lines and sticky bar, the tile filter and seals, the RiskBadge stamp, the Section 22 layout fixes. If 23.1 itself is not green by 17:15 PDT, the orchestrator reverts it and the StatHero (23.2) is built alone on the old tokens with Young Serif added, since the user's statistic requirement outranks the restyle.
+
+## 24. Satellite map, "more cities" signal, language switcher (EN / PT / ES)
+
+**Why (user, 2026-10-04, verbatim):** "the website is practically perfect, but this map could be better as a themed satellite map. also, clearly specify a clear intention to add extra cities in the header. lastly, to the right of that add a language change option with flags". Question round answered "for all changes, just whatever you recommend" (23:5x UTC), so every recommendation below is the agreed design. Written 2026-10-04 23:51 +00:00 by a planning-tier agent; graphify is not installed in this repo, so the reads behind this section were targeted bash reads (stated per AGENTS.md).
+
+**What stays:** Section 23 field notebook (tokens, type, stamps, seals, tag pins, FieldMarks), every route and behaviour, and every English string byte-identical (existing tests asserting English labels stay unchanged and green). No new dependency, no new CSS file: `src/index.css` is the only stylesheet touched. Section 23's cut-list line "keep tile filter" now means the 24.2 filter.
+
+### 24.1 Decisions (all agreed)
+
+1. **Languages:** English (`en`, US flag), Português (`pt`, pt-PT, Portugal flag), Español (`es`, Spain flag, civil version without arms). Flags are inline SVG (Windows does not render flag emoji) and always sit next to a DM Mono code `EN` / `PT` / `ES`; the menu shows endonyms ("English", "Português", "Español"), never translated.
+2. **Scope translated:** header, nav, mobile sheet, footer; the Dashboard (StatHero, KPIs, OfficialDataCard, sampling list, community feed, Coimbra satellite chart, map toggle, legend, popups); Site detail including the engine explanation sentence, pathway labels and risk words; the Report a Bloom form and BloomGuide. Shared atoms (risk category words, report status tags, report data tags, report time format) are translated wherever they render.
+3. **Scope left in English:** Methodology, OAH Cities, Report queue, My reports, the citations table. In PT/ES each shows one mono line at the top: PT "Esta página só está disponível em inglês." / ES "Esta página solo está disponible en inglés." Shared atoms on those pages may appear translated; that is accepted.
+4. **Never translated:** site, lake and city names; the wordmark "Verdant"; "OneAquaHealth", "OAH", "CDC", "FHIR"; data values, including `observationTypes` text inside reports; numbers and units.
+5. **Translation accuracy:** PT/ES text is drafted by the implementers against the 24.4 glossary (binding) and is marked "pending native-speaker review" in the 24.9 PROGRESS end entry. pt-PT, not pt-BR (e.g. "agentes patogénicos", "ecrã", "relato"). Spanish uses tú; Portuguese uses the impersonal/você-implicit imperative ("Relate o que vê").
+6. **Language state:** stored in localStorage key `verdant.lang` (every access in try/catch). First visit: the first entry of `navigator.languages` whose primary subtag is `en`, `pt` or `es`; else `en`. Language and region are independent (choosing Coimbra does not switch language). `document.documentElement.lang` follows the language (`en`, `pt-PT`, `es`).
+7. **Satellite map replaces the gray map** (no Map/Satellite toggle).
+8. **"More cities" signal:** a third, dashed segment at the end of the region switch, "More cities soon" with a lucide `Plus` icon, linking to `/oah-cities`. Language switcher immediately to its right.
+
+### 24.2 Design direction: themed satellite map (`impeccable` builds from this; nothing reinterpreted)
+
+- **Base imagery:** `https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}`, `maxZoom={16}` kept. No API key.
+- **Labels:** second `TileLayer` `https://server.arcgisonline.com/ArcGIS/rest/services/Reference/World_Boundaries_and_Places/MapServer/tile/{z}/{y}/{x}` inside a react-leaflet `<Pane name="labels" style={{ zIndex: 350 }}>` (above tiles 200, below overlays 400 and markers 600), so the tile filter never touches the labels. `.leaflet-labels-pane { opacity: 0.9; }` in `src/index.css`.
+- **Attribution (exact):** `Imagery &copy; Esri, Maxar, Earthstar Geographics, and the GIS User Community; labels &copy; Esri`. The attribution control styling stays as is.
+- **Notebook theming, `src/index.css`:** replace the `.leaflet-tile-pane` filter with `filter: saturate(0.55) sepia(0.28) hue-rotate(-8deg) contrast(1.05) brightness(0.92);`. Intent: water reads deep teal-olive, desert and town read warm ochre-grey, no saturated sea blue or vegetation green anywhere, so risk colour stays the only saturated thing on screen (23.4 rule). The implementer may tune each value by at most ±0.1 against a screenshot of both regions and records the final values in the end entry. `.leaflet-container` background `#e9e1cc` → `#26332a` and the map wrapper's `bg-muted` → `bg-[#26332a]`, so loading tiles never flash cream over dark imagery.
+- **Marker contrast on imagery:** `.seal` keeps its 2px surface border and 1.5px ink ring (the surface border carries it on dark water, the ink ring on pale sand) and gains a soft lift: `box-shadow: 0 0 0 1.5px var(--foreground), 0 1px 6px rgb(0 0 0 / 0.45);`. Tag pins (`pinIcon` in `RiskMap.tsx`) append `drop-shadow(0 1px 3px rgb(0 0 0 / 0.5))` to their existing filter. Marker number contrasts in 23.4 are unchanged (they sit inside the seal fill).
+- **Overlays stay solid paper:** the legend's `md:bg-card/95` → `md:bg-card` with `md:border-input`; the Community reports toggle (already `bg-card`) and popups unchanged. No glass, blur or gradient anywhere.
+- **Anti-slop check:** no vignette, no gradient wash, no glowing markers, no dark-mode "mission control" look. The page around the map stays paper; only the map window is imagery, like a photo pasted into the notebook.
+
+### 24.3 Design direction: header at every width
+
+Order left to right: [menu button <xl] [Verdant] [nav ≥xl] … `ml-auto` … [CTA] [RegionSwitch: Lake Mead | Coimbra | ┆+ More cities soon┆] [LanguageSwitch].
+
+- **More-cities segment:** inside the same bordered group as the region buttons, separated by a `border-l border-dashed border-input`; `text-muted-foreground`, hover `bg-muted text-foreground`; `text-foreground` when the route is `/oah-cities`. It is a `Link` (not `aria-pressed`). `title` = "Next: Benevento, Ghent, Oslo, Toulouse", names taken from `siteConfigs` entries with `dataStatus === "config-only"`, never hardcoded. Label by width: ≥xl full ("More cities soon" / "Mais cidades em breve" / "Más ciudades pronto"); md to xl short ("More cities" / "Mais cidades" / "Más ciudades"); <md hidden from the header and shown instead as the first block of the mobile Sheet, under `SheetTitle`: a dashed-border link with the full label and a mono `text-xs` line listing the four cities.
+- **LanguageSwitch:** built on the existing `src/components/ui/select.tsx` (base-ui Select; no new component pulled unless that primitive cannot render custom trigger content, in which case pull shadcn `dropdown-menu`, point 4). Trigger `h-8 rounded-sm border border-border bg-card px-2`, flag 20×14 + mono code + `ChevronDown size-3.5`; <md the code is `sr-only` (flag + chevron only). Accessible name "Language: English" / "Idioma: Português" / "Idioma: Español". Items: flag, endonym in Sans, mono code right-aligned, check on the current one. Popup restyled to tokens (paper surface, `border-input`, `rounded-sm`, no default shadcn shadow).
+- **Flags (`src/components/Flags.tsx`, inline SVG, `viewBox="0 0 20 14"`, `aria-hidden`, `focusable="false"`, rendered 20×14 with `rounded-[1px]` and a `ring-1 ring-foreground/25` hairline):** US: 7 red `#B31942` stripes on white (13 equal bands), canton 8×7.5 `#0A3161` with a 3×4 grid of white dots r=0.45 (simplified stars, legible at 20px). PT: green `#046A38` x 0-8, red `#DA291C` x 8-20; at (8,7) a `#FFE900` ring r=2.6 stroke 0.9, centred white shield 2.2×2.6 with a red 1.4×1.8 inner rect. ES: red `#AA151B` 0-3.5, yellow `#F1BF00` 3.5-10.5, red 10.5-14.
+- **Width budget at 1440 (content 1312px) and 1280:** in EN the current header plus the new pieces overflows by about 100px, so: (a) below `2xl` (1536px) the "Report what you see" CTA renders icon-only (`size-9`, `aria-label` and `title` = the full label; nav already holds "Report a Bloom"); (b) nav gap `xl:gap-6` → `xl:gap-5`; (c) all header controls `whitespace-nowrap`. If PT or ES still overflows at 1280 after (a) to (c), the shortened nav labels in the glossary already apply; if it still overflows, the more-cities segment uses its short label up to `2xl`. Never wrap to two rows, never hide the language switcher.
+- **390px (and 360px):** [menu 40] [Verdant] [Lake Mead | Coimbra with `px-2.5`] [flag ▾]; gaps `gap-2`. CTA stays `hidden md:inline-flex` as today.
+- **Done when**, in all three languages at 360, 390, 768, 1024, 1280 and 1440 px: `document.documentElement.scrollWidth === window.innerWidth`, the header is one 60px row, and no header label wraps.
+
+### 24.4 Glossary (binding for every PT/ES string)
+
+| EN | PT (pt-PT) | ES |
+|---|---|---|
+| Dashboard | Painel | Panel |
+| Report a Bloom | Relatar floração | Avisar de floración |
+| My reports | Os meus relatos | Mis avisos |
+| Report queue | Fila de relatos | Cola de avisos |
+| OAH Cities | Cidades OAH | Ciudades OAH |
+| Methodology | Metodologia | Metodología |
+| Report what you see | Relate o que vê | Cuenta lo que ves |
+| Community report | Relato da comunidade | Aviso ciudadano |
+| Region / Language | Região / Idioma | Región / Idioma |
+| More cities soon | Mais cidades em breve | Más ciudades pronto |
+| Risk | Risco | Riesgo |
+| Low / Moderate / High / Very High | Baixo / Moderado / Alto / Muito alto | Bajo / Moderado / Alto / Muy alto |
+| Leading pathway | Via dominante | Vía dominante |
+| View analysis / View site | Ver análise / Ver local | Ver análisis / Ver sitio |
+| Algal bloom | Floração de algas | Floración de algas |
+| Waterborne pathogen | Agentes patogénicos na água | Patógenos en el agua |
+| Heat and low water | Calor e nível de água baixo | Calor y nivel bajo del agua |
+| Ecosystem stress | Stress do ecossistema | Estrés del ecosistema |
+| bloom (algal) | floração | floración |
+| sample / sampling | amostra / amostragem | muestra / muestreo |
+| ranger | guarda | guardabosques |
+
+Risk words inside uppercase stamps (`MUITO ALTO`, `MUY ALTO`) must fit the stamp without wrapping; the RiskBadge may grow in width, never in height.
+
+### 24.5 i18n mechanism (24.T1 builds it)
+
+- `src/i18n/lang.ts`: `LANGS = ["en", "pt", "es"] as const`, `type Lang`; `HTML_LANG` (`en`, `pt-PT`, `es`), `LOCALE` for Intl (`en-US`, `pt-PT`, `es-ES`), `LANG_NAME` endonyms, `LANG_CODE` (`EN`/`PT`/`ES`); `pickLang(stored: string | null, browser: readonly string[]): Lang`; `loadLang(storage?)` / `saveLang(lang, storage?)` following the `defaultStorage()` pattern in `src/lib/reportLoop.ts`, never throwing; `fmt(template, vars)` replacing `{name}` placeholders (unknown placeholders left as-is); `defineStrings<T extends Record<string, string>>(d: { en: T; pt: Record<keyof T, string>; es: Record<keyof T, string> })` so a missing or extra PT/ES key fails `tsc`.
+- `src/state/LanguageContext.tsx`: `LanguageProvider` (initial state `pickLang(loadLang(), navigator.languages ?? [navigator.language])`; effect saves and sets `document.documentElement.lang`), `useLang(): { lang, setLang }`, `useStrings(dict)` returning `dict[lang]`. Mounted in `src/App.tsx` outside `RegionProvider`.
+- One dictionary file per area, so parallel tasks never edit the same file: `src/i18n/common.ts` (T1), `src/i18n/shared.ts` (T4), `src/i18n/dashboard.ts` (T5), `src/i18n/siteDetail.ts` (T6), `src/i18n/report.ts` (T7). Components read `const s = useStrings(DASHBOARD)`, then `s.title` and `fmt(s.reportsCount, { n })`. The English values are moved verbatim from the JSX.
+- Pure logic takes `lang: Lang = "en"` as its last parameter, so existing callers and tests stay unchanged.
+
+### 24.6 Task list
+
+**Rules for every task:** the execution tier implements it (`model: "sonnet"`) through `superpowers:subagent-driven-development`; the brief carries the AGENTS.md point 10 checklist: the `ponytail` ladder, graphify-first reading (or a stated fallback while graphify is missing), `impeccable` plus this section for visual work, `no-ai-slop` once on new English copy, conventional commits with no AI trailer. The orchestrator writes the PROGRESS.md entries. **TDD applies to T1 and T4.** Visual tasks are verified with `npm run dev` in a browser at the 24.3 widths. Every task finishes with `npx tsc --noEmit && npx vitest run && npm run build` all exiting 0.
+
+**Waves** (no file is owned by two tasks in the same wave): Wave 1 = T1, T2. Wave 2 (after T1) = T3, T4, T8. Wave 3 (after T4; T5 also after T2) = T5, T6, T7. Wave 4 = T9.
+
+- **24.T1 i18n core.** Depends: none.
+  - Files: `src/i18n/lang.ts`, `src/i18n/lang.test.ts`, `src/i18n/common.ts`, `src/state/LanguageContext.tsx`, `src/App.tsx`.
+  - `common.ts` holds every header, nav, sheet, footer (DISCLAIMER and the four `dataLabel` strings), more-cities (full, short, "Next: {cities}"), language-switch and English-only-note string, in all three languages, per the glossary.
+  - Tests (`lang.test.ts`):
+    - `pickLang`: a valid stored value wins; an invalid stored value is ignored; `["pt-BR"]` → pt; `["fr", "es-MX"]` → es; `["en-GB", "pt"]` → en; `[]` → en.
+    - `fmt`: replaces a placeholder, replaces a repeated one, keeps an unknown placeholder.
+    - `loadLang`/`saveLang`: round-trip with a fake storage; a storage whose methods throw makes `loadLang` return null and `saveLang` not throw; an undefined storage is safe.
+  - Done: the tests pass; the app renders unchanged in EN.
+- **24.T2 Themed satellite map.** Depends: none.
+  - Files: `src/components/RiskMap.tsx` (tile layers, Pane, ATTRIBUTION, wrapper background, `pinIcon` filter, legend background only), `src/index.css` (tile filter, labels pane, container background, `.seal` shadow).
+  - Run `impeccable` against 24.2.
+  - Done: both regions show themed imagery with labels; markers, pins, legend, toggle and popups are legible on water and on land; attribution reads exactly as in 24.2; screenshots at 1440 and 390 are attached to the report.
+- **24.T3 Header: more cities, language switch, translated chrome.** Depends: T1.
+  - Files: `src/components/RegionSwitch.tsx`, `src/components/LanguageSwitch.tsx` (new), `src/components/Flags.tsx` (new), `src/components/Layout.tsx`, `src/components/Footer.tsx`, `src/components/ui/select.tsx` (only if needed).
+  - Run `impeccable` against 24.3.
+  - Done: the 24.3 "Done when" holds; switching language updates the header, sheet and footer, persists across a reload, and sets `<html lang>`.
+- **24.T4 Shared atoms and the engine sentence.** Depends: T1.
+  - Files: `src/i18n/shared.ts`, `src/engine/explain.ts`, `src/engine/explain.test.ts` (new), `src/lib/communityReports.ts`, `src/lib/communityReports.test.ts`, `src/components/RiskBadge.tsx`, `src/components/ReportStatusTag.tsx`, `src/components/ReportTimeline.tsx`, `src/components/CommunityReportItem.tsx`.
+  - `shared.ts` holds the risk words, status labels and next-step labels (en values imported from the existing `STATUS_LABEL` / `NEXT_STEP_LABEL`, so `reportLoop.ts` stays untouched), plus the report data-tag labels.
+  - `explain(result, lang = "en")`, with per-language PHRASE tables and a sentence template, and an exported `PATHWAY_LABEL: Record<Lang, Record<PathwayId, string>>` (en from `PATHWAYS`, PT/ES from the glossary). Templates:
+    - EN: unchanged.
+    - PT: `O risco está elevado sobretudo devido a condições de {pathway}: {a} e {b}.`
+    - ES: `El riesgo es elevado sobre todo por condiciones de {pathway}: {a} y {b}.` (use "e" instead of "y" before a word starting with an "i" sound).
+  - Factor phrases:
+    - PT: um sinal forte de clorofila / água quente / vento fraco / observações de cidadãos / época de floração / escorrência intensa / elevada exposição recreativa / temperatura do ar elevada / nível de água baixo / uma leitura laboratorial elevada de agentes patogénicos / um nível de contaminação elevado / um índice de saúde do ecossistema fraco.
+    - ES: una señal fuerte de clorofila / agua cálida / viento en calma / observaciones ciudadanas / la temporada de floraciones / escorrentía intensa / alta exposición recreativa / temperatura del aire alta / nivel bajo del agua / una lectura alta de patógenos en laboratorio / un nivel alto de contaminación / una puntuación baja de salud del ecosistema.
+  - `formatReportTime(iso, lang = "en")` uses `LOCALE[lang]`, same options and time zone. `reportSummary(report, lang = "en")` changes only the "No details given" fallback. `REPORT_TAG_LABEL` stays (its tests stay); the localized map lives in `shared.ts`.
+  - Tests:
+    - `explain.test.ts`: the EN output equals the current output for a fixture result; PT and ES contain the localized pathway label and both localized phrases; every `FactorId` and `PathwayId` has a non-empty entry in every language (loop over the keys).
+    - `communityReports.test.ts`: EN time output unchanged; PT output equals `toLocaleString("pt-PT", same options)`; the PT/ES empty-summary fallback.
+  - Done: the tests pass; the badges and tags render translated on the Dashboard and Site detail.
+- **24.T5 Dashboard translated.** Depends: T2, T4.
+  - Files: `src/i18n/dashboard.ts`, `src/pages/Dashboard.tsx`, `src/components/StatHero.tsx`, `src/components/KpiCards.tsx`, `src/components/OfficialDataCard.tsx`, `src/components/SamplingPriorityList.tsx` (incl. `TrendLabel`), `src/components/CommunityReportsFeed.tsx`, `src/components/CoimbraSatelliteChart.tsx`, `src/components/RiskMap.tsx` (strings only: toggle, legend, popups, marker titles, pathway label via `PATHWAY_LABEL`).
+  - Done: in PT and ES no English is left on the Dashboard except the 24.1 item 4 exceptions; StatHero and KPI numerals keep their 23.3 sizes and the fold target of Section 23.
+- **24.T6 Site detail translated.** Depends: T4.
+  - Files: `src/i18n/siteDetail.ts`, `src/pages/SiteDetail.tsx` (passes `lang` to `explain`), `src/components/RiskMeter.tsx`, `src/components/ContributionBars.tsx` (factor labels), `src/components/TrendChart.tsx` (axis labels, tooltip, dates via `LOCALE`), `src/components/OneHealthPanel.tsx`.
+  - Done: same check as T5 for `/site/:id` in both regions.
+- **24.T7 Report a Bloom translated.** Depends: T4.
+  - Files: `src/i18n/report.ts`, `src/pages/Report.tsx`, `src/components/BloomGuide.tsx`.
+  - Validation and error messages are translated too; submitted `observationTypes` values stay as the existing English data values (24.1 item 4), and only their on-screen labels are translated.
+  - Done: the full report flow completes in PT and ES; the existing report-loop tests still pass.
+- **24.T8 English-only note.** Depends: T1.
+  - Files: `src/components/EnglishOnlyNote.tsx` (new; renders nothing in EN, else a mono `text-xs text-muted-foreground` line with the `common.ts` note), `src/pages/Methodology.tsx`, `src/pages/OahCities.tsx`, `src/pages/MyReports.tsx`, `src/pages/RangerQueue.tsx` (one line each, as the first child of the page).
+  - Done: the note shows on those four pages in PT and ES only.
+- **24.T9 Integration and review.** Depends: T1 to T8.
+  - Run `superpowers:requesting-code-review` plus `ponytail-review` on the whole diff; run an `impeccable` audit of the map and header against 24.2 and 24.3; walk every page in all three languages at the 24.3 widths; grep the T5, T6 and T7 files for leftover hardcoded English JSX text.
+  - Then `npx tsc --noEmit && npx vitest run && npm run build`. The orchestrator's PROGRESS end entry lists the PT/ES files as "pending native-speaker review": `src/i18n/*.ts` and `src/engine/explain.ts`.
+  - Done: all three commands exit 0, the walk finds no overflow and no stray English outside 24.1 items 3 and 4, and the review findings are resolved.
