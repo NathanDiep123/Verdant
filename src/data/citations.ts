@@ -76,6 +76,15 @@ export const citations: Citation[] = [
     url: "https://zenodo.org/records/20344421",
     accessed: A,
   },
+  {
+    id: "C9",
+    item: "C9 Coimbra Earth-observation summary (satellite signal chart)",
+    claim: "Monthly NDVI and NDWI area means for Coimbra, 2020-01 to 2026-09",
+    source: "Resilience Map, Earth-observation area summary export (file eo_summary_area_Coimbra_1969-01-01_to_2026-10-03.csv)",
+    publisher: "OneAquaHealth Project (served from the oneaquahealth.eu domain)",
+    url: "https://apps.oneaquahealth.eu/resmap/",
+    accessed: A,
+  },
 ];
 
 export const lakeMeadOfficial = {
