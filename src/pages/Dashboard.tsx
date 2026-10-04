@@ -1,4 +1,5 @@
 import { useMemo } from "react";
+import { CoimbraSatelliteChart } from "@/components/CoimbraSatelliteChart";
 import { KpiCards } from "@/components/KpiCards";
 import { RiskMap } from "@/components/RiskMap";
 import { SamplingPriorityList, type SiteRow } from "@/components/SamplingPriorityList";
@@ -56,6 +57,8 @@ export default function Dashboard() {
           <SamplingPriorityList rows={rows} />
         </div>
       </div>
+
+      {regionId === "coimbra" && <CoimbraSatelliteChart />}
     </div>
   );
 }

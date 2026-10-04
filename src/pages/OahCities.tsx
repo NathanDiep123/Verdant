@@ -1,6 +1,7 @@
 import { useNavigate } from "react-router";
 import { Button } from "@/components/ui/button";
 import CityCard from "@/components/CityCard";
+import { CoimbraSatelliteChart } from "@/components/CoimbraSatelliteChart";
 import { siteConfigs } from "@/config/sites";
 import { useRegion } from "@/state/RegionContext";
 
@@ -44,6 +45,8 @@ export default function OahCities() {
           ))}
         </ul>
       </section>
+
+      <CoimbraSatelliteChart />
 
       <section className="flex flex-col gap-4" aria-labelledby="add-h">
         <h2 id="add-h" className="text-[28px] font-semibold leading-[1.2]">How to add a city</h2>
