@@ -1,8 +1,10 @@
 import { useMemo } from "react";
 import { CoimbraSatelliteChart } from "@/components/CoimbraSatelliteChart";
 import { CommunityReportsFeed } from "@/components/CommunityReportsFeed";
+import { SpecimenTag } from "@/components/FieldMarks";
 import { KpiCards } from "@/components/KpiCards";
 import { RiskMap } from "@/components/RiskMap";
+import { StatHero } from "@/components/StatHero";
 import { SamplingPriorityList, type SiteRow } from "@/components/SamplingPriorityList";
 import { coimbraDataStatus } from "@/data/oah/coimbra";
 import { scoreSite, trend } from "@/engine/score";
@@ -33,17 +35,18 @@ export default function Dashboard() {
 
   return (
     <div className="flex flex-col gap-8 md:gap-12">
-      <div className="flex flex-col gap-4">
-        <div className="flex flex-col gap-2">
-          <h1 className="text-[28px] leading-[1.1] font-bold tracking-[-0.02em] md:text-[40px]">
+      <div className="flex flex-col gap-6 md:gap-4">
+        <div className="-mt-2 md:mb-2">
+          <StatHero />
+        </div>
+        <div className="flex flex-col gap-1 xl:flex-row xl:items-baseline xl:gap-4">
+          <h1 className="text-[1.75rem] leading-[1.1] tracking-[-0.015em] md:text-[2rem]">
             Where to sample first at {config.name}
           </h1>
-          <p className="max-w-[68ch] text-base text-muted-foreground">
+          <p className="max-w-[68ch] text-sm text-muted-foreground">
             Scores combine satellite signals, environmental data and shore reports.
           </p>
-          <span className="w-fit rounded-sm border border-dashed px-2 py-0.5 font-mono text-xs text-muted-foreground">
-            {dataLabel}
-          </span>
+          <SpecimenTag className="mt-1 xl:mt-0 xl:ml-auto">{dataLabel}</SpecimenTag>
         </div>
         <KpiCards
           rows={rows}
@@ -52,7 +55,7 @@ export default function Dashboard() {
           regionName={config.name}
           showOfficial={regionId === "lake-mead"}
         />
-        <div className="mt-2 grid gap-6 xl:h-[620px] xl:grid-cols-12">
+        <div id="map" className="grid scroll-mt-20 gap-6 xl:h-[620px] xl:grid-cols-12">
           <div className="xl:col-span-7 xl:h-full">
             <RiskMap rows={rows} center={config.center} zoom={config.zoom} />
           </div>

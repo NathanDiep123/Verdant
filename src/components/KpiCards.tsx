@@ -9,8 +9,8 @@ const ORDER: Category[] = ["Low", "Moderate", "High", "Very High"];
 
 function Cell({ title, children }: { title: string; children: React.ReactNode }) {
   return (
-    <div className="bg-card p-4">
-      <p className="text-sm font-medium text-muted-foreground">{title}</p>
+    <div className="bg-card px-4 py-2.5">
+      <p className="text-[0.8125rem] leading-[1.4] text-muted-foreground">{title}</p>
       <div className="mt-1">{children}</div>
     </div>
   );
@@ -39,14 +39,14 @@ export function KpiCards({
 
   return (
     <div
-      className={`grid grid-cols-2 gap-px overflow-hidden rounded-sm border bg-border ${
-        showOfficial ? "lg:grid-cols-[1.25fr_repeat(3,1fr)_2fr]" : "lg:grid-cols-4"
+      className={`grid grid-cols-2 gap-px overflow-hidden rounded-sm border bg-border shadow-[inset_0_1px_0_rgb(255_255_255/0.6)] ${
+        showOfficial ? "lg:grid-cols-[13.75rem_13.75rem_10rem_11.75rem_1fr]" : "lg:grid-cols-4"
       }`}
     >
-      <div className="border-l-[3px] border-l-primary bg-card p-4">
-        <p className="text-sm font-medium text-muted-foreground">Citizen reports</p>
-        <p className="mt-1 font-mono text-[28px] leading-[1.2] font-semibold tabular-nums">{reportCount}</p>
-        <div className="mt-1 flex flex-wrap items-center justify-between gap-x-3 text-sm">
+      <div className="border-l-[3px] border-l-primary bg-card px-4 py-2.5">
+        <p className="text-[0.8125rem] leading-[1.4] text-muted-foreground">Citizen reports</p>
+        <p className="mt-1 font-heading text-[1.75rem] leading-[1.15] tracking-[-0.01em] tabular-nums">{reportCount}</p>
+        <div className="mt-1 flex flex-wrap items-center justify-between gap-x-3 text-[0.8125rem]">
           <span className="text-muted-foreground">From {siteCount} {siteCount === 1 ? "site" : "sites"}</span>
           <Link
             to="/report"
@@ -59,12 +59,12 @@ export function KpiCards({
       </div>
       <Cell title="Region status">
         {rows.length ? <RiskBadge category={status} size="md" /> : <span className="text-sm">No sites</span>}
-        <p className="mt-1 text-sm text-muted-foreground">Highest category at {regionName}</p>
+        <p className="mt-1 text-[0.8125rem] text-muted-foreground">Highest category at {regionName}</p>
       </Cell>
       <Cell title="Highest-risk site">
         {top ? (
           <>
-            <p className="text-sm font-semibold">{top.site.name}</p>
+            <p className="text-sm font-semibold leading-[1.45]">{top.site.name}</p>
             <div className="mt-1">
               <RiskBadge category={top.result.category} score={top.result.siteScore} size="md" />
             </div>
@@ -74,8 +74,8 @@ export function KpiCards({
         )}
       </Cell>
       <Cell title="Areas Requiring Attention">
-        <p className="font-mono text-[28px] leading-[1.2] font-semibold tabular-nums">{attention}</p>
-        <p className="mt-1 text-sm text-muted-foreground">High or Very High</p>
+        <p className="font-heading text-[1.75rem] leading-[1.15] tracking-[-0.01em] tabular-nums">{attention}</p>
+        <p className="mt-1 text-[0.8125rem] text-muted-foreground">High or Very High</p>
       </Cell>
       {showOfficial && (
         <div className="col-span-2 lg:col-span-1">

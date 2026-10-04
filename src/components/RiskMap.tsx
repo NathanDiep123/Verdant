@@ -3,6 +3,7 @@ import { Link } from "react-router";
 import { MapContainer, Marker, Popup, TileLayer, useMap, ZoomControl } from "react-leaflet";
 import L from "leaflet";
 import { ArrowRight } from "lucide-react";
+import { SpecimenTag } from "@/components/FieldMarks";
 import { Switch } from "@/components/ui/switch";
 import { useRegion } from "@/state/RegionContext";
 import { formatReportTime, REPORT_TAG_LABEL, reportSummary } from "@/lib/communityReports";
@@ -22,31 +23,34 @@ function markerIcon(category: Category, score: number) {
   const { color, markerSize: d } = CATEGORY_STYLE[category];
   const veryHigh = category === "Very High";
   const big = category === "High" || veryHigh;
-  const ink = veryHigh ? "var(--card)" : "var(--foreground)";
+  const ink = category === "Moderate" || category === "High" ? "var(--foreground)" : "var(--card)";
   const html =
-    `<div class="${veryHigh ? "verdant-pulse" : ""}" style="--pulse-color:${color};width:${d}px;height:${d}px;` +
-    `border-radius:9999px;background:${color};border:2px solid var(--card);box-sizing:border-box;` +
-    `box-shadow:0 0 0 1px rgb(20 33 31 / 0.4);display:flex;align-items:center;justify-content:center;` +
+    `<div class="seal${d >= 32 ? " seal-dashed" : ""}${veryHigh ? " verdant-pulse" : ""}" style="--pulse-color:${color};` +
+    `width:${d}px;height:${d}px;background:${color};box-sizing:border-box;` +
     `transition:background-color 300ms,width 300ms,height 300ms;">` +
-    `<span style="position:relative;z-index:1;font:600 ${big ? 13 : 12}px var(--font-mono);color:${ink};` +
+    `<span style="position:relative;z-index:1;font-size:${big ? 13 : 12}px;color:${ink};` +
     `font-variant-numeric:tabular-nums;">${score}</span></div>`;
   return L.divIcon({ html, className: "", iconSize: [d, d], iconAnchor: [d / 2, d / 2], popupAnchor: [0, -d / 2] });
 }
 
+/** Tag-shaped community report pin. The outer box carries the ink outline (filter), the inner one the clip. */
 function pinIcon(k: number, n: number, siteDiameter: number) {
   const angle = ((-90 + (k * 360) / Math.max(n, 4)) * Math.PI) / 180;
-  const radius = siteDiameter / 2 + 10;
+  const radius = siteDiameter / 2 + 12;
   const dx = Math.cos(angle) * radius;
   const dy = Math.sin(angle) * radius;
   const html =
-    `<div style="width:12px;height:12px;border-radius:2px;background:var(--primary);` +
-    `border:2px solid #FBFCFB;box-sizing:border-box;box-shadow:0 0 0 1px rgb(20 33 31 / 0.4);"></div>`;
+    `<div style="width:16px;height:11px;filter:drop-shadow(0 0 0.5px #1E2B22) drop-shadow(0 0 0.5px #1E2B22);">` +
+    `<div style="position:relative;width:16px;height:11px;background:var(--primary);` +
+    `clip-path:polygon(4px 0,100% 0,100% 100%,4px 100%,0 50%);">` +
+    `<span style="position:absolute;left:4px;top:4.5px;width:2px;height:2px;border-radius:9999px;background:var(--card);"></span>` +
+    `</div></div>`;
   return L.divIcon({
     html,
     className: "",
-    iconSize: [12, 12],
-    iconAnchor: [6 - dx, 6 - dy],
-    popupAnchor: [dx, dy - 6],
+    iconSize: [16, 11],
+    iconAnchor: [8 - dx, 5.5 - dy],
+    popupAnchor: [dx, dy - 5.5],
   });
 }
 
@@ -70,17 +74,19 @@ function FitSites({ points, center, zoom }: { points: [number, number][]; center
   return null;
 }
 
+const PIN_SHAPE = "[clip-path:polygon(4px_0,100%_0,100%_100%,4px_100%,0_50%)]";
+
 function Legend({ showPins }: { showPins: boolean }) {
   return (
-    <div className="mt-2 md:absolute md:bottom-3 md:left-3 md:z-[1000] md:mt-0 md:rounded-sm md:border md:bg-card md:px-3 md:py-2">
-      <ul className="flex flex-wrap gap-x-4 gap-y-1 md:block md:space-y-1">
+    <div className="mt-2 md:absolute md:bottom-3 md:left-3 md:z-[1000] md:mt-0 md:rounded-sm md:border md:bg-card/95 md:px-3 md:py-1">
+      <ul className="flex flex-wrap gap-x-4 gap-y-1 md:block md:space-y-0 md:divide-y md:divide-dashed md:divide-border">
         {CATEGORIES.map((c) => {
-          const { color, icon: Icon, markerSize } = CATEGORY_STYLE[c];
+          const { color, icon: Icon } = CATEGORY_STYLE[c];
           return (
-            <li key={c} className="flex items-center gap-2 font-mono text-xs">
+            <li key={c} className="flex items-center gap-2 font-mono text-xs md:py-1">
               <span
-                className="inline-block shrink-0 rounded-full border border-foreground/40"
-                style={{ background: color, width: markerSize / 2, height: markerSize / 2 }}
+                className="seal !size-3 shrink-0 !border-[1px] !shadow-[0_0_0_1px_var(--foreground)]"
+                style={{ background: color }}
                 aria-hidden
               />
               <Icon className="size-3.5 shrink-0" strokeWidth={1.75} aria-hidden />
@@ -90,11 +96,15 @@ function Legend({ showPins }: { showPins: boolean }) {
           );
         })}
         {showPins && (
-          <li className="flex items-center gap-2 font-mono text-xs">
+          <li className="flex items-center gap-2 font-mono text-xs md:py-1">
             <span
-              className="inline-block size-3 shrink-0 rounded-[2px] border-2 border-[#FBFCFB] bg-primary ring-1 ring-foreground/40"
+              className="inline-block shrink-0 [filter:drop-shadow(0_0_0.5px_#1E2B22)_drop-shadow(0_0_0.5px_#1E2B22)]"
               aria-hidden
-            />
+            >
+              <span className={`relative block h-[11px] w-4 bg-primary ${PIN_SHAPE}`}>
+                <span className="absolute top-[4.5px] left-1 size-0.5 rounded-full bg-card" />
+              </span>
+            </span>
             <span className="font-sans font-medium">Community report</span>
           </li>
         )}
@@ -127,7 +137,7 @@ export function RiskMap({ rows, center, zoom }: { rows: SiteRow[]; center: [numb
 
   return (
     <div className="relative xl:h-full">
-      <div className="relative h-[420px] overflow-hidden rounded-sm border bg-card xl:h-full">
+      <div className="relative h-[420px] overflow-hidden rounded-sm border bg-muted xl:h-full">
       <MapContainer center={center} zoom={zoom} zoomControl={false} scrollWheelZoom={!touch} className="h-full w-full">
         <ZoomControl position="topright" />
         <TileLayer
@@ -145,12 +155,12 @@ export function RiskMap({ rows, center, zoom }: { rows: SiteRow[]; center: [numb
             title={`${r.site.name}, risk ${r.result.siteScore}, ${r.result.category}`}
           >
             <Popup>
-              <p className="text-xl leading-[1.3] font-semibold">{r.site.name}</p>
+              <p className="border-b border-dashed pb-2 font-heading text-xl leading-[1.3]">{r.site.name}</p>
               <div className="mt-2">
                 <RiskBadge category={r.result.category} score={r.result.siteScore} size="md" />
               </div>
-              <p className="mt-2 text-sm">
-                <span className="text-muted-foreground">Leading pathway: </span>
+              <p className="mt-2 text-[0.8125rem] leading-[1.4] text-olive">
+                <span>Leading pathway: </span>
                 {PATHWAYS[r.result.leadingPathway].label}
               </p>
               <div className="mt-1">
@@ -176,13 +186,11 @@ export function RiskMap({ rows, center, zoom }: { rows: SiteRow[]; center: [numb
               title={`Community report at ${row.site.name}`}
             >
               <Popup>
-                <p className="text-sm font-semibold text-primary">Community report</p>
-                <p className="mt-1 text-xl leading-[1.3] font-semibold">{row.site.name}</p>
-                <p className="mt-1 font-mono text-xs text-muted-foreground">{formatReportTime(report.createdAt)}</p>
+                <p className="font-mono text-xs font-medium text-primary">Community report</p>
+                <p className="mt-1 border-b border-dashed pb-2 font-heading text-xl leading-[1.3]">{row.site.name}</p>
+                <p className="mt-2 font-mono text-xs text-muted-foreground">{formatReportTime(report.createdAt)}</p>
                 <p className="mt-2 text-sm">{reportSummary(report)}</p>
-                <p className="mt-2 inline-block border border-dashed px-1.5 py-0.5 font-mono text-xs text-muted-foreground">
-                  {REPORT_TAG_LABEL[report.dataTag]}
-                </p>
+                <SpecimenTag className="mt-2">{REPORT_TAG_LABEL[report.dataTag]}</SpecimenTag>
                 <div>
                   <Link
                     to={`/site/${row.site.id}`}
@@ -196,7 +204,7 @@ export function RiskMap({ rows, center, zoom }: { rows: SiteRow[]; center: [numb
             </Marker>
           ))}
       </MapContainer>
-      <label className="absolute top-3 left-3 z-[1000] flex items-center gap-2 rounded-sm border bg-card px-3 py-2 text-sm font-medium">
+      <label className="absolute top-3 left-3 z-[1000] flex items-center gap-2 rounded-sm border border-input bg-card px-3 py-2 text-sm font-medium">
         <Switch checked={showPins} onCheckedChange={setShowPins} />
         Community reports ({reports.filter((r) => rows.some((x) => x.site.id === r.siteId)).length})
       </label>

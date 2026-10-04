@@ -1,6 +1,7 @@
 import { Fragment } from "react";
 import { Link } from "react-router";
 import { MessageSquare, MoveRight, TrendingDown, TrendingUp } from "lucide-react";
+import { Annotation } from "@/components/FieldMarks";
 import { RiskBadge } from "@/components/RiskBadge";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { PATHWAYS } from "@/engine/pathways";
@@ -41,18 +42,20 @@ function ReportCount({ id, count }: { id: string; count: number }) {
 
 function FirstTarget() {
   return (
-    <div className="mt-2 border-l-[3px] border-primary px-3 py-2">
-      <p className="text-xs font-semibold text-primary">Verdant recommendation</p>
-      <p className="text-sm font-medium">Recommended first sampling target</p>
+    <div className="mt-2 border-l-[3px] border-primary px-3 py-1.5">
+      <p className="font-mono text-xs font-medium text-primary">Verdant recommendation</p>
+      <Annotation direction="left" className="[&_span]:text-sm [&_span]:font-semibold">
+        Recommended first sampling target
+      </Annotation>
     </div>
   );
 }
 
 export function SamplingPriorityList({ rows }: { rows: SiteRow[] }) {
   return (
-    <section aria-labelledby="priority-heading" className="flex h-full min-h-0 flex-col rounded-sm border bg-card">
+    <section aria-labelledby="priority-heading" className="flex h-full min-h-0 flex-col rounded-sm border bg-card shadow-[inset_0_1px_0_rgb(255_255_255/0.6)]">
       <div className="px-4 pt-4 pb-3">
-        <h2 id="priority-heading" className="text-[28px] leading-[1.2] font-semibold">
+        <h2 id="priority-heading" className="text-[1.75rem] leading-[1.15] tracking-[-0.01em]">
           Sampling priority list
         </h2>
         <p className="mt-1 text-sm text-muted-foreground">Ranked by site score, highest first.</p>
@@ -60,10 +63,10 @@ export function SamplingPriorityList({ rows }: { rows: SiteRow[] }) {
 
       <div className="min-h-0 flex-1 overflow-auto">
         <Table className="hidden lg:table">
-          <TableHeader className="bg-muted">
-            <TableRow>
+          <TableHeader className="bg-muted/60">
+            <TableRow className="border-b-[3px] border-double border-foreground/40 hover:bg-transparent">
               {["Rank", "Site / Leading pathway", "Risk / Trend", "Reports", "Action"].map((h) => (
-                <TableHead key={h} className="h-auto px-1.5 py-2 text-sm font-medium whitespace-nowrap text-foreground first:pl-3 last:pr-3">
+                <TableHead key={h} className="h-auto px-1.5 py-2 text-[0.8125rem] font-medium whitespace-nowrap text-muted-foreground first:pl-3 last:pr-3">
                   {h}
                 </TableHead>
               ))}
@@ -73,26 +76,26 @@ export function SamplingPriorityList({ rows }: { rows: SiteRow[] }) {
             {rows.map((r, i) => (
               <Fragment key={r.site.id}>
               <TableRow className={`align-top hover:bg-muted/60 ${i === 0 ? "border-b-0 border-l-[3px] border-l-primary" : ""}`}>
-                <TableCell className="py-3 pr-1 pl-3 font-mono text-lg tabular-nums text-muted-foreground">{i + 1}</TableCell>
-                <TableCell className="px-1.5 py-3 whitespace-nowrap">
+                <TableCell className="py-2 pr-1 pl-3 font-heading text-xl leading-[1.3] tabular-nums text-muted-foreground">{i + 1}</TableCell>
+                <TableCell className="px-1.5 py-2 whitespace-nowrap">
                   <Link
                     to={`/site/${r.site.id}`}
                     className="font-semibold hover:text-primary hover:underline focus-visible:outline-2 focus-visible:outline-ring"
                   >
                     {r.site.name}
                   </Link>
-                  <p className="mt-0.5 text-[13px] text-muted-foreground">{PATHWAYS[r.result.leadingPathway].label}</p>
+                  <p className="mt-0.5 text-[0.8125rem] leading-[1.4] text-olive">{PATHWAYS[r.result.leadingPathway].label}</p>
                 </TableCell>
-                <TableCell className="px-1.5 py-3 whitespace-nowrap">
+                <TableCell className="px-1.5 py-2 whitespace-nowrap">
                   <RiskBadge category={r.result.category} score={r.result.siteScore} size="sm" />
                   <div className="mt-1">
                     <TrendLabel trend={r.trend} small />
                   </div>
                 </TableCell>
-                <TableCell className="px-1.5 py-3">
+                <TableCell className="px-1.5 py-2">
                   <ReportCount id={r.site.id} count={r.reportCount} />
                 </TableCell>
-                <TableCell className="py-3 pr-3 pl-1.5 text-[13px] whitespace-normal">{recommend(r.result.category)}</TableCell>
+                <TableCell className="py-2 pr-3 pl-1.5 text-[13px] whitespace-normal">{recommend(r.result.category)}</TableCell>
               </TableRow>
               {i === 0 && (
                 <TableRow className="border-l-[3px] border-l-primary hover:bg-transparent">
@@ -113,14 +116,14 @@ export function SamplingPriorityList({ rows }: { rows: SiteRow[] }) {
               className={`border-b px-4 py-3 last:border-b-0 ${i === 0 ? "border-l-[3px] border-l-primary" : ""}`}
             >
               <div className="flex items-center gap-3">
-                <span className="w-5 font-mono text-lg tabular-nums text-muted-foreground">{i + 1}</span>
+                <span className="w-5 font-heading text-xl leading-[1.3] tabular-nums text-muted-foreground">{i + 1}</span>
                 <Link to={`/site/${r.site.id}`} className="flex-1 text-sm font-semibold hover:text-primary">
                   {r.site.name}
                 </Link>
                 <RiskBadge category={r.result.category} score={r.result.siteScore} size="sm" />
               </div>
               <div className="mt-2 pl-8 text-sm">
-                <p>{PATHWAYS[r.result.leadingPathway].label}</p>
+                <p className="text-[0.8125rem] text-olive">{PATHWAYS[r.result.leadingPathway].label}</p>
                 <div className="mt-1 flex flex-wrap items-center gap-x-4 gap-y-1">
                   <TrendLabel trend={r.trend} />
                   <ReportCount id={r.site.id} count={r.reportCount} />

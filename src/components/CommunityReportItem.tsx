@@ -1,3 +1,4 @@
+import { SpecimenTag } from "@/components/FieldMarks";
 import { MessageSquare } from "lucide-react";
 import { Link } from "react-router";
 import { REPORT_TAG_LABEL, formatReportTime, reportSummary } from "@/lib/communityReports";
@@ -28,9 +29,7 @@ export function CommunityReportItem({
         <p className="text-sm">{reportSummary(report)}</p>
         <p className="flex flex-wrap items-center gap-2 text-xs text-muted-foreground">
           {report.status && <ReportStatusTag status={report.status} />}
-          <span className="rounded-sm border border-dashed px-1.5 py-0.5 font-mono">
-            {REPORT_TAG_LABEL[report.dataTag]}
-          </span>
+          <SpecimenTag>{REPORT_TAG_LABEL[report.dataTag]}</SpecimenTag>
           {report.animalsPresent && <span>Animals present</span>}
         </p>
       </div>

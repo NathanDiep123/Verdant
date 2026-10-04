@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { Link } from "react-router";
 import { MessageSquarePlus } from "lucide-react";
+import { InkRule } from "@/components/FieldMarks";
 import { CommunityReportItem } from "@/components/CommunityReportItem";
 import { buttonVariants } from "@/components/ui/button";
 import { newestFirst } from "@/lib/communityReports";
@@ -36,9 +37,9 @@ export function CommunityReportsFeed({
   const nameOf = (id: string) => sites.find((s) => s.id === id)?.name ?? id;
 
   return (
-    <section aria-labelledby="community-reports" className="grid gap-8 rounded-sm border bg-card p-4 md:p-6 lg:grid-cols-12 lg:gap-0">
+    <section aria-labelledby="community-reports" className="grid gap-8 rounded-sm border bg-card p-4 shadow-[inset_0_1px_0_rgb(255_255_255/0.6)] md:p-6 lg:grid-cols-12 lg:gap-0">
       <div className="lg:col-span-8 lg:pr-8">
-        <h2 id="community-reports" className="text-[28px] leading-[1.15] font-semibold tracking-[-0.01em]">
+        <h2 id="community-reports" className="text-[1.75rem] leading-[1.15] tracking-[-0.01em]">
           Community reports
         </h2>
         <p className="mt-2 max-w-[68ch] text-sm text-muted-foreground">
@@ -50,9 +51,10 @@ export function CommunityReportsFeed({
               No community reports for {regionName} yet. Reports filed here appear in this list and on the map.
             </p>
           ) : (
-            <ul className="border-t">
-              {newest.map((r) => (
-                <li key={r.id} className="border-b last:border-b-0 [&>div>div]:border-b-0">
+            <ul>
+              {newest.map((r, i) => (
+                <li key={r.id} className="[&>div>div]:border-b-0">
+                  {i > 0 && <InkRule className="text-border" />}
                   <FadeIn fresh={!initialIds.current.has(r.id)}>
                     <CommunityReportItem report={r} siteName={nameOf(r.siteId)} showSite />
                   </FadeIn>
@@ -63,7 +65,7 @@ export function CommunityReportsFeed({
         </div>
       </div>
       <div className="flex flex-col gap-3 border-t pt-8 lg:col-span-4 lg:border-t-0 lg:border-l lg:pt-0 lg:pl-8">
-        <h3 className="text-xl font-semibold">Between agency samples</h3>
+        <h3 className="text-xl leading-[1.3]">Between agency samples</h3>
         <p className="text-sm">
           Agencies sample a few points a few times a month. People at the shore see the water every day. Your report goes straight into the score, and the site page shows how many points it adds.
         </p>
