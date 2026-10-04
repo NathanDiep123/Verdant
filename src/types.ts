@@ -34,6 +34,14 @@ export type PathwayDef = {
 /** Factor scores, each 0-100. Absent keys are missing data. */
 export type Factors = Partial<Record<FactorId, number>>;
 
+export type ReportStatus =
+  | "received"
+  | "reviewing"
+  | "sample-requested"
+  | "confirmed"
+  | "not-bloom"
+  | "more-info";
+
 export type CitizenReport = {
   id: string;
   siteId: string;
@@ -42,6 +50,10 @@ export type CitizenReport = {
   notes: string;
   createdAt: string;
   dataTag: DataTag;
+  reporterId?: string;
+  status?: ReportStatus;
+  rangerNote?: string;
+  statusHistory?: { status: ReportStatus; at: string }[];
 };
 
 export type SiteRecord = {
