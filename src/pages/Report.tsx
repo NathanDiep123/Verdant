@@ -8,6 +8,7 @@ import { RiskBadge } from "@/components/RiskBadge";
 import { BloomGuide } from "@/components/BloomGuide";
 import { citizenEvidence } from "@/lib/communityReports";
 import { nearestSite, reportCode } from "@/lib/reportLoop";
+import { toggleExclusive } from "@/lib/toggleExclusive";
 import { useCountUp } from "@/lib/useCountUp";
 import { cn } from "@/lib/utils";
 import { reportFields, type ReportField } from "@/data/reportFields";
@@ -91,15 +92,8 @@ export default function Report() {
   const animalsPresent = wildlife.some((a) => a !== "none");
 
   const setOne = (id: string, v: string) => setAnswers((a) => ({ ...a, [id]: a[id]?.[0] === v ? [] : [v] }));
-  const toggleWildlife = (opt: string) =>
-    setAnswers((a) => {
-      const cur = a.wildlife ?? [];
-      const on = !cur.includes(opt);
-      let next = on ? [...cur, opt] : cur.filter((x) => x !== opt);
-      if (on && opt === "none") next = ["none"];
-      if (on && opt !== "none") next = next.filter((x) => x !== "none");
-      return { ...a, wildlife: next };
-    });
+  const toggleMulti = (f: ReportField, opt: string) =>
+    setAnswers((a) => ({ ...a, [f.id]: toggleExclusive(a[f.id] ?? [], opt, f.exclusive ?? "") }));
 
   const useLocation = () => {
     const fail = () => setLocMsg("Location unavailable. Pick a site below.");
@@ -192,10 +186,10 @@ export default function Report() {
       <legend className="mb-2 text-base font-medium">{f.question}</legend>
       <div className={cn("grid grid-cols-1 gap-2", f.options.length === 3 ? "min-[420px]:grid-cols-3" : "min-[420px]:grid-cols-2")}>
         {f.options.map((o) => (
-          <Choice key={o} selected={(answers[f.id] ?? []).includes(o)} onClick={() => (f.multi ? toggleWildlife(o) : setOne(f.id, o))}>{o}</Choice>
+          <Choice key={o} selected={(answers[f.id] ?? []).includes(o)} onClick={() => (f.multi ? toggleMulti(f, o) : setOne(f.id, o))}>{o}</Choice>
         ))}
       </div>
-      {f.multi && <p className="text-sm text-muted-foreground">Animals present: {animalsPresent ? "yes" : "no"}</p>}
+      {f.id === "wildlife" && <p className="text-sm text-muted-foreground">Animals present: {animalsPresent ? "yes" : "no"}</p>}
     </fieldset>
   );
 
