@@ -1,12 +1,14 @@
 import { useEffect, useState, type FormEvent } from "react";
-import { Link } from "react-router";
-import { TriangleAlert } from "lucide-react";
+import { Link, useSearchParams } from "react-router";
+import { ArrowRight, TriangleAlert } from "lucide-react";
 import { useRegion } from "@/state/RegionContext";
 import { applyCitizenReport, scoreSite } from "@/engine/score";
 import { PATHWAYS } from "@/engine/pathways";
 import { RiskBadge } from "@/components/RiskBadge";
+import { citizenEvidence } from "@/lib/communityReports";
+import { useCountUp } from "@/lib/useCountUp";
 import { reportFields } from "@/data/reportFields";
-import type { CitizenReport, SiteRecord } from "@/types";
+import type { CitizenReport, Category, SiteRecord } from "@/types";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -15,13 +17,26 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Textarea } from "@/components/ui/textarea";
 
 type Answers = Record<string, string[]>;
-type Done = { site: SiteRecord; before: number; after: number };
+type Done = {
+  site: SiteRecord;
+  before: number;
+  after: number;
+  category: Category;
+  evBefore: number | null;
+  evAfter: number | null;
+};
+
+function CountUp({ target, from, className }: { target: number; from?: number; className?: string }) {
+  const ref = useCountUp(target, from);
+  return <span ref={ref} className={className} />;
+}
 
 const WARNING = "A citizen report does not confirm a harmful algal bloom. Laboratory or agency testing is required for confirmation.";
 
 export default function Report() {
   const { config, sites, addReport } = useRegion();
-  const [siteId, setSiteId] = useState("");
+  const [params] = useSearchParams();
+  const [siteId, setSiteId] = useState(params.get("site") ?? "");
   const [answers, setAnswers] = useState<Answers>({});
   const [notes, setNotes] = useState("");
   const [photo, setPhoto] = useState<string | null>(null);
@@ -55,7 +70,7 @@ export default function Report() {
     }
     const observationTypes = reportFields
       .filter((f) => (answers[f.id] ?? []).length > 0)
-      .map((f) => `${f.question} ${answers[f.id].join(", ")}`);
+      .map((f) => `${f.label}: ${answers[f.id].join(", ")}`);
     const report: CitizenReport = {
       id: `user-${Date.now()}`,
       siteId: site.id,
@@ -66,16 +81,23 @@ export default function Report() {
       dataTag: "user-submitted",
     };
     const before = current.siteScore;
-    const after = scoreSite(applyCitizenReport({ ...site, reports: [...(site.reports ?? []), report] }), config).siteScore;
+    const afterResult = scoreSite(applyCitizenReport({ ...site, reports: [...(site.reports ?? []), report] }), config);
     addReport(report);
-    setDone({ site, before, after });
+    setDone({
+      site,
+      before,
+      after: afterResult.siteScore,
+      category: afterResult.category,
+      evBefore: citizenEvidence(current)?.value ?? null,
+      evAfter: citizenEvidence(afterResult)?.value ?? null,
+    });
   };
 
   const summary = current && site && (
     <div className="flex flex-col gap-1">
       <p className="text-sm font-medium text-muted-foreground">{site.name}</p>
       <p className="flex items-baseline gap-3">
-        <span className="font-mono text-[28px] font-semibold leading-none tabular-nums lg:text-[40px]">{current.siteScore}</span>
+        <CountUp target={current.siteScore} className="font-mono text-[28px] font-semibold leading-none tabular-nums lg:text-[40px]" />
         <RiskBadge category={current.category} />
       </p>
       <p className="font-mono text-xs text-muted-foreground">Leading pathway: {PATHWAYS[current.leadingPathway].label}</p>
@@ -87,7 +109,10 @@ export default function Report() {
       <header className="flex max-w-[68ch] flex-col gap-2">
         <h1 className="text-[28px] font-bold leading-[1.1] tracking-[-0.02em] md:text-[40px]">Report a Bloom</h1>
         <p className="leading-[1.55] text-muted-foreground">
-          Describe what you see at the water. The questions follow a citizen-science form used in OneAquaHealth work.
+          Agencies sample a few points a few times a month. You see the water today. Your report raises this site's citizen evidence and can move it up the Sampling priority list.
+        </p>
+        <p className="w-fit rounded-sm border border-dashed border-border px-3 py-2 font-mono text-xs text-muted-foreground">
+          Questions from the OneAquaHealth citizen-science stream survey, via a public copy not yet checked against the official OAH app.
         </p>
       </header>
 
@@ -100,8 +125,24 @@ export default function Report() {
           {done ? (
             <div className="flex flex-col gap-6" role="status">
               <p className="text-xl font-semibold leading-[1.3]">Report received. Your observation has been added to the community monitoring layer.</p>
-              <p className="font-mono text-sm tabular-nums">{done.site.name} risk score: {done.before} {"->"} {done.after}</p>
-              <Link to={`/site/${done.site.id}`} className="w-fit text-sm font-medium text-primary underline underline-offset-4">View updated site</Link>
+              <div className="flex flex-col gap-3 border border-border border-l-[3px] border-l-primary bg-card p-4 md:p-6">
+                <p className="text-sm text-muted-foreground">{done.site.name} risk score</p>
+                <div className="flex flex-wrap items-center gap-x-4 gap-y-2">
+                  <span className="font-mono text-[28px] font-semibold leading-none tabular-nums text-muted-foreground line-through">{done.before}</span>
+                  <ArrowRight className="size-6 text-muted-foreground" strokeWidth={1.75} aria-hidden />
+                  <CountUp target={done.after} from={done.before} className="font-mono text-[48px] font-semibold leading-none tabular-nums md:text-[72px]" />
+                  <RiskBadge category={done.category} />
+                </div>
+                {done.evBefore !== null && done.evAfter !== null && (
+                  <p className="text-sm">
+                    Citizen evidence {done.evBefore} to {done.evAfter}. Your report added {done.after - done.before} points to this score.
+                  </p>
+                )}
+              </div>
+              <div className="flex flex-wrap gap-x-6 gap-y-2">
+                <Link to={`/site/${done.site.id}`} className="w-fit text-sm font-medium text-primary underline underline-offset-4">View updated site</Link>
+                <Link to="/" className="w-fit text-sm font-medium text-primary underline underline-offset-4">See it on the dashboard</Link>
+              </div>
             </div>
           ) : (
             <form onSubmit={submit} className="flex flex-col gap-6" noValidate>

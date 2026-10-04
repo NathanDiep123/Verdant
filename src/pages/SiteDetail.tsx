@@ -1,6 +1,6 @@
 import { useMemo, type CSSProperties } from "react";
 import { Link, useParams } from "react-router";
-import { ArrowLeft, Download, MoveRight, TrendingDown, TrendingUp } from "lucide-react";
+import { ArrowLeft, Download, MessageSquarePlus, MoveRight, TrendingDown, TrendingUp } from "lucide-react";
 import { useRegion } from "@/state/RegionContext";
 import { recommend, scoreSite, trend } from "@/engine/score";
 import { explain } from "@/engine/explain";
@@ -11,7 +11,10 @@ import { RiskMeter } from "@/components/RiskMeter";
 import { ContributionBars } from "@/components/ContributionBars";
 import { TrendChart } from "@/components/TrendChart";
 import { OneHealthPanel } from "@/components/OneHealthPanel";
-import { Button } from "@/components/ui/button";
+import { CommunityReportItem } from "@/components/CommunityReportItem";
+import { citizenEvidence, newestFirst } from "@/lib/communityReports";
+import { Button, buttonVariants } from "@/components/ui/button";
+import { cn } from "@/lib/utils";
 import type { Trend } from "@/types";
 
 const TREND_ICON: Record<Trend, typeof TrendingUp> = {
@@ -52,6 +55,8 @@ export default function SiteDetail() {
   const TrendIcon = TREND_ICON[t];
   const topId = results.reduce((best, r, i) => (r.siteScore > results[best].siteScore ? i : best), 0);
   const isRankOne = topId === index;
+  const siteReports = newestFirst(reports.filter((r) => r.siteId === site.id));
+  const evidence = citizenEvidence(result);
   const prototype = config.dataStatus === "prototype";
 
   return (
@@ -109,6 +114,36 @@ export default function SiteDetail() {
           <p className="mb-2 mt-1 text-sm text-muted-foreground">Site score by day</p>
           <TrendChart history={site.history} category={result.category} />
         </div>
+      </section>
+
+      <section id="community" aria-labelledby="community-h" className="flex max-w-[68ch] scroll-mt-6 flex-col items-start gap-4">
+        <h2 id="community-h" className="text-[28px] font-semibold leading-tight">Community observations</h2>
+        <div className="border-l-[3px] border-primary px-3 py-2">
+          <p className="text-xs font-semibold text-primary">Citizen evidence</p>
+          <p className="mt-1 text-sm">
+            {evidence ? (
+              <>
+                Citizen evidence: {evidence.value}/100, adds <span className="font-mono">{evidence.points}</span> points to the{" "}
+                {PATHWAYS[evidence.pathwayId].label} score.
+              </>
+            ) : (
+              "No citizen evidence in this score yet."
+            )}
+          </p>
+        </div>
+        {siteReports.length > 0 ? (
+          <div className="w-full">
+            {siteReports.map((r) => (
+              <CommunityReportItem key={r.id} report={r} siteName={site.name} showSite={false} />
+            ))}
+          </div>
+        ) : (
+          <p className="text-sm text-muted-foreground">No community reports for this site yet.</p>
+        )}
+        <Link to={`/report?site=${site.id}`} className={cn(buttonVariants(), "h-auto min-h-9 px-3 py-2")}>
+          <MessageSquarePlus strokeWidth={1.75} aria-hidden />
+          Add an observation at {site.name}
+        </Link>
       </section>
 
       <section aria-labelledby="pathways">
