@@ -50,10 +50,10 @@ function Choice({ selected, onClick, children }: { selected: boolean; onClick: (
       onClick={onClick}
       className={cn(
         "flex min-h-12 items-center justify-between gap-3 rounded-sm border-2 px-4 py-2 text-left text-base font-medium transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring",
-        selected ? "border-primary bg-card" : "border-border bg-card hover:bg-muted",
+        selected ? "border-primary bg-primary/10" : "border-border bg-card hover:bg-muted",
       )}
     >
-      <span>{children}</span>
+      <span className="first-letter:uppercase">{children}</span>
       {selected && <Check className="size-5 shrink-0 text-primary" strokeWidth={1.75} aria-hidden />}
     </button>
   );
@@ -74,11 +74,12 @@ export default function Report() {
   const [done, setDone] = useState<Done | null>(null);
   const stepHeading = useRef<HTMLHeadingElement>(null);
   const successRef = useRef<HTMLParagraphElement>(null);
-  const firstRender = useRef(true);
+  const prev = useRef({ step, done });
 
   useEffect(() => () => { if (photo) URL.revokeObjectURL(photo); }, [photo]);
   useEffect(() => {
-    if (firstRender.current) { firstRender.current = false; return; }
+    if (prev.current.step === step && prev.current.done === done) return;
+    prev.current = { step, done };
     const el = done ? successRef.current : stepHeading.current;
     el?.focus({ preventScroll: true });
     el?.scrollIntoView({ block: "start" });
@@ -189,7 +190,7 @@ export default function Report() {
   const choiceField = (f: ReportField) => (
     <fieldset key={f.id} className="flex flex-col gap-2">
       <legend className="mb-2 text-base font-medium">{f.question}</legend>
-      <div className="grid grid-cols-1 gap-2 min-[420px]:grid-cols-2">
+      <div className={cn("grid grid-cols-1 gap-2", f.options.length === 3 ? "min-[420px]:grid-cols-3" : "min-[420px]:grid-cols-2")}>
         {f.options.map((o) => (
           <Choice key={o} selected={(answers[f.id] ?? []).includes(o)} onClick={() => (f.multi ? toggleWildlife(o) : setOne(f.id, o))}>{o}</Choice>
         ))}
@@ -201,7 +202,7 @@ export default function Report() {
   const summaryRows: [string, string][] = [["Site", site?.name ?? ""], ["Photo", photo ? "Photo added" : "No photo"], ...observations()];
 
   return (
-    <div className="flex flex-col gap-8 py-8 md:gap-12 md:py-12">
+    <div className="flex flex-col gap-8 md:gap-12">
       <header className="flex max-w-[68ch] flex-col gap-2">
         <h1 className="text-[28px] font-bold leading-[1.1] tracking-[-0.02em] md:text-[40px]">Report a Bloom</h1>
         <p className="leading-[1.55] text-muted-foreground">
@@ -213,7 +214,7 @@ export default function Report() {
       </header>
 
       <div className="flex flex-col gap-6 lg:flex-row lg:items-start lg:gap-12">
-        <aside className="border border-border bg-card p-4 lg:sticky lg:top-6 lg:order-2 lg:w-[320px] lg:shrink-0">
+        <aside className={cn("border border-border bg-card p-4 lg:sticky lg:top-[84px] lg:order-2 lg:w-[320px] lg:shrink-0", done && "lg:hidden")}>
           {summary ?? <p className="text-sm text-muted-foreground">Choose a site to see its current risk score.</p>}
         </aside>
 
@@ -240,22 +241,31 @@ export default function Report() {
                   </p>
                 )}
               </div>
-              <div className="flex flex-wrap gap-x-6 gap-y-2">
-                <Link to={`/site/${done.site.id}`} className="w-fit text-sm font-medium text-primary underline underline-offset-4">View updated site</Link>
-                <Link to="/" className="w-fit text-sm font-medium text-primary underline underline-offset-4">See it on the dashboard</Link>
-              </div>
-              <div className="flex flex-col gap-3 sm:flex-row">
-                <Link to="/my-reports" className={cn(buttonVariants(), "h-11 w-full px-4 sm:w-auto")}>
-                  <ListChecks strokeWidth={1.75} aria-hidden />
-                  Track it in My reports
-                </Link>
-                <Button type="button" variant="outline" className="h-11 w-full sm:w-auto" onClick={reset}>File another report</Button>
+              <div className="flex flex-col gap-4">
+                <div className="flex flex-wrap gap-x-6 gap-y-2">
+                  <Link to={`/site/${done.site.id}`} className="w-fit text-sm font-medium text-primary underline underline-offset-4">View updated site</Link>
+                  <Link to="/" className="w-fit text-sm font-medium text-primary underline underline-offset-4">See it on the dashboard</Link>
+                </div>
+                <div className="flex flex-col gap-3 sm:flex-row">
+                  <Link to="/my-reports" className={cn(buttonVariants(), "h-11 w-full px-4 sm:w-auto")}>
+                    <ListChecks strokeWidth={1.75} aria-hidden />
+                    Track it in My reports
+                  </Link>
+                  <Button type="button" variant="outline" className="h-11 w-full sm:w-auto" onClick={reset}>File another report</Button>
+                </div>
               </div>
             </div>
           ) : (
             <form onSubmit={submit} className="flex flex-col gap-6" noValidate>
               <div className="flex flex-col gap-1">
-                <p className="font-mono text-xs text-muted-foreground">Step {step} of 3</p>
+                <div className="flex items-center gap-3">
+                  <p className="font-mono text-xs text-muted-foreground">Step {step} of 3</p>
+                  <div className="flex w-[120px] gap-1" aria-hidden>
+                    {[1, 2, 3].map((n) => (
+                      <span key={n} className={cn("h-1 flex-1 rounded-full", n <= step ? "bg-primary" : "bg-border")} />
+                    ))}
+                  </div>
+                </div>
                 <h2 ref={stepHeading} tabIndex={-1} className="scroll-mt-24 text-xl font-semibold leading-[1.3] outline-none">{STEP_TITLES[step - 1]}</h2>
               </div>
 
@@ -279,7 +289,7 @@ export default function Report() {
                           onClick={() => setSiteId(s.id)}
                           className={cn(
                             "flex min-h-14 items-center justify-between gap-3 rounded-sm border-2 px-4 py-2 text-left transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring",
-                            sel ? "border-primary bg-card" : "border-border bg-card hover:bg-muted",
+                            sel ? "border-primary bg-primary/10" : "border-border bg-card hover:bg-muted",
                           )}
                         >
                           <span className="flex items-center gap-2 text-base font-semibold">

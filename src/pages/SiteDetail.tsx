@@ -35,7 +35,7 @@ export default function SiteDetail() {
 
   if (index < 0) {
     return (
-      <div className="flex flex-col items-start gap-4 py-12">
+      <div className="flex flex-col items-start gap-4">
         <h1 className="text-[28px] font-bold leading-tight tracking-[-0.02em] md:text-[40px]">Site not found</h1>
         <p className="max-w-[68ch] text-muted-foreground">
           There is no site called "{id}" in the current region.
@@ -60,8 +60,8 @@ export default function SiteDetail() {
   const prototype = config.dataStatus === "prototype";
 
   return (
-    <div className="flex flex-col gap-8 py-8 md:gap-12 md:py-12">
-      <section className="grid gap-8 md:grid-cols-12 md:gap-12">
+    <div className="flex flex-col gap-8 md:gap-12">
+      <section className="grid gap-8 border border-border bg-card p-4 md:grid-cols-12 md:items-center md:gap-12 md:p-6">
         <div className="md:col-span-5">
           <Link to="/" className="inline-flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground">
             <ArrowLeft className="size-4" strokeWidth={1.75} aria-hidden />
@@ -81,7 +81,7 @@ export default function SiteDetail() {
             <span className="font-mono text-[48px] font-semibold leading-none tabular-nums md:text-[72px]">
               {result.siteScore}
             </span>
-            <RiskBadge category={result.category} score={result.siteScore} />
+            <RiskBadge category={result.category} />
           </div>
           <p className="mt-4 max-w-[44ch] text-sm leading-[1.45] text-muted-foreground">{DISCLAIMER}</p>
         </div>
