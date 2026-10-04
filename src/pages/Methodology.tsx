@@ -148,6 +148,11 @@ export default function Methodology() {
               <p className="mt-2">site score = highest pathway score</p>
               <p className="text-muted-foreground">the pathway that sets it is the leading pathway</p>
             </div>
+            <p>
+              Citizen evidence is weighted by review. A new report adds 10 points to its site's citizen evidence. A
+              report confirmed by field sample adds 20. A report a ranger marks Not a bloom adds 0. Demo reports are
+              already counted in the prototype values.
+            </p>
           </div>
 
           <div className="flex flex-col gap-3">

@@ -52,7 +52,7 @@ export function CommunityReportsFeed({
           ) : (
             <ul className="border-t">
               {newest.map((r) => (
-                <li key={r.id}>
+                <li key={r.id} className="border-b last:border-b-0 [&>div>div]:border-b-0">
                   <FadeIn fresh={!initialIds.current.has(r.id)}>
                     <CommunityReportItem report={r} siteName={nameOf(r.siteId)} showSite />
                   </FadeIn>
