@@ -6,11 +6,11 @@ export const CATEGORY_STYLE: Record<
   Category,
   { color: string; label: string; icon: LucideIcon; markerSize: number }
 > = {
-  Low: { color: "#3E9A5A", label: "Low", icon: ShieldCheck, markerSize: 24 },
-  Moderate: { color: "#F2C230", label: "Moderate", icon: Eye, markerSize: 28 },
-  High: { color: "#E8762B", label: "High", icon: TriangleAlert, markerSize: 32 },
+  Low: { color: "#276E90", label: "Low", icon: ShieldCheck, markerSize: 24 },
+  Moderate: { color: "#E0AE2E", label: "Moderate", icon: Eye, markerSize: 28 },
+  High: { color: "#E07433", label: "High", icon: TriangleAlert, markerSize: 32 },
   "Very High": {
-    color: "#B3261E",
+    color: "#A3241B",
     label: "Very High",
     icon: OctagonAlert,
     markerSize: 36,

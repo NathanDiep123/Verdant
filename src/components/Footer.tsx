@@ -1,3 +1,4 @@
+import { InkRule, SpecimenTag } from "@/components/FieldMarks";
 import { useRegion } from "@/state/RegionContext";
 
 export const DISCLAIMER =
@@ -13,12 +14,11 @@ export function dataLabel(status: string): string {
 export function Footer() {
   const { config } = useRegion();
   return (
-    <footer className="mt-12 border-t border-border">
+    <footer className="mt-12">
+      <InkRule variant="wave" className="mx-auto w-[calc(100%-2rem)] max-w-[1312px] text-olive/60" />
       <div className="mx-auto flex max-w-[1360px] flex-col gap-3 px-4 py-6 md:px-6">
         <p className="max-w-[68ch] text-sm leading-[1.45] text-muted-foreground">{DISCLAIMER}</p>
-        <p className="w-fit rounded-sm border border-dashed border-border px-2 py-0.5 font-mono text-xs font-medium leading-[1.4] text-muted-foreground">
-          {dataLabel(config.dataStatus)}
-        </p>
+        <SpecimenTag>{dataLabel(config.dataStatus)}</SpecimenTag>
       </div>
     </footer>
   );

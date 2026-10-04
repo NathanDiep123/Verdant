@@ -3,6 +3,7 @@ import { Link, NavLink, useLocation } from "react-router";
 import { Menu, MessageSquarePlus } from "lucide-react";
 import { Button, buttonVariants } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTitle } from "@/components/ui/sheet";
+import { InkUnderline } from "@/components/FieldMarks";
 import { Footer } from "@/components/Footer";
 import { RegionSwitch } from "@/components/RegionSwitch";
 import { cn } from "@/lib/utils";
@@ -21,7 +22,7 @@ export function Layout({ children }: { children: ReactNode }) {
   const onReportPage = useLocation().pathname.startsWith("/report");
   return (
     <div className="flex min-h-screen flex-col">
-      <header className="sticky top-0 z-40 border-b border-border bg-card">
+      <header className="sticky top-0 z-40 border-b border-border bg-card/95">
         <div className="mx-auto flex h-[60px] max-w-[1360px] items-center gap-3 px-4 md:px-6 xl:gap-8">
           <Button
             variant="ghost"
@@ -32,7 +33,7 @@ export function Layout({ children }: { children: ReactNode }) {
           >
             <Menu strokeWidth={1.75} />
           </Button>
-          <NavLink to="/" className="text-xl font-bold tracking-[-0.01em] text-foreground">
+          <NavLink to="/" className="font-heading text-2xl leading-none tracking-[-0.01em] text-foreground">
             Verdant
           </NavLink>
           <nav aria-label="Main" className="hidden h-full items-stretch gap-6 xl:flex">
@@ -43,14 +44,14 @@ export function Layout({ children }: { children: ReactNode }) {
                 end={n.end}
                 className={({ isActive }) =>
                   cn(
-                    "-mb-px flex items-center border-b-2 text-sm font-medium transition-colors duration-[120ms]",
-                    isActive
-                      ? "border-primary text-foreground"
-                      : "border-transparent text-muted-foreground hover:text-foreground",
+                    "flex items-center text-sm font-medium transition-colors duration-[120ms]",
+                    isActive ? "text-foreground" : "text-muted-foreground hover:text-foreground",
                   )
                 }
               >
-                {n.label}
+                {({ isActive }) =>
+                  isActive ? <InkUnderline tone="primary">{n.label}</InkUnderline> : n.label
+                }
               </NavLink>
             ))}
           </nav>
@@ -68,7 +69,7 @@ export function Layout({ children }: { children: ReactNode }) {
 
       <Sheet open={open} onOpenChange={setOpen}>
         <SheetContent side="left" className="gap-0 p-0">
-          <SheetTitle className="border-b border-border px-4 py-4 text-xl font-bold">Verdant</SheetTitle>
+          <SheetTitle className="border-b border-border px-4 py-4 font-heading text-2xl font-normal">Verdant</SheetTitle>
           <nav aria-label="Main" className="flex flex-col">
             {NAV.map((n) => (
               <NavLink

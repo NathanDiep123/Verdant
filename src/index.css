@@ -1,12 +1,12 @@
-@import url("https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=Schibsted+Grotesk:wght@400;500;600;700&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Schibsted+Grotesk:wght@400;500;600;700&family=Young+Serif&display=swap");
 @import "tailwindcss";
 @import "tw-animate-css";
 @import "shadcn/tailwind.css";
 
 @theme inline {
   --font-sans: "Schibsted Grotesk", ui-sans-serif, system-ui, sans-serif;
-  --font-heading: var(--font-sans);
-  --font-mono: "IBM Plex Mono", ui-monospace, monospace;
+  --font-heading: "Young Serif", Georgia, serif;
+  --font-mono: "DM Mono", ui-monospace, monospace;
 
   --color-background: var(--background);
   --color-foreground: var(--foreground);
@@ -26,6 +26,9 @@
   --color-border: var(--border);
   --color-input: var(--input);
   --color-ring: var(--ring);
+  --color-olive: var(--olive);
+  --color-ochre: var(--ochre);
+  --color-ochre-ink: var(--ochre-ink);
 
   --color-risk-low: var(--risk-low);
   --color-risk-low-tint: var(--risk-low-tint);
@@ -40,7 +43,7 @@
   --color-risk-very-high-tint: var(--risk-very-high-tint);
   --color-risk-very-high-ink: var(--risk-very-high-ink);
 
-  /* One radius for every rectangle: 4px. */
+  /* One radius for every rectangle: 3px. */
   --radius-sm: var(--radius);
   --radius-md: var(--radius);
   --radius-lg: var(--radius);
@@ -50,42 +53,45 @@
   --radius-4xl: var(--radius);
 
   /* The one shadow token: popups, dropdowns, sheet. */
-  --shadow-popup: 0 6px 24px rgb(20 33 31 / 0.14);
+  --shadow-popup: 0 6px 24px rgb(30 43 34 / 0.16);
 }
 
 :root {
-  --background: #f3f5f4;
-  --card: #fbfcfb;
-  --popover: #fbfcfb;
-  --foreground: #14211f;
-  --card-foreground: #14211f;
-  --popover-foreground: #14211f;
-  --muted: #e7ecea;
-  --muted-foreground: #56645f;
-  --border: #d3dbd8;
-  --input: #d3dbd8;
-  --primary: #174c6b;
-  --ring: #174c6b;
-  --primary-foreground: #fbfcfb;
-  --secondary: #e7ecea;
-  --accent: #e7ecea;
-  --secondary-foreground: #14211f;
-  --accent-foreground: #14211f;
-  --destructive: #b3261e;
-  --radius: 0.25rem;
+  --background: #f2ecdd;
+  --card: #faf6ec;
+  --popover: #faf6ec;
+  --foreground: #1e2b22;
+  --card-foreground: #1e2b22;
+  --popover-foreground: #1e2b22;
+  --muted: #e8dfcb;
+  --muted-foreground: #5a5644;
+  --border: #cfc3a5;
+  --input: #8c8064;
+  --primary: #1f4d3a;
+  --ring: #1f4d3a;
+  --primary-foreground: #faf6ec;
+  --secondary: #e8dfcb;
+  --accent: #e8dfcb;
+  --secondary-foreground: #1e2b22;
+  --accent-foreground: #1e2b22;
+  --destructive: #a3241b;
+  --radius: 0.1875rem;
+  --olive: #596327;
+  --ochre: #b7791f;
+  --ochre-ink: #8a5a12;
 
-  --risk-low: #3e9a5a;
-  --risk-low-tint: #e2f1e6;
-  --risk-low-ink: #1d5c34;
-  --risk-moderate: #f2c230;
-  --risk-moderate-tint: #fbf0c6;
-  --risk-moderate-ink: #6b5300;
-  --risk-high: #e8762b;
-  --risk-high-tint: #fce5d3;
-  --risk-high-ink: #8a3d0b;
-  --risk-very-high: #b3261e;
-  --risk-very-high-tint: #f8dedb;
-  --risk-very-high-ink: #8c1d16;
+  --risk-low: #276e90;
+  --risk-low-tint: #dceaf0;
+  --risk-low-ink: #174a66;
+  --risk-moderate: #e0ae2e;
+  --risk-moderate-tint: #f6e8bc;
+  --risk-moderate-ink: #634c00;
+  --risk-high: #e07433;
+  --risk-high-tint: #f5dac4;
+  --risk-high-ink: #84380a;
+  --risk-very-high: #a3241b;
+  --risk-very-high-tint: #f2d5cf;
+  --risk-very-high-ink: #861b14;
 }
 
 @layer base {
@@ -95,9 +101,28 @@
   html {
     @apply font-sans;
   }
+  @media (prefers-reduced-motion: no-preference) {
+    html {
+      scroll-behavior: smooth;
+    }
+  }
   body {
     @apply bg-background text-foreground text-base;
     line-height: 1.55;
+    font-variant-numeric: lining-nums;
+    background-color: var(--background);
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='240' height='240'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0.35 0 0 0 0 0.29 0 0 0 0 0.18 0 0 0 0.07 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  }
+  h1,
+  h2,
+  h3,
+  h4 {
+    @apply font-heading;
+    font-weight: 400;
+    font-synthesis: none;
+  }
+  .font-heading {
+    font-synthesis: none;
   }
 
   /* Leaflet popup restyled to the design tokens. */
@@ -131,7 +156,14 @@
   }
   .leaflet-container {
     font-family: var(--font-sans);
-    background: var(--card);
+    background: #e9e1cc;
+  }
+  .leaflet-popup-content h1,
+  .leaflet-popup-content h2,
+  .leaflet-popup-content h3 {
+    font-family: var(--font-heading);
+    font-size: 1.25rem;
+    line-height: 1.3;
   }
   .leaflet-div-icon {
     background: transparent;
@@ -143,9 +175,14 @@
   }
 }
 
+/* Warm the tiles to paper. Tile pane only, never markers, popups or controls. */
+.leaflet-tile-pane {
+  filter: sepia(0.35) saturate(0.85) hue-rotate(-6deg) contrast(0.96) brightness(1.02);
+}
+
 /* Unlayered so they beat leaflet.css. Controls and attribution follow the tokens. */
 .leaflet-bar {
-  border: 1px solid var(--border);
+  border: 1px solid var(--input);
   box-shadow: none;
 }
 .leaflet-bar a,
@@ -169,6 +206,35 @@
   color: var(--muted-foreground);
 }
 
+/* Stamps: risk badges, report status tags, the CDC source stamp. Set --stamp-bg to the fill. */
+@layer components {
+  .stamp {
+    border: 1.5px solid currentColor;
+    box-shadow:
+      inset 0 0 0 2px var(--stamp-bg, transparent),
+      inset 0 0 0 3px color-mix(in srgb, currentColor 35%, transparent);
+    border-radius: 2px;
+  }
+  /* Map seals. Set background (risk solid), width and height inline; add .seal-dashed on 32px and 36px. */
+  .seal {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 9999px;
+    border: 2px solid var(--card);
+    box-shadow: 0 0 0 1.5px var(--foreground);
+    font-family: var(--font-mono);
+    font-weight: 500;
+    font-size: 12px;
+    line-height: 1;
+  }
+  .seal-dashed {
+    outline: 1px dashed rgb(250 246 236 / 0.7);
+    outline-offset: -5px;
+  }
+}
+
 /* Very High marker pulse. Set --pulse-color on the marker element. */
 @keyframes verdant-pulse {
   from {
@@ -184,14 +250,34 @@
 .verdant-pulse {
   position: relative;
 }
+.verdant-pulse::before,
 .verdant-pulse::after {
   content: "";
   position: absolute;
   inset: 0;
   border-radius: 9999px;
-  background: var(--pulse-color, var(--risk-very-high));
+  border: 1.5px solid var(--pulse-color, var(--risk-very-high));
   pointer-events: none;
+  opacity: 0;
   animation: verdant-pulse 1800ms cubic-bezier(0.16, 1, 0.3, 1) infinite;
+}
+.verdant-pulse::after {
+  animation-delay: 900ms;
+}
+
+/* One-time stamp press on the success report id. */
+@keyframes verdant-stamp {
+  from {
+    transform: scale(1.12);
+    opacity: 0;
+  }
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+.verdant-stamp {
+  animation: verdant-stamp 220ms cubic-bezier(0.2, 0.9, 0.3, 1.2) 1 both;
 }
 
 /* Fade for a just-changed row or panel: muted to transparent. */
@@ -208,7 +294,9 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
+  .verdant-pulse::before,
   .verdant-pulse::after,
+  .verdant-stamp,
   .verdant-flash {
     animation: none;
   }
