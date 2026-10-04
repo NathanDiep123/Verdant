@@ -290,16 +290,16 @@ This text appears on the site detail page and in the footer of every page.
 
 ## 11. Design direction
 
-Status: WRITTEN (Task 1.2). Product context lives in `PRODUCT.md`. Every UI task names `impeccable` and follows this section without reinterpretation (AGENTS.md point 3). Design read: Operate-mode monitoring tool for agency staff and judges, in a field-survey-instrument language. Dials: VARIANCE 4, MOTION 2, DENSITY 5. Light theme only; no dark mode is built.
+Status: WRITTEN (Task 1.2). Product context lives in `PRODUCT.md`. Every UI task names `impeccable` and follows this section without reinterpretation (AGENTS.md point 3). Design read: Operate-mode monitoring tool for agency staff and judges, in a field-survey-instrument language. Dials: VARIANCE 4, MOTION 2, DENSITY 5. Light theme only; no dark mode is built. **Superseded in part by Section 23 (field notebook, 2026-10-04 16:20 PDT):** the 11.2 families and import and the 11.3 hex values below were replaced in place; wherever 11.1 to 11.9 conflict with Section 23 (serif, "no serif", "every number Mono", flat page with zero texture, the 11.8 alternatives), Section 23 wins. Layout, spacing, structure and behaviour in 11.4 to 11.7 stay.
 
 **11.1 Thesis.** Verdant looks like a hydrological survey instrument, not a SaaS dashboard: a cool paper-grey sheet, ink type, hairline rules and one deep reservoir-blue accent, so the only saturated colour on screen is risk. Numbers are the hero; every score is set in mono, sits next to its category word and icon, and is one click from its explanation.
 
 **11.2 Typography.**
-- Families: `Schibsted Grotesk` (all text, headings, UI) and `IBM Plex Mono` (every number, score, factor id, equation, data label). No third family. No serif.
+- Families (Section 23.3 replaced these): `Young Serif` (headlines, wordmark, big numerals), `Schibsted Grotesk` (body, UI), `DM Mono` (data labels, small numbers, equations). Three families.
 - Import, first line of `src/index.css`, before `@import "tailwindcss";`:
-  `@import url("https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=Schibsted+Grotesk:wght@400;500;600;700&display=swap");`
-- Tailwind mapping in `@theme inline`: `--font-sans: "Schibsted Grotesk", ui-sans-serif, system-ui, sans-serif;` `--font-mono: "IBM Plex Mono", ui-monospace, monospace;`. All mono numbers use `tabular-nums`.
-- Scale (size / line-height / weight / use):
+  `@import url("https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Schibsted+Grotesk:wght@400;500;600;700&family=Young+Serif&display=swap");`
+- Tailwind mapping in `@theme inline`: `--font-sans: "Schibsted Grotesk", ui-sans-serif, system-ui, sans-serif;` `--font-heading: "Young Serif", Georgia, serif;` `--font-mono: "DM Mono", ui-monospace, monospace;`. All numbers use `tabular-nums`.
+- Scale: the 23.3 scale replaces the one below wherever they differ (old scale kept for reference only):
   - 72px / 1 / Mono 600: site-detail score numeral only (48px below 768px).
   - 40px / 1.1 / Sans 700, tracking -0.02em: page H1 (28px below 768px).
   - 28px / 1.2 / Sans 600: KPI values (Mono 600), section H2.
@@ -313,27 +313,31 @@ Status: WRITTEN (Task 1.2). Product context lives in `PRODUCT.md`. Every UI task
 
 | CSS variable | Hex | shadcn/Tailwind role |
 |---|---|---|
-| `--background` | `#F3F5F4` | page background (`bg-background`) |
-| `--card`, `--popover` | `#FBFCFB` | surfaces: map frame, tables, popups, inputs |
-| `--foreground`, `--card-foreground`, `--popover-foreground` | `#14211F` | ink |
-| `--muted` | `#E7ECEA` | quiet fills: table header, hover row, `secondary` |
-| `--muted-foreground` | `#56645F` | muted ink: meta lines, helper text |
-| `--border`, `--input` | `#D3DBD8` | hairlines, input borders |
-| `--primary`, `--ring` | `#174C6B` | accent: primary button, links, focus ring, contribution bars, "Official data" badge |
-| `--primary-foreground` | `#FBFCFB` | text on accent |
-| `--secondary` / `--accent` | `#E7ECEA` | shadcn hover surfaces (never coloured) |
-| `--secondary-foreground` / `--accent-foreground` | `#14211F` | |
-| `--destructive` | `#B3261E` | form errors only |
-| `--radius` | `0.25rem` | |
+| `--background` | `#F2ECDD` | warm paper page background (`bg-background`), carries the 23.5 grain |
+| `--card`, `--popover` | `#FAF6EC` | clean surfaces: map frame, tables, popups, inputs (no grain) |
+| `--foreground`, `--card-foreground`, `--popover-foreground` | `#1E2B22` | ink |
+| `--muted` | `#E8DFCB` | quiet fills: table header, hover row, `secondary` |
+| `--muted-foreground` | `#5A5644` | muted ink: meta lines, helper text |
+| `--border` | `#CFC3A5` | decorative rules and panel hairlines |
+| `--input` | `#8C8064` | input, checkbox and outline-button borders (3:1 UI contrast) |
+| `--primary`, `--ring` | `#1F4D3A` | pond green: primary button, links, focus ring, contribution bars, "Official data" tag |
+| `--primary-foreground` | `#FAF6EC` | text on pond green |
+| `--olive` (new) | `#596327` | secondary ink: leading pathway, contour strokes, KPI captions |
+| `--ochre` (new) | `#B7791F` | marks only (underlines, arrows, stamp borders, tape); never text |
+| `--ochre-ink` (new) | `#8A5A12` | ochre text, only on `--background` or `--card` |
+| `--secondary` / `--accent` | `#E8DFCB` | shadcn hover surfaces |
+| `--secondary-foreground` / `--accent-foreground` | `#1E2B22` | |
+| `--destructive` | `#A3241B` | form errors only |
+| `--radius` | `0.1875rem` (3px) | |
 
 Risk tokens (also exposed as `--color-risk-*`). Solid = markers, meter, chart dots. Tint + text = badges and table cells. Lightness is non-monotonic on purpose, so every category also carries a size, an icon (lucide-react) and its word.
 
 | Category | `--risk-*` solid | `--risk-*-tint` | `--risk-*-ink` | Icon | Marker diameter | Number on marker |
 |---|---|---|---|---|---|---|
-| Low | `#3E9A5A` | `#E2F1E6` | `#1D5C34` | `ShieldCheck` | 24px | ink `#14211F` |
-| Moderate | `#F2C230` | `#FBF0C6` | `#6B5300` | `Eye` | 28px | ink `#14211F` |
-| High | `#E8762B` | `#FCE5D3` | `#8A3D0B` | `TriangleAlert` | 32px | ink `#14211F` |
-| Very High | `#B3261E` | `#F8DEDB` | `#8C1D16` | `OctagonAlert` | 36px | `#FBFCFB` |
+| Low | `#276E90` (clear-water blue, Section 23.4) | `#DCEAF0` | `#174A66` | `ShieldCheck` | 24px | `#FAF6EC` |
+| Moderate | `#E0AE2E` | `#F6E8BC` | `#634C00` | `Eye` | 28px | ink `#1E2B22` |
+| High | `#E07433` | `#F5DAC4` | `#84380A` | `TriangleAlert` | 32px | ink `#1E2B22` |
+| Very High | `#A3241B` | `#F2D5CF` | `#861B14` | `OctagonAlert` | 36px | `#FAF6EC` |
 
 Risk badge (one component, `RiskBadge`): tint background, ink text, 1px border in the solid colour, icon 14px + score (Mono) + category word. Never colour without the word. Icons: lucide-react only (installed by shadcn; no second icon library), stroke width 1.75 everywhere.
 
@@ -493,7 +497,7 @@ Speakers are A (Frontend/Map), B (Data/Risk Model) and C (Product/Citizen Scienc
 
 | Time | Speaker | Screen | Script |
 |---|---|---|---|
-| 0:00–0:25 | C | Title card with the statistic and the on-screen source line "Source: CDC, MMWR 69(50), Dec 18, 2020" (Section 19.2 row C1), then a Lake Mead photo, then Dashboard | Spoken, exactly: "Across the United States, 18 states reported 421 harmful algal bloom events, 389 cases of human illness and 413 cases of animal illness from 2016 to 2018." Then: "At Lake Mead, the National Park Service warns that bloom toxins can make people sick and can kill dogs. Monitoring cannot continuously cover every part of the lake." |
+| 0:00–0:25 | C | The live site at `/` (Section 23.10, Task 23.2): the StatHero block is the first frame, filmed on the deployed site at 1440x900, showing the statistic and the stamped source line "Source: CDC, MMWR 69(50), Dec 18, 2020" (Section 19.2 row C1); hold 8 s, then click "See where to sample first" and let the page settle on the map (a separate title card and the Lake Mead photo are optional, no longer required) | Spoken, exactly: "Across the United States, 18 states reported 421 harmful algal bloom events, 389 cases of human illness and 413 cases of animal illness from 2016 to 2018." Then: "At Lake Mead, the National Park Service warns that bloom toxins can make people sick and can kill dogs. Monitoring cannot continuously cover every part of the lake." |
 | 0:25–0:40 | C | Dashboard, cursor resting on the header button "Report what you see" | Verdant, Track 6 Resilience Informatics. Spoken, exactly: "Rangers depend on people at the shore to report blooms. But a report can be hard to act on: the wrong spot, no photo, or duckweed that looks like algae. Verdant makes reporting easy, has rangers triage every report, and tells the reporter what happened." |
 | 0:40–1:05 | A | Risk map with the community report pins visible, popups, Sampling priority list, official elevation card | The map, the categories, the square community report pins next to the site markers, the Sampling priority list with Callville Bay as the recommended first sampling target and its 3 reports, the official Reclamation elevation card beside the labelled prototype values, and Boulder Basin led by heat and low water. |
 | 1:05–1:30 | B | `/site/callville-bay` | 79, Very High, Increasing. Why is risk elevated: the contribution bars. The Verdant recommendation "Recommend field sampling" next to "Official advisory: none issued". The disclaimer. |
@@ -912,7 +916,7 @@ The orchestrator runs `npm run build` and `npx vitest run`, clicks "Reset demo d
 - **Colour:** tokens unchanged. New uses, token-derived only: selected choice buttons `bg-primary/10` plus the existing 2px `--primary` border; the "Confirmed by field sample" ranger button `border-primary text-primary`; the confirmed outcome block in My reports `bg-primary/5`.
 - **Buttons:** the shadcn `outline` variant becomes `border-border bg-card hover:bg-muted`.
 - **Spacing rhythm:** Layout `main` gets `pt-8 pb-16` (32px top, 64px bottom) and pages drop their own top padding; section gap stays 48px desktop, 32px mobile.
-- **Dashboard @1440:** title block (H1 40px, subtitle max 68ch, data label beneath). KPI band cells padding 16px, top-aligned, band height at most 132px: "From {n} sites" and "Add a report" sit on one line; the official cell's source URL displays as "usbr.gov" (`href` unchanged, full URL in `title`). 24px gap from KPI band to the map row. Result: map top edge at y ≤ 380 at 1440x900. Row 2 stays map `col-span-7` + list `col-span-5`, 620px tall.
+- **Dashboard @1440:** title block (H1 40px, subtitle max 68ch, data label beneath). KPI band cells padding 16px, top-aligned, band height at most 132px: "From {n} sites" and "Add a report" sit on one line; the official cell's source URL displays as "usbr.gov" (`href` unchanged, full URL in `title`). 24px gap from KPI band to the map row. Result: map top edge at y ≤ 380 at 1440x900 (Section 23.10 amends: the StatHero now sits first, the title block collapses to one row and the KPI band to 112px, so the map top moves to y ≤ 540). Row 2 stays map `col-span-7` + list `col-span-5`, 620px tall.
 - **Map:** on load and on region switch the map fits the bounds of the region's sites with 40px padding (`fitBounds`, max zoom = config zoom + 1), so every marker sits inside the frame. Zoom control top-right; toggle top-left; attribution 11px muted on `bg-card/90`. Below 768px: map 420px tall, scroll-wheel zoom off, legend under the frame as one wrapped row.
 - **Priority list @1024+:** 5 columns, Rank | Site / Leading pathway | Risk / Trend | Reports | Action. Site name Sans 600 `whitespace-nowrap` with the leading pathway 13px muted beneath; `RiskBadge` with the trend icon and word 13px beneath; Action 13px. The rank-1 row keeps its 3px `--primary` left border and the "Verdant recommendation" block. Below 1024px the stacked rows stay.
 - **Site detail hero:** the badge beside the 72px numeral renders without the score (`RiskBadge` without `score`). The hero sits in a `bg-card` band, hairline border, 24px padding; the right column (meter, then the recommendation pair) is vertically centred against the left.
@@ -987,3 +991,207 @@ Never cut: 22.1, 22.2, the map `fitBounds` and zoom position, the ranger button 
 1. After each agent returns, the orchestrator runs `npx tsc -b`, `npm run build`, `npx vitest run` and checks the agent's screenshots against its done-check.
 2. At 17:40 PDT one execution-tier agent runs an `impeccable` polish pass over every route at 1440 and 390 (Section 11.9 checklist plus the decisions above), fixing only spacing, alignment and token mismatches.
 3. By 18:00 PDT the orchestrator clicks "Reset demo data", reloads, and walks the full Section 13 video path at 1440x900 on the production build (`npm run build` then `npx vite preview`): dashboard fold, Callville popup, `/site/callville-bay`, Community observations, the three report steps, success 79 to 81, Report queue clicks, My reports "You got it right." with record 3 of 4, dashboard Callville at 82, One Health panel, OAH Cities to Coimbra, the Coimbra rank-1 "Export FHIR JSON", the Methodology diagram. Every exact string of Sections 8, 20 and 21 present, no console errors, no horizontal scroll at 390.
+
+## 23. Visual direction: field notebook
+
+**Why (user, 2026-10-04, verbatim):** "mostly, that it looks too ai if you know what i mean ... the underlying structure is fine". Direction answers already given by the user: character = field notebook; palette = pond green + ochre; typography = serif display + grotesk body (+ mono for data); detail level = strong. Second binding requirement (verbatim): "make the statistic literally the first thing they see when they open the website" (23.10). Written 16:20 PDT by the planning-tier agent from a fresh headless-Chrome audit (`ui-audit2/` in the session scratchpad): the Section 22 layout reads well, but cool grey paper + one blue + grotesk-only type + hairline boxes is the generic "clean tool" look the user rejects.
+
+**What this section changes elsewhere:** Section 11.2 families and import line and the 11.3 hex tables were replaced in place (11.0 status line says so); Section 22's map-top target moves from y ≤ 380 to y ≤ 540 (22 Dashboard decision carries the amendment); Section 13 row 0:00-0:25 now films the StatHero on the live site. Structure, routes, behaviours, every exact string of Sections 8, 13, 20, 21, the five-column priority list and all Section 22 layout fixes stay. No new dependency, no image file, no new CSS file: everything below is Tailwind utilities, `src/index.css`, and one new component file of inline SVG.
+
+### 23.1 Thesis
+
+Verdant is a ranger's field notebook: warm paper, ink headings set in a sturdy serif, data written on specimen tags and stamped seals, and a few hand-drawn marks (contours, ripples, an arrow in the margin) that say people made this at the shore. Decoration lives in the margins and on labels; the data itself (tables, scores, forms, the map) stays clean, ruled and fast to read.
+
+### 23.2 Assumptions (no user available)
+
+- Video recorded at 1440x900 in Chrome on the production build, light theme only.
+- "Strong" detail means motifs on every page, but at most two decorative motifs per viewport and never on tables, forms or body text.
+- Low risk turns from green to clear-water blue (23.4); the only change in `src/lib/` is the four `color` hex values in `src/lib/risk.ts` (no test asserts them; grep confirmed 16:15 PDT).
+
+### 23.3 Typography
+
+- **Families:** `Young Serif` (display: H1, H2, wordmark, card titles, every big numeral: score, KPI values, StatHero numerals, record band, "You got it right."), `Schibsted Grotesk` (body, nav, buttons, table cells, form labels, badges), `DM Mono` (data labels, specimen tags, small numbers, units, timestamps, report ids, equations, axis ticks). Young Serif has one weight (400); never fake-bold it (`font-synthesis: none` on `.font-heading`).
+- **Import, first line of `src/index.css`:** `@import url("https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Schibsted+Grotesk:wght@400;500;600;700&family=Young+Serif&display=swap");`
+- **`@theme inline`:** `--font-sans: "Schibsted Grotesk", ui-sans-serif, system-ui, sans-serif;` `--font-heading: "Young Serif", Georgia, serif;` `--font-mono: "DM Mono", ui-monospace, monospace;`. Numbers: `tabular-nums lining-nums`; counting numerals get a fixed `min-w-[2ch]` so the 79 to 81 count does not jitter.
+- **Scale** (rem / line-height / family / tracking / use):
+  - 4.5rem / 1 / Serif / -0.02em: site-detail score numeral (3rem below 768px).
+  - 3.5rem / 1 / Serif / -0.02em: StatHero numerals 421, 389, 413 (2.5rem below 768px).
+  - 2.5rem / 1.05 / Serif / -0.015em: page H1 (1.875rem below 768px). Dashboard H1 is 2rem (23.10 budget).
+  - 1.875rem / 1.25 / Serif / -0.01em: StatHero sentence (1.375rem below 768px).
+  - 1.75rem / 1.15 / Serif / -0.01em: section H2, KPI values, record-band values (2.5rem on My reports per Section 22), "You got it right." (1.5rem).
+  - 1.25rem / 1.3 / Serif / 0: H3, card and popup site names, city names, wordmark "Verdant" 1.5rem.
+  - 1rem / 1.55 / Sans 400: body, inputs, explanation sentence; prose max 68ch.
+  - 0.875rem / 1.45 / Sans 500: table cells, nav, buttons, factor labels.
+  - 0.8125rem / 1.4 / Sans 400: meta lines, leading pathway (in `--olive`), trend words.
+  - 0.75rem / 1.4 / Mono 400 or 500 / +0.02em: specimen-tag labels, source lines, units, "pts", ids, timestamps. Sentence case.
+  - 0.75rem / 1 / Sans 600 / +0.06em uppercase: the category word inside risk stamps only (unchanged rule).
+- Headings are never set in Mono and never uppercase; Serif is never used below 1.25rem.
+
+### 23.4 Colour tokens and contrast
+
+Exact hexes live in the rewritten Section 11.3 tables; `src/index.css` `:root` gets every value, `@theme inline` maps each to `--color-*` (add `--color-olive`, `--color-ochre`, `--color-ochre-ink`). Summary: paper `#F2ECDD`, surface `#FAF6EC`, ink `#1E2B22`, muted ink `#5A5644`, rule `#CFC3A5`, input border `#8C8064`, muted fill `#E8DFCB`, pond green primary `#1F4D3A`, olive `#596327`, ochre `#B7791F`, ochre ink `#8A5A12`, destructive `#A3241B`. Risk: Low `#276E90` / tint `#DCEAF0` / ink `#174A66`; Moderate `#E0AE2E` / `#F6E8BC` / `#634C00`; High `#E07433` / `#F5DAC4` / `#84380A`; Very High `#A3241B` / `#F2D5CF` / `#861B14`.
+
+Computed WCAG ratios (node script, 16:14 PDT):
+
+| Pair | Ratio | Need |
+|---|---|---|
+| ink on paper / on surface | 12.51 / 13.67 | 4.5 |
+| muted ink on paper / surface / muted fill | 6.25 / 6.83 / 5.56 | 4.5 |
+| pond green on paper; surface text on pond green | 8.17; 8.92 | 4.5 |
+| olive on paper / surface | 5.50 / 6.01 | 4.5 |
+| ochre ink on paper / surface | 5.02 / 5.48 | 4.5 (never on muted fill: 4.46) |
+| ochre marks on paper | 3.09 | 3 (UI only, never text) |
+| input border on surface | 3.61 | 3 |
+| risk ink on tint: Low / Mod / High / VH | 7.73 / 6.70 / 6.16 / 6.97 | 4.5 |
+| marker number: surface on Low, ink on Mod, ink on High, surface on VH | 5.23 / 7.21 / 4.72 / 6.89 | 4.5 |
+| marker outer ink ring on paper | 12.51 | 3 (carries Moderate 1.74 and High 2.65 fills) |
+
+**How risk stays unmistakable on a green and ochre page:** (1) no risk colour equals or neighbours a brand colour: Low moved off green to blue, Moderate yellow `#E0AE2E` is lighter and cooler than ochre `#B7791F`, and ochre never fills a shape larger than a 3px stroke; (2) risk always appears as a stamp (23.6 RiskBadge) or a seal (23.7 marker), shapes no brand element uses; (3) icon + uppercase word + number, always; (4) marker diameter by category (24/28/32/36px) unchanged; (5) brand green appears only on buttons, links, bars and the recommendation rule, never on a status.
+
+### 23.5 Texture and hand-drawn kit (no dependencies, no image files)
+
+**Paper grain, `src/index.css` `@layer base`:** `body { background-color: var(--background); background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='240' height='240'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0.35 0 0 0 0 0.29 0 0 0 0 0.18 0 0 0 0.07 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E"); }` Grain sits only on the page background; every `bg-card` surface is flat, so no text ever sits on grain at less than its token contrast. No overlay layer, no `::after` noise above content.
+
+**One new file, `src/components/FieldMarks.tsx`**, all inline SVG, all `aria-hidden="true"` and `focusable="false"`, `stroke="currentColor"`, `fill="none"`, `stroke-linecap="round"`, `stroke-linejoin="round"`, `vector-effect="non-scaling-stroke"`. Irregularity comes from hand-picked cubic Béziers with 1-3px vertical drift (never random per render; paths are constants, so screenshots are stable). Colour is set by a Tailwind text class at the call site.
+
+| Component | Props | SVG guidance | Default use |
+|---|---|---|---|
+| `InkRule` | `className?`, `variant?: "line" \| "wave"` | `viewBox="0 0 400 8"`, `preserveAspectRatio="none"`, height 8px, width 100%. line: `M2 4 C 90 2.5, 180 5.5, 270 3.8 S 360 4.6, 398 3.6`, stroke 1.25. wave: 6 shallow waves `M2 4 C 22 1, 44 7, 66 4 S 110 1, 132 4 ...` to 398, stroke 1.25 | Section dividers in `text-border`; footer top in `text-olive/60` (wave) |
+| `InkUnderline` | `children`, `className?`, `tone?: "ochre" \| "primary"` | inline wrapper `relative inline-block`; SVG absolutely placed at `-bottom-1.5 left-0 w-full h-2`, `viewBox="0 0 100 8"`, `preserveAspectRatio="none"`, `M1 5 C 20 2.8, 45 6.4, 70 4.2 S 92 3.6, 99 4.8`, stroke 2 | StatHero numerals (ochre), active nav link (primary), site H1 none |
+| `ContourField` | `className?`, `rings?: number` (default 5) | `viewBox="0 0 320 200"`; `rings` closed irregular loops around one off-centre point, each `M` + 4 cubic segments, radii growing ~18px per ring, stroke 1, opacity via class | StatHero right margin, site-detail hero band corner, OAH Cities header, all `text-olive/25` |
+| `Ripple` | `className?` | `viewBox="0 0 60 60"`, three concentric slightly flattened ellipses (rx 10/18/26, ry 0.92×rx), stroke 1.25 | Report success beside "Report VR-xxxx", empty states; `text-primary/50` |
+| `SpecimenTag` | `children`, `tone?: "plain" \| "official"`, `className?` | a real `<span>` with Mono 0.75rem text; shape via `clip-path: polygon(8px 0,100% 0,100% 100%,8px 100%,0 50%)` on a wrapper, `pl-4 pr-2 py-0.5`; a 4px punched hole: `before:` circle `bg-background` at left 5px centre. plain = `bg-card` + 1px `--input` outline drawn with an inline SVG of the same polygon (clip-path cuts borders); official = `bg-primary text-primary-foreground` | Replaces every data label: "Prototype demonstration data", the A3 Coimbra label, the My reports and Report queue demonstration lines, "Official data" (official tone) |
+| `TapeCorner` | `className?`, `side?: "left" \| "right"` | not SVG: a 56x18px `div` `bg-ochre/25` with `mix-blend-multiply`, rotated ±38deg, jagged ends via `clip-path: polygon(0 10%,4% 0,96% 8%,100% 0,100% 90%,96% 100%,4% 92%,0 100%)`, absolutely placed over the corner of a `relative` parent | Exactly two places: StatHero top-left, My reports confirmed-outcome block top-right |
+| `Annotation` | `children`, `direction?: "down" \| "left" \| "up-left"`, `className?` | inline-flex; text Sans 0.8125rem `text-ochre-ink`; arrow SVG 36x28 with one curved shaft `M4 4 C 10 18, 22 24, 32 22` plus a two-stroke head, stroke 1.5, `text-ochre` | Wraps existing strings only (never new claims): "See where to sample first" (StatHero), "Recommended first sampling target" (priority list rank-1 and site detail) |
+
+**Stamp styles, `src/index.css` `@layer components`** (the only new classes; everything else is utilities): `.stamp { border: 1.5px solid currentColor; box-shadow: inset 0 0 0 2px var(--stamp-bg, transparent), inset 0 0 0 3px color-mix(in srgb, currentColor 35%, transparent); border-radius: 2px; }` used by RiskBadge, ReportStatusTag and the CDC source stamp. `.seal` for map markers (23.7).
+
+**Motif map, page by page** (at most two decorative motifs per viewport): Layout = wordmark in Serif, active nav `InkUnderline` primary, footer `InkRule` wave. Dashboard = StatHero (TapeCorner, ContourField, InkUnderline ×3, stamp, Annotation), then plain data. Site detail = ContourField in the hero band's top-right corner behind the meter's empty space, Annotation on "Recommended first sampling target". Report = `InkRule` between steps' sections; success gets `Ripple` and the stamp press (23.8). Report queue = SpecimenTag only. My reports = TapeCorner on confirmed outcomes, `InkRule` between reports. OAH Cities = ContourField beside the H1. Methodology = `InkRule` between sections, nothing else.
+
+### 23.6 Component restyling rules
+
+- **Panels and cards** (KPI band, priority list frame, map frame, hero band, report rows, city list): `bg-card`, 1px `--border`, radius 3px, no shadow, never rotated. "Paper tag" feel comes from a 1px inner top highlight `shadow-[inset_0_1px_0_rgb(255_255_255/0.6)]` only. Rotation (max 0.5deg, except the CDC stamp at -2deg and tape) is allowed only on decorative, non-interactive items: StatHero source stamp, TapeCorner, Annotation arrows. Never on tables, forms, buttons, badges, KPI cells, headings or any text read under time pressure.
+- **Buttons** (`src/components/ui/button.tsx`): default = `bg-primary text-primary-foreground border border-[#163829] shadow-[inset_0_-2px_0_rgb(0_0_0/0.18)] hover:bg-[#245a44]`, radius 3px, Sans 600 0.875rem; active state `translate-y-px` and the inset shadow removed (a letterpress press, no animation beyond 120ms). outline = `bg-card border-input text-foreground hover:bg-muted`. ghost/link keep shadcn behaviour with `text-primary` and underline offset 3px. No `rounded-full`, no gradients, no glow.
+- **Risk badge = stamp** (`RiskBadge`): `.stamp` with `bg-risk-*-tint text-risk-*-ink`, `--stamp-bg` = the tint, icon 14px stroke 1.75, score Mono 500, category word Sans 600 uppercase +0.06em. Not rotated.
+- **ReportStatusTag** = `.stamp` in `text-primary` (positive outcomes) or `text-muted-foreground` (pending, not a bloom, needs info), on `bg-card`. Never risk colours.
+- **Tables** (priority list, citations, ranger rows where tabular): header row `bg-muted/60`, Sans 500 0.8125rem `text-muted-foreground`, bottom border `border-b-[3px] border-double border-foreground/40` (a ledger double rule); body rows one 1px `--border` bottom rule; no zebra, no rotation, no motifs inside cells. Five-column priority list unchanged.
+- **Inputs, selects, textareas, checkboxes:** `bg-card`, 1px `--input` border, radius 3px, focus `ring-2 ring-ring ring-offset-2 ring-offset-background`. Choice buttons (Section 22) selected = `bg-primary/10 border-2 border-primary`. Form surfaces stay flat and unrotated.
+- **KPI band:** labels Sans 0.8125rem muted, values Serif 1.75rem; official cell keeps its 4px pond-green left rule and `SpecimenTag tone="official"`.
+- **Charts (Recharts):** line stroke `--foreground` 1.75px, category bands in risk tints at 60% opacity, axis ticks DM Mono 0.75rem muted, hairline at 25/50/75 in `--border`.
+
+### 23.7 Map treatment
+
+- **Tiles:** keep Esri World Light Gray Canvas and attribution. In `src/index.css`: `.leaflet-tile-pane { filter: sepia(0.35) saturate(0.85) hue-rotate(-6deg) contrast(0.96) brightness(1.02); }`. The filter applies to the tile pane only, never to markers, popups or controls. Map container background `#E9E1CC` so unloaded tiles read as paper.
+- **Site markers = stamped seals** (`.seal`, built in `RiskMap.tsx` `divIcon` HTML): circle sized per category, fill = risk solid, 2px `#FAF6EC` ring, 1.5px outer ink ring `box-shadow: 0 0 0 1.5px #1E2B22`, plus an inner dashed ring `outline: 1px dashed rgb(250 246 236 / 0.7); outline-offset: -5px` on 32px and 36px seals only. Number centred, DM Mono 500 12px (13px High/Very High), colours per the 11.3 table.
+- **Community report pins = tag-shaped:** 16x11px, `clip-path: polygon(4px 0,100% 0,100% 100%,4px 100%,0 50%)`, `bg-primary`, a 2px surface-coloured punch hole at left; 1px ink outline via `drop-shadow(0 0 0.5px #1E2B22) drop-shadow(0 0 0.5px #1E2B22)`. The legend swatch for "Community reports" uses the same shape.
+- **Popup = field-note card:** `bg-card`, 1px `--border`, radius 3px, the one shadow token, padding 12px, 240px wide; site name Serif 1.25rem; a 1px dashed `--border` rule under the name; RiskBadge stamp; leading pathway in `--olive` 0.8125rem; "View analysis" link `text-primary` with `ArrowRight`. Tip and close button restyled to these tokens.
+- **Legend = hand-labelled key:** `bg-card/95`, 1px `--border`, rows separated by dashed `--border` rules, each row = mini seal (same `.seal` styling, 12px) + icon + category word Sans 500 + range DM Mono; Section 22 mobile placement unchanged.
+- **Controls:** zoom buttons `bg-card`, `--input` border, ink glyphs; attribution 11px muted on `bg-card/90`.
+
+### 23.8 Motion (the video beats only)
+
+Allowed, all off under `prefers-reduced-motion: reduce` (final values shown instantly): (1) score count 79 to 81 over 600ms ease-out (existing); (2) Very High seal ripple: the existing `verdant-pulse` keyframe drawn as two rings, the second delayed 900ms, ring colour risk solid; (3) priority row and aside fade (existing); (4) new: a one-time stamp press on the success "Report VR-xxxx" stamp, `scale 1.12 → 1`, `opacity 0 → 1`, 220ms `cubic-bezier(0.2, 0.9, 0.3, 1.2)`; (5) hover/focus colour transitions 120ms; (6) `html { scroll-behavior: smooth }` only inside `@media (prefers-reduced-motion: no-preference)` for the StatHero anchor. Nothing else moves: no entrance reveals, no wobbling SVG, no parallax, no animated grain.
+
+### 23.9 Accessibility and legibility guards
+
+- Minimum sizes: body 1rem, table and UI text 0.875rem, nothing below 0.75rem except the 11px map attribution. At 1440x900 video resolution, the smallest text the video relies on (KPI captions, leading pathway) is 0.8125rem.
+- Contrast per the 23.4 table; ochre is never text colour (use `--ochre-ink`); ochre-ink never on `--muted`.
+- No grain over text (grain only on `body` background; every text block that is longer than a heading sits on `bg-card` or on paper at ≥ 6:1).
+- No rotation on anything a viewer must read fast; the CDC stamp is the only rotated text (-2deg, 0.75rem Mono in `--ochre-ink`, 5.02:1) and it repeats a source line, not data.
+- Every SVG motif is `aria-hidden`; motifs never carry meaning; risk keeps colour + icon + word + number + size.
+- Focus ring 2px `--ring` with 2px offset on every interactive element, visible on paper and surface.
+- Reduced motion per 23.8. Serif never below 1.25rem (Young Serif is hard to read small).
+
+### 23.10 StatHero: the statistic first (user requirement)
+
+- **Where:** `/` only, first element inside the Dashboard page, directly under the slim 60px header (the nav stays; a band above the nav would push the header down on every route and break the sticky shell). It renders on every load (no dismiss, no storage).
+- **Exact strings:** sentence "Across the United States, 18 states reported 421 harmful algal bloom events, 389 cases of human illness and 413 cases of animal illness from 2016 to 2018." Source line "Source: CDC, MMWR 69(50), Dec 18, 2020", linking to the C1 URL `https://www.cdc.gov/mmwr/volumes/69/wr/mm6950a2.htm` (opens in a new tab, `rel="noreferrer"`). Honesty note (new copy, passes `no-ai-slop`): "National figure for 18 states. It is not a Lake Mead count." Anchor: "See where to sample first" linking to `#map` (Agent A adds `id="map"` and `scroll-mt-20` on the map row). C1 citation row in Section 19.2 is unchanged.
+- **Component:** new `src/components/StatHero.tsx` (Agent A), a `<section aria-labelledby>` with the sentence as a `<p>` (the heading is a visually hidden H2 "Harmful algal blooms in the United States"; the page H1 stays "Where to sample first at Lake Mead").
+- **Look @1440:** one `bg-card` sheet, 1px `--border`, radius 3px, `relative`, padding 24px 32px, height ≤ 232px. 12-col grid: sentence `col-span-9` in Serif 1.875rem / 1.25 ink, max 3 lines; the three numbers are `<span>`s inside the same sentence set at 3.5rem / 1 in `text-primary` with `InkUnderline tone="ochre"`, so the numerals read as oversized ink figures without repeating the sentence. Right `col-span-3`, bottom-aligned: the source stamp (`.stamp`, `text-ochre-ink`, `bg-card`, DM Mono 0.75rem, padding 6px 10px, `-rotate-2`), under it the honesty note Sans 0.8125rem muted, under it `Annotation direction="down"` wrapping the "See where to sample first" link. `ContourField` `text-olive/25` absolutely placed in the right 30% behind the stamp column (never under the sentence). `TapeCorner side="left"` on the top-left corner.
+- **Look @390:** padding 20px 16px; sentence 1.375rem, numerals 2.5rem; the right column stacks below the sentence (stamp, note, anchor); ContourField hidden below 768px; the whole block fits in the first viewport (≤ 520px tall).
+- **Fold budget @1440x900 (what moves):** header 60 + main top padding 24 (Dashboard uses `-mt-2` on the first block so Layout's `pt-8` nets 24) + StatHero 232 + gap 24 + title row 48 + gap 12 + KPI band 112 + gap 16 = map top at about y 528. The title block collapses to one row: H1 Serif 2rem, the subtitle "Scores combine satellite signals, environmental data and shore reports." 0.875rem muted on the same baseline at ≥ 1280px (beneath it below 1280px), the "Prototype demonstration data" SpecimenTag right-aligned in the same row. KPI band padding 12px 16px, values 1.75rem, band ≤ 112px. Map stays `col-span-7`, 620px tall; at 1440x900 about 370px of map shows above the fold, and the StatHero anchor scrolls the map row to the top.
+
+### 23.11 Anti-patterns rejected (costume and slop)
+
+1. Faux leather, kraft-paper photos, coffee stains, burnt edges → one flat warm paper tone plus 7% SVG grain.
+2. Tape on every card → tape in exactly two places (StatHero, confirmed outcomes).
+3. Handwriting font (Caveat, Kalam, Patrick Hand) anywhere → hand feel comes only from SVG strokes; all text is Young Serif, Schibsted Grotesk or DM Mono.
+4. Rotated cards and tilted tables ("scrapbook") → rotation only on three decorative item types, max 0.5deg except the -2deg stamp.
+5. Emoji or leaf/water clip-art icons → lucide icons at stroke 1.75 and the seven SVG marks in 23.5; zero emoji.
+6. Purple or blue gradients, glassmorphism, glows → flat fills; zero gradients except the SVG grain.
+7. Centered SaaS hero with a big CTA → the StatHero is a left-aligned specimen sheet with the data inline and a small margin anchor, no button.
+8. Generic rounded cards with shadows on a grid → ruled panels, 3px radius, no shadow, divided strips.
+9. Green-on-green status (brand green as "Low") → Low is blue; brand green never marks a status.
+10. Ochre used as text or as large fills (reads as a warning) → ochre is a 1.5-2px mark colour only; text uses `--ochre-ink`.
+11. Lined notebook paper, red margin rules, spiral binding graphics → no ruled page background; ruling only inside tables.
+12. Decorative motifs that encode nothing but sit on data (contours under a table, ripples on chart) → motifs live in margins, headers and the StatHero only.
+13. Typewriter mono for body copy → DM Mono only for labels and numbers ≤ 0.875rem.
+14. Em dashes and en dashes in UI copy, invented statistics → unchanged bans; the only new copy is the honesty note, the visually hidden H2 and existing strings.
+
+### 23.12 Order, agents and file ownership
+
+Every agent: `model: "sonnet"`, follows Sections 11, 22 and 23 (23 wins on conflict), names `impeccable` for its pass, applies the `ponytail` ladder, reads graphify-first, runs `no-ai-slop` on new user-facing text (only the 23.10 honesty note and hidden H2), keeps every exact string of Sections 8, 13, 20 and 21 verbatim, adds no dependency, no image and no CSS file, appends its `PROGRESS.md` entry, puts no AI attribution in commits (the orchestrator commits). TDD does not apply (visual work). Done-check for every task: `npx tsc -b`, `npm run build` (exit 0), `npx vitest run` (all 71 green), screenshots at 1440x900 and 390x844 of the named routes over headless Chrome on the agent's own dev-server port, no horizontal scroll, no console errors.
+
+- **Step 1, Agent S alone (start by 16:30, done by 17:00 PDT), Task 23.1. Effort M.** Commit subject starts "Field notebook base:".
+  - Files (only Agent S edits these, now and in Step 2): `src/index.css`, `src/components/FieldMarks.tsx` (new), `src/components/ui/button.tsx`, `src/components/ui/input.tsx`, `src/components/ui/textarea.tsx`, `src/components/ui/select.tsx`, `src/components/ui/checkbox.tsx`, `src/components/RiskBadge.tsx`, `src/components/Layout.tsx`, `src/components/Footer.tsx`, `src/lib/risk.ts` (the four `color` hex values only).
+  - Does: fonts and import (23.3); all tokens (11.3 tables, 23.4) in `:root` and `@theme inline`; grain (23.5); `.stamp` and `.seal` classes; Leaflet tile filter, container background, controls, popup and attribution styles (23.7) in `src/index.css`; the seven FieldMarks components exactly as specified; button, input, select, checkbox, textarea base styles (23.6); RiskBadge as stamp; Layout wordmark in Serif, active nav `InkUnderline`, header `bg-card/95` with 1px `--border`; Footer `InkRule` wave and `SpecimenTag` for its data label; `verdant-pulse` second ring and the stamp-press keyframe `verdant-stamp`.
+  - Visible result: every route shows warm paper, serif headings, stamped risk badges, pond-green buttons and sepia-warmed map tiles; page bodies are otherwise unchanged.
+  - Done: the shared done-check on `/`, `/site/callville-bay`, `/report`; plus a grep showing no `#F3F5F4`, `#174C6B`, `IBM Plex`, `slate-`, `gray-`, `zinc-` left in `src/`.
+- **Step 2, three agents in parallel after Step 1 lands (17:00 to 17:55 PDT)**, file ownership as in Section 22 plus the new StatHero:
+
+| Agent | Tasks | Owns |
+|---|---|---|
+| A | 23.2, 23.3 | `src/pages/Dashboard.tsx`, `src/components/StatHero.tsx` (new), `src/components/KpiCards.tsx`, `src/components/OfficialDataCard.tsx`, `src/components/RiskMap.tsx`, `src/components/SamplingPriorityList.tsx`, `src/components/CommunityReportsFeed.tsx`, `src/components/CommunityReportItem.tsx` |
+| B | 23.5, 23.5b, then 23.4 (report flow first: the user asked for it explicitly) | `src/pages/SiteDetail.tsx`, `src/components/ContributionBars.tsx`, `src/components/RiskMeter.tsx`, `src/components/TrendChart.tsx`, `src/components/OneHealthPanel.tsx`, `src/pages/Report.tsx`, `src/components/BloomGuide.tsx` |
+| C | 23.6, 23.7 | `src/pages/RangerQueue.tsx`, `src/pages/MyReports.tsx`, `src/components/ReportTimeline.tsx`, `src/components/ReportStatusTag.tsx`, `src/pages/OahCities.tsx`, `src/components/CityCard.tsx`, `src/pages/Methodology.tsx`, `src/components/CitationsTable.tsx`, `src/components/ArchitectureDiagram.tsx` |
+
+No Section 23 task edits `src/engine/`, `src/data/`, `src/state/`, `src/fhir/`, `src/types.ts`, `src/App.tsx`, or `src/lib/` beyond Agent S's four hex values. FieldMarks is consumed, never edited, in Step 2; a missing prop is reported to the orchestrator, not patched.
+
+### 23.13 Tasks
+
+- **23.2 StatHero and dashboard fold.** Agent A. Effort M. Files: `StatHero.tsx` (new), `Dashboard.tsx`, `KpiCards.tsx`, `OfficialDataCard.tsx`.
+  - Visible result: per 23.10. At 1440x900 the first screen shows, top to bottom, header, StatHero (sentence with 421/389/413 as oversized pond-green serif numerals with ochre underlines, the rotated CDC stamp, the honesty note, the "See where to sample first" annotation), the one-row title, the KPI band, the top of the map at y ≤ 540. KPI values Serif; data labels as SpecimenTags; official cell keeps "Official data" (official tone).
+  - Done: fold screenshots at 1440x900 and 390x844 where the statistic is the first content under the header and fully visible; clicking the anchor brings the map row to the top; the exact sentence and source line match 23.10 character for character (check with `document.body.innerText.includes(...)`); the shared done-check.
+- **23.3 Map, priority list, feed.** Agent A. Effort M. Files: `RiskMap.tsx`, `SamplingPriorityList.tsx`, `CommunityReportsFeed.tsx`, `CommunityReportItem.tsx`.
+  - Visible result: per 23.7 (seals, tag pins, legend key, popup card; marker HTML uses tokens, no `#FBFCFB`); priority list as a ledger table (23.6), five columns unchanged, rank numerals Serif 1.25rem muted, rank-1 row keeps its rule and "Verdant recommendation" block with `Annotation` on "Recommended first sampling target"; feed items on `bg-card` with `InkRule` separators.
+  - Done: screenshots of `/` Lake Mead and Coimbra at both widths, Callville Bay popup open, Very High seal pulsing with two rings, no wrapped site names at 1440; shared done-check.
+- **23.4 Site detail.** Agent B. Effort M. Files: `SiteDetail.tsx`, `ContributionBars.tsx`, `RiskMeter.tsx`, `TrendChart.tsx`, `OneHealthPanel.tsx`.
+  - Visible result: H1 Serif, score numeral 4.5rem Serif beside the stamp badge (no repeated score, Section 22), ContourField in the hero's top-right corner, `Annotation` on "Recommended first sampling target", risk meter segments in the new tints/solids with a 2px ink pointer, contribution bars `bg-primary` with Mono values at bar ends, chart per 23.6, pathway strip and One Health columns with Serif H3s and `InkRule` between sections.
+  - Done: `/site/callville-bay` and the Coimbra rank-1 site at both widths; "Export FHIR JSON" still downloads; shared done-check.
+- **23.5 Report flow.** Agent B. Effort M. Files: `Report.tsx`, `BloomGuide.tsx`.
+  - Visible result: step progress rule in pond green; choice buttons per 23.6; guide cards `bg-card` with Serif titles; warning `Alert` on `bg-muted` with ink text; success shows 79 struck through and 81 counting in Serif, "Report VR-xxxx" as a stamp with the `verdant-stamp` press and a `Ripple` beside it.
+  - Done: walk Steps 1 to 3 and submit at both widths; reduced-motion emulation shows 81 instantly and no stamp animation; shared done-check.
+- **23.5b Report flow usability overhaul.** Agent B, right after 23.5 (same files, so same agent, sequential). Effort M. Files: `Report.tsx`, `BloomGuide.tsx`; `src/data/reportFields.ts` read-only (a separate agent made "Does the water look or smell unusual?" multi-select with "Normal" mutually exclusive before this section; that behaviour is assumed and kept).
+  - **Why (user, verbatim, on the Step 2 water question):** "this should be a multiple choice" and "it also doesn't look very user friendly, at least in its current form". The 16:15 PDT audit at 390x844 confirms it: Step 2 is one 3,100px scroll with 15 full-width identical grey bars, the guide as a single-column list of seven rows, and Next/Back at the very bottom.
+  - **Judge as:** a first-time visitor on a phone at the shore, one thumb. The three steps, "Step {n} of 3", every question's wording, the stored option values, the warning above submit, the success sentence, the "Is it a bloom?" guide content and every behaviour and test stay.
+  - **Grouping (Step 2):** three clearly separated groups on `bg-card` sheets with a Serif 1.25rem group title and an `InkRule` between them: (a) "Add a photo" as a 64px-tall dashed-border drop tile with the camera icon and the existing "Photo stays on your device" line, visibly optional ("Optional" Mono tag beside it); (b) "Which matches what you see?" with the guide directly above the three choices; the guide renders as a 2-column grid of drawing tiles at 390 (4 columns at 1024+), captions 0.8125rem, the "Looks like a bloom" and "Often mistaken for one" group labels as SpecimenTags; (c) the slime, unusual water and animals questions; "More questions (optional)" stays collapsed.
+  - **Instruction line under every question:** 0.8125rem muted, "Pick one" for single-select, "Pick all that apply" for multi-select (new copy, two strings, `no-ai-slop` pass). Every question except the Step 1 site is optional; leaving one unanswered is the skip, so no new stored option is added. Where an option set already contains "Not sure" it stays last.
+  - **Tiles:** single-select = radio tiles (circle indicator 20px left, ring `--input`, checked = filled pond-green dot inside a pond-green ring, tile `border-2 border-primary bg-primary/10`); multi-select = checkbox tiles (rounded-square 20px indicator, checked = pond-green fill with a white `Check` icon, same tile tint). The indicator shapes differ so the two kinds read apart without words. Min height 48px, full-width hit area, 0.9375rem Sans 500 label, first letter capitalised (Section 22), no helper text inside tiles. Short option sets (≤ 3 words each, ≤ 4 options) sit in a 2- or 3-column grid at 390; longer ones one per row. Where a tile maps to a guide drawing ("Looks like a bloom", "Looks like a look-alike") show a 28px thumbnail of the existing `BloomGuide` drawing at its left; no new illustrations beyond the FieldMarks kit.
+  - **Sticky action bar (below 1024px):** fixed bottom, `bg-card/95` with a 1px top `--border` and `pb-[env(safe-area-inset-bottom)]`, height 64px: "Back" (outline, hidden on Step 1) left, the 3-segment progress rule with "Step {n} of 3" centre (Mono 0.75rem), "Next" (primary, min-width 120px) right; on Step 3 the right button is "Submit report". The page gets `pb-24` so the bar never covers content. At 1024px and up the bar is a normal inline row under the form (the Section 22 aside stays).
+  - **Validation:** only where a value is required today; the message sits under the question in `--destructive` 0.875rem in plain words saying what to do (for example "Choose the place you are reporting from."), focus moves to that question, nothing is cleared.
+  - **Step 3 review:** a short summary sheet: site name Serif, the chosen answers as a comma list (0.9375rem), the photo thumbnail if any, an "Edit" text link per group returning to Step 2 with answers kept; then the warning `Alert` and "Submit report". Success keeps 23.5 (struck 79, counting 81, stamped id, `Ripple`).
+  - **Visible result:** at 390x844, Step 2 is three compact groups, radio and checkbox tiles look different, the bar with Back, "Step 2 of 3" and Next stays at the bottom while scrolling.
+  - **Done:** screenshots at 390x844 of Step 1, Step 2 (top, and scrolled to the water questions with two water options checked), Step 3 review, and success; plus 1440x900 of Step 2. A timed walk on `/report?site=callville-bay` in headless Chrome (a script clicking with 1.5s human pauses) completes the Callville Bay report in 5 taps (Next, "Looks like a bloom", "Lots", Next, "Submit report") and under 20 seconds, ending on the 79 to 81 success; selecting "Normal" clears the other water options and vice versa; the shared done-check (all tests green).
+- **23.6 Report queue and My reports.** Agent C. Effort M. Files: `RangerQueue.tsx`, `MyReports.tsx`, `ReportTimeline.tsx`, `ReportStatusTag.tsx`.
+  - Visible result: demonstration lines as SpecimenTags; status tags as stamps; Section 22 button groups kept ("Confirmed by field sample" outline in `border-primary text-primary`); My reports record band values Serif 2.5rem, "You got it right." Serif 1.5rem with `CircleCheck`, confirmed block `bg-primary/5` with one `TapeCorner side="right"`; `InkRule` between reports; timeline icons in `--olive`.
+  - Done: after "Reset demo data" and one Callville submission, the ranger clicks work and `/my-reports` shows "You got it right." and record 3 of 4; shared done-check.
+- **23.7 OAH Cities and Methodology.** Agent C. Effort S. Files: `OahCities.tsx`, `CityCard.tsx`, `Methodology.tsx`, `CitationsTable.tsx`, `ArchitectureDiagram.tsx`.
+  - Visible result: city names Serif 1.25rem, data-status labels as SpecimenTags, ContourField beside the OAH H1; Methodology H2s Serif, `InkRule` between sections, equations on `bg-muted` in DM Mono, citations as a ledger table, diagram strokes ink and arrows pond green, nodes `bg-card`.
+  - Done: both routes at both widths; "Run Verdant on Coimbra" still switches region and opens `/`; shared done-check.
+- **23.8 `impeccable` polish and video-path check.** One execution-tier agent, 17:55 to 18:15 PDT, after Step 2. Effort S. Runs the `impeccable` polish pass over every route at 1440x900 and 390x844 against 23.6, 23.9 and 23.11 and the Section 11.9 checklist (font and colour items read per 23.3 and 23.4), fixing only spacing, alignment and token mismatches in the files it is pointed at, no new motifs. Then on the production build (`npm run build`, `npx vite preview`) it clicks "Reset demo data", reloads, and walks the Section 13 video path: StatHero first frame and anchor, map and Callville popup, priority list, `/site/callville-bay`, Community observations, the three report steps, 79 to 81, Report queue clicks, "You got it right." with record 3 of 4, dashboard Callville at 82, One Health, OAH Cities to Coimbra, Coimbra rank-1 "Export FHIR JSON", Methodology diagram; every exact string present, no console errors, no horizontal scroll at 390.
+
+### 23.14 Cut order and clock triggers
+
+Video priority of pages (what to protect first): 1. Dashboard with StatHero and map (0:00-1:05); 2. Site detail (1:05-1:30, 2:55-3:05); 3. Report flow (1:30-2:20); 4. Report queue and My reports (2:20-2:55, 4:05-4:30); 5. OAH Cities (3:05-3:35); 6. Methodology (3:45-4:05).
+
+Cuts, first cut first:
+1. 23.7 motifs (keep tokens, which arrive with 23.1). Trigger: 23.7 not started by 17:25 PDT.
+2. Annotation and TapeCorner everywhere except the StatHero. Trigger: any Step 2 agent not done at 17:40 PDT.
+3. The `verdant-stamp` press and the success `Ripple`. Trigger: 23.5 not done at 17:40 PDT.
+4. Site-detail ContourField and OneHealthPanel styling (keep the Serif numeral and the stamp badge). Trigger: 23.4 not done at 17:45 PDT.
+4b. From 23.5b: the guide thumbnails on tiles and the Step 3 "Edit" links (keep the grouping, the instruction lines, the radio/checkbox tile shapes and the sticky bar). Trigger: 23.5b not done at 17:50 PDT.
+5. Popup and legend restyle (keep tile filter, seals and tag pins). Trigger: 23.3 not done at 17:50 PDT.
+6. 23.8 polish shrinks to the video-path walk only. Trigger: Step 2 not merged by 18:00 PDT.
+7. At 18:15 PDT every unfinished task's files revert to the last green commit (`git checkout <sha> -- <files>`), never left half-styled; the video records from that state at 19:15.
+
+Never cut: 23.1 base, 23.2 StatHero and the fold, the 23.5b grouping, tile shapes, instruction lines and sticky bar, the tile filter and seals, the RiskBadge stamp, the Section 22 layout fixes. If 23.1 itself is not green by 17:15 PDT, the orchestrator reverts it and the StatHero (23.2) is built alone on the old tokens with Young Serif added, since the user's statistic requirement outranks the restyle.
