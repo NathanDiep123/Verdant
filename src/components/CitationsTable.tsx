@@ -22,9 +22,9 @@ function SourceLink({ url }: { url: string }) {
 export function CitationsTable() {
   return (
     <>
-      <div className="hidden border border-border bg-card md:block">
+      <div className="hidden border border-border bg-card shadow-[inset_0_1px_0_rgb(255_255_255/0.6)] md:block">
         <Table className="table-fixed">
-          <TableHeader className="bg-muted">
+          <TableHeader className="border-b-[3px] border-double border-foreground/40 bg-muted/60 text-[0.8125rem] [&_th]:text-muted-foreground [&_tr]:border-b-0">
             <TableRow>
               <TableHead className="w-[14%] whitespace-normal">Item</TableHead>
               <TableHead className="w-[26%] whitespace-normal">Value or claim</TableHead>
@@ -44,7 +44,7 @@ export function CitationsTable() {
                 <TableCell className="whitespace-normal">
                   <SourceLink url={c.url} />
                 </TableCell>
-                <TableCell className="whitespace-normal font-mono text-xs tabular-nums">
+                <TableCell className="whitespace-normal font-mono text-xs tabular-nums text-muted-foreground">
                   {c.accessed}
                 </TableCell>
               </TableRow>

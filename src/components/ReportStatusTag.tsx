@@ -12,18 +12,18 @@ const ICON: Record<ReportStatus, LucideIcon> = {
 };
 
 const STYLE: Record<ReportStatus, string> = {
-  received: "bg-muted text-foreground border-border",
-  reviewing: "bg-muted text-foreground border-border",
-  "sample-requested": "bg-muted text-foreground border-border",
-  confirmed: "border-primary text-primary",
-  "not-bloom": "border-dashed border-border text-muted-foreground",
-  "more-info": "border-dashed border-border text-muted-foreground",
+  received: "text-muted-foreground",
+  reviewing: "text-muted-foreground",
+  "sample-requested": "text-muted-foreground",
+  confirmed: "text-primary",
+  "not-bloom": "text-muted-foreground",
+  "more-info": "text-muted-foreground",
 };
 
 export function ReportStatusTag({ status }: { status: ReportStatus }) {
   const Icon = ICON[status];
   return (
-    <span className={`inline-flex items-center gap-1.5 rounded-[4px] border px-2 py-0.5 font-sans text-xs font-medium ${STYLE[status]}`}>
+    <span className={`stamp inline-flex items-center gap-1.5 bg-card px-2 py-0.5 font-sans text-xs font-semibold [--stamp-bg:var(--card)] ${STYLE[status]}`}>
       <Icon size={14} strokeWidth={1.75} aria-hidden="true" />
       {STATUS_LABEL[status]}
     </span>

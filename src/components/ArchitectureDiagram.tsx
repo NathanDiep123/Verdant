@@ -88,7 +88,9 @@ function Layout({ spec, className, id }: { spec: typeof WIDE | typeof TALL; clas
           d={d}
           fill="none"
           className="stroke-primary"
-          strokeWidth={1.5}
+          strokeWidth={1.75}
+          strokeLinecap="round"
+          strokeLinejoin="round"
           markerEnd={arrow ? `url(#${id}-arrow)` : undefined}
         />
       ))}
@@ -99,8 +101,8 @@ function Layout({ spec, className, id }: { spec: typeof WIDE | typeof TALL; clas
             y={n.y}
             width={n.w}
             height={n.h}
-            rx={4}
-            className={n.core ? "fill-primary stroke-primary" : "fill-card stroke-foreground"}
+            rx={3}
+            className={n.core ? "fill-primary stroke-foreground" : "fill-card stroke-foreground"}
             strokeWidth={n.core ? 1.5 : 1}
             strokeDasharray={n.planned ? "4 3" : undefined}
           />
@@ -128,7 +130,7 @@ function Layout({ spec, className, id }: { spec: typeof WIDE | typeof TALL; clas
 
 export function ArchitectureDiagram() {
   return (
-    <figure className="border border-border bg-card p-4">
+    <figure className="border border-border bg-card p-4 shadow-[inset_0_1px_0_rgb(255_255_255/0.6)]">
       <Layout id="wide" spec={WIDE} className="hidden h-auto w-full md:block" />
       <Layout id="tall" spec={TALL} className="mx-auto h-auto w-full max-w-[380px] md:hidden" />
       <figcaption className="mt-3 font-mono text-xs text-muted-foreground">

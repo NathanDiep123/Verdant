@@ -36,7 +36,7 @@ export function ReportTimeline({ report }: { report: CitizenReport }) {
           <li key={r.key} className="grid grid-cols-[16px_1fr] gap-x-3">
             <div className="flex flex-col items-center">
               {Icon ? (
-                <Icon className="mt-0.5 size-4 shrink-0 text-primary" strokeWidth={1.75} aria-hidden />
+                <Icon className="mt-0.5 size-4 shrink-0 text-olive" strokeWidth={1.75} aria-hidden />
               ) : (
                 <span className="mt-0.5 size-4 shrink-0" aria-hidden />
               )}

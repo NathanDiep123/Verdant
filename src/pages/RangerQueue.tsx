@@ -3,6 +3,7 @@ import { Link } from "react-router";
 import { RiskBadge } from "@/components/RiskBadge";
 import { ReportStatusTag } from "@/components/ReportStatusTag";
 import { Button } from "@/components/ui/button";
+import { InkRule, SpecimenTag } from "@/components/FieldMarks";
 import { formatReportTime, reportSummary } from "@/lib/communityReports";
 import {
   EVIDENCE_WEIGHT,
@@ -16,9 +17,6 @@ import { scoreSite } from "@/engine/score";
 import { useRegion } from "@/state/RegionContext";
 import { cn } from "@/lib/utils";
 import type { CitizenReport, ReportStatus, SiteResult } from "@/types";
-
-const DATA_LABEL =
-  "w-fit max-w-full rounded-sm border border-dashed px-2 py-0.5 font-mono text-xs text-muted-foreground";
 
 const OUTCOME_NOTE: Record<
   "confirmed" | "not-bloom" | "more-info",
@@ -102,7 +100,7 @@ export default function RangerQueue() {
       "Unknown reporter";
     const fresh = !initialKeys.current.has(`${r.id}:${st}`);
     return (
-      <li key={r.id} className="border-b last:border-b-0">
+      <li key={r.id} className="border-b border-border last:border-b-0">
         <Flash fresh={fresh}>
           <article
             className={cn(
@@ -120,7 +118,7 @@ export default function RangerQueue() {
                 </span>
                 <Link
                   to={`/site/${r.siteId}`}
-                  className="text-base font-semibold hover:underline"
+                  className="font-semibold hover:underline"
                 >
                   {siteName(r.siteId)}
                 </Link>
@@ -184,7 +182,7 @@ export default function RangerQueue() {
                     </span>
                     <Button
                       variant="outline"
-                      className="h-9 border-primary px-3 text-primary"
+                      className="h-9 border-primary bg-card px-3 text-primary hover:bg-primary/10"
                       onClick={() => act(r, "confirmed")}
                     >
                       Confirmed by field sample
@@ -221,32 +219,34 @@ export default function RangerQueue() {
   return (
     <div className="flex flex-col gap-8">
       <header className="flex flex-col gap-3">
-        <h1 className="text-[28px] font-bold leading-[1.1] tracking-[-0.02em] md:text-[40px]">
+        <h1 className="text-[1.875rem] leading-[1.05] tracking-[-0.015em] md:text-[2.5rem]">
           Report queue
         </h1>
-        <p className={DATA_LABEL}>
+        <SpecimenTag>
           Demonstration ranger view. Outcomes here are set by hand to show the
           feedback loop. No real ranger or lab result is involved.
-        </p>
+        </SpecimenTag>
         <p className="max-w-[68ch] text-base text-muted-foreground">
           Reports at higher-risk sites come first. Each one shows the reporter's
           track record, so a ranger can weigh it before acting.
         </p>
       </header>
 
+      <InkRule className="text-border" />
+
       <section aria-labelledby="open-reports" className="flex flex-col gap-3">
         <h2
           id="open-reports"
-          className="text-[28px] leading-[1.15] font-semibold tracking-[-0.01em]"
+          className="text-[1.75rem] leading-[1.15] tracking-[-0.01em]"
         >
           Open reports ({open.length})
         </h2>
         {open.length === 0 ? (
-          <p className="max-w-[68ch] rounded-sm border border-dashed p-4 text-sm text-muted-foreground">
+          <p className="max-w-[68ch] rounded-sm border border-dashed border-border p-4 text-sm text-muted-foreground">
             No open reports for {config.name}.
           </p>
         ) : (
-          <ul className="border-t">{open.map((r) => renderRow(r, true))}</ul>
+          <ul className="border-t border-border bg-card">{open.map((r) => renderRow(r, true))}</ul>
         )}
       </section>
 
@@ -256,12 +256,12 @@ export default function RangerQueue() {
       >
         <h2
           id="decided-reports"
-          className="text-[28px] leading-[1.15] font-semibold tracking-[-0.01em]"
+          className="text-[1.75rem] leading-[1.15] tracking-[-0.01em]"
         >
           Decided ({decided.length})
         </h2>
         {decided.length > 0 && (
-          <ul className="border-t">
+          <ul className="border-t border-border bg-card">
             {decided.map((r) => renderRow(r, false))}
           </ul>
         )}

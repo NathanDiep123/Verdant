@@ -1,6 +1,7 @@
 import { CircleCheck } from "lucide-react";
 import { Link } from "react-router";
 import { Button, buttonVariants } from "@/components/ui/button";
+import { InkRule, SpecimenTag, TapeCorner } from "@/components/FieldMarks";
 import { ReportStatusTag } from "@/components/ReportStatusTag";
 import { ReportTimeline } from "@/components/ReportTimeline";
 import {
@@ -13,8 +14,8 @@ import { cn } from "@/lib/utils";
 import { useRegion } from "@/state/RegionContext";
 import type { CitizenReport } from "@/types";
 
-const headline = "text-xl font-semibold leading-snug";
-const payoff = "text-2xl font-bold leading-tight";
+const headline = "font-heading text-[1.25rem] leading-[1.3]";
+const payoff = "font-heading text-[1.5rem] leading-tight";
 
 function Outcome({
   report,
@@ -98,11 +99,12 @@ function Outcome({
   return (
     <div
       className={cn(
-        "border-l-[3px] border-primary px-3 py-2",
+        "relative border-l-[3px] border-primary px-3 py-2",
         status === "confirmed" && "bg-primary/5 px-4 py-3",
       )}
     >
-      <p className="mb-1 text-xs font-semibold text-primary">{label}</p>
+      {status === "confirmed" && <TapeCorner side="right" />}
+      <p className="mb-1 font-mono text-xs font-medium text-primary">{label}</p>
       {body}
     </div>
   );
@@ -121,24 +123,24 @@ export function MyReports() {
 
   return (
     <div>
-      <h1 className="text-[28px] font-bold leading-[1.1] tracking-[-0.02em] md:text-[40px]">
+      <h1 className="text-[1.875rem] leading-[1.05] tracking-[-0.015em] md:text-[2.5rem]">
         My reports
       </h1>
-      <p className="mt-3 inline-block rounded-sm border border-dashed border-border px-2 py-0.5 font-mono text-xs text-muted-foreground">
+      <SpecimenTag className="mt-3">
         Demonstration outcomes. In this prototype, a ranger outcome is set by
         hand on the Report queue page.
-      </p>
+      </SpecimenTag>
 
-      <dl className="mt-6 grid grid-cols-3 divide-x divide-border rounded-sm border border-border bg-card">
+      <dl className="mt-6 grid grid-cols-3 divide-x divide-border rounded-sm border border-border bg-card shadow-[inset_0_1px_0_rgb(255_255_255/0.6)]">
         {cells.map(([label, value]) => (
           <div
             key={label}
             className="flex flex-col-reverse justify-end gap-2 p-4 md:p-6"
           >
-            <dt className="text-xs text-muted-foreground md:text-sm">
+            <dt className="text-[0.8125rem] text-muted-foreground md:text-sm">
               {label}
             </dt>
-            <dd className="font-mono text-[32px] font-semibold leading-none tabular-nums md:text-[40px]">
+            <dd className="font-heading text-[2rem] leading-none tabular-nums md:text-[2.5rem]">
               {value}
             </dd>
           </div>
@@ -156,35 +158,35 @@ export function MyReports() {
           </Link>
         </div>
       ) : (
-        <ul className="mt-8 list-none border-t border-border p-0">
+        <ul className="mt-8 list-none p-0">
           {mine.map((r) => {
             const name = siteName(r.siteId);
             return (
-              <li
-                key={r.id}
-                className="grid gap-4 border-b border-border py-6 md:grid-cols-12 md:gap-12"
-              >
-                <div className="space-y-3 md:col-span-8">
-                  <div className="flex flex-wrap items-baseline gap-x-3 gap-y-1">
-                    <span className="font-mono text-xs text-muted-foreground">
-                      {reportCode(r)}
-                    </span>
-                    <Link
-                      to={`/site/${r.siteId}`}
-                      className="text-base font-semibold hover:underline"
-                    >
-                      {name}
-                    </Link>
-                    <span className="font-mono text-xs text-muted-foreground">
-                      {formatReportTime(r.createdAt)}
-                    </span>
+              <li key={r.id} className="py-6">
+                <InkRule className="mb-6 text-border" />
+                <div className="grid gap-4 md:grid-cols-12 md:gap-12">
+                  <div className="space-y-3 md:col-span-8">
+                    <div className="flex flex-wrap items-baseline gap-x-3 gap-y-1">
+                      <span className="font-mono text-xs text-muted-foreground">
+                        {reportCode(r)}
+                      </span>
+                      <Link
+                        to={`/site/${r.siteId}`}
+                        className="font-semibold hover:underline"
+                      >
+                        {name}
+                      </Link>
+                      <span className="font-mono text-xs text-muted-foreground">
+                        {formatReportTime(r.createdAt)}
+                      </span>
+                    </div>
+                    <p className="text-sm">{reportSummary(r)}</p>
+                    <ReportStatusTag status={r.status ?? "received"} />
+                    <Outcome report={r} siteName={name} />
                   </div>
-                  <p className="text-sm">{reportSummary(r)}</p>
-                  <ReportStatusTag status={r.status ?? "received"} />
-                  <Outcome report={r} siteName={name} />
-                </div>
-                <div className="md:col-span-4">
-                  <ReportTimeline report={r} />
+                  <div className="md:col-span-4">
+                    <ReportTimeline report={r} />
+                  </div>
                 </div>
               </li>
             );

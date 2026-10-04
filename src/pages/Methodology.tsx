@@ -1,4 +1,5 @@
 import { ArchitectureDiagram } from "@/components/ArchitectureDiagram";
+import { InkRule } from "@/components/FieldMarks";
 import { CitationsTable } from "@/components/CitationsTable";
 import { RiskBadge } from "@/components/RiskBadge";
 import {
@@ -70,8 +71,8 @@ const SOURCE_CARDS: { id: string; name: string; use: string }[] = [
   { id: "C6", name: "OAH FHIR IG", use: "Canonical base URL used by the FHIR-shaped JSON export." },
 ];
 
-const H2 = "text-[28px] font-semibold leading-[1.2] tracking-[-0.01em] scroll-mt-20";
-const H3 = "text-xl font-semibold leading-[1.3]";
+const H2 = "text-[1.75rem] leading-[1.15] tracking-[-0.01em] scroll-mt-20";
+const H3 = "text-[1.25rem] leading-[1.3]";
 const PROSE = "max-w-[68ch]";
 const LINK = "text-primary underline underline-offset-2 hover:no-underline";
 
@@ -79,7 +80,7 @@ function Equation({ id }: { id: PathwayId }) {
   const p = PATHWAYS[id];
   const terms = Object.entries(p.weights) as [FactorId, number][];
   return (
-    <div className="p-4 font-mono text-sm tabular-nums">
+    <div className="p-4 font-mono text-sm tabular-nums text-foreground">
       <p className="font-semibold">{p.id}</p>
       <p className="mb-2 font-sans text-sm text-muted-foreground">{p.label}</p>
       {terms.map(([f, w], i) => (
@@ -112,7 +113,7 @@ export default function Methodology() {
 
       <div className="flex min-w-0 flex-col gap-8 md:gap-12">
         <header className={PROSE}>
-          <h1 className="text-[28px] font-bold leading-[1.1] tracking-[-0.02em] md:text-[40px]">Methodology</h1>
+          <h1 className="text-[1.875rem] leading-[1.05] tracking-[-0.015em] md:text-[2.5rem]">Methodology</h1>
           <p className="mt-3 text-muted-foreground">
             How a Verdant score is built, and what it has not yet been tested against.
           </p>
@@ -123,7 +124,7 @@ export default function Methodology() {
           <ol className="grid max-w-[68ch] gap-y-6">
             {STEPS.map(([title, text], i) => (
               <li key={title} className="grid grid-cols-[3rem_1fr] items-baseline gap-x-2">
-                <span className="font-mono text-[28px] font-semibold leading-none tabular-nums text-muted-foreground">
+                <span className="font-heading text-[1.75rem] leading-none tabular-nums text-muted-foreground">
                   {i + 1}
                 </span>
                 <div>
@@ -135,6 +136,8 @@ export default function Methodology() {
           </ol>
         </section>
 
+        <InkRule className="text-border" />
+
         <section id="equations" className="flex flex-col gap-6">
           <h2 className={H2}>Risk equations</h2>
           <div className={`${PROSE} flex flex-col gap-3`}>
@@ -142,7 +145,7 @@ export default function Methodology() {
               Every pathway is a weighted average of 0 to 100 factor scores. When a factor has no value, it drops out
               and the remaining weights are rescaled, so a missing input never counts as zero.
             </p>
-            <div className="bg-muted p-4 font-mono text-sm">
+            <div className="rounded-sm bg-muted p-4 font-mono text-sm">
               <p>score = round( Σ weight × value ÷ Σ weight )</p>
               <p className="text-muted-foreground">sums run over the factors that have a value</p>
               <p className="mt-2">site score = highest pathway score</p>
@@ -177,7 +180,7 @@ export default function Methodology() {
             <h3 className={H3}>Categories</h3>
             <div className="border border-border bg-card">
               <Table>
-                <TableHeader className="bg-muted">
+                <TableHeader className="border-b-[3px] border-double border-foreground/40 bg-muted/60 [&_th]:text-muted-foreground [&_tr]:border-b-0">
                   <TableRow>
                     <TableHead>Score</TableHead>
                     <TableHead>Category</TableHead>
@@ -198,6 +201,8 @@ export default function Methodology() {
           </div>
         </section>
 
+        <InkRule className="text-border" />
+
         <section id="sentinel-2" className="flex flex-col gap-3">
           <h2 className={H2}>Sentinel-2 note</h2>
           <p className="max-w-[68ch] border-l-[3px] border-primary py-1 pl-4">
@@ -207,10 +212,14 @@ export default function Methodology() {
           </p>
         </section>
 
+        <InkRule className="text-border" />
+
         <section id="architecture" className="flex flex-col gap-6">
           <h2 className={H2}>Architecture</h2>
           <ArchitectureDiagram />
         </section>
+
+        <InkRule className="text-border" />
 
         <section id="sources" className="flex flex-col gap-6">
           <h2 className={H2}>Data sources</h2>
@@ -235,6 +244,8 @@ export default function Methodology() {
           </ul>
         </section>
 
+        <InkRule className="text-border" />
+
         <section id="limitations" className="flex flex-col gap-4">
           <h2 className={H2}>Limitations</h2>
           <ul className={`${PROSE} flex list-disc flex-col gap-2 pl-5`}>
@@ -244,6 +255,8 @@ export default function Methodology() {
           </ul>
         </section>
 
+        <InkRule className="text-border" />
+
         <section id="future-work" className="flex flex-col gap-4">
           <h2 className={H2}>Future work</h2>
           <ol className={`${PROSE} flex list-decimal flex-col gap-2 pl-6 marker:font-mono marker:text-muted-foreground`}>
@@ -252,6 +265,8 @@ export default function Methodology() {
             ))}
           </ol>
         </section>
+
+        <InkRule className="text-border" />
 
         <section id="citations" className="flex flex-col gap-6">
           <h2 className={H2}>Data sources and citations</h2>
