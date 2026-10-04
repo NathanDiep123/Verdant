@@ -10,6 +10,8 @@ import { cn } from "@/lib/utils";
 const NAV = [
   { to: "/", label: "Dashboard", end: true },
   { to: "/report", label: "Report a Bloom", end: false },
+  { to: "/my-reports", label: "My reports", end: false },
+  { to: "/rangers", label: "Report queue", end: false },
   { to: "/oah-cities", label: "OAH Cities", end: false },
   { to: "/methodology", label: "Methodology", end: false },
 ];
@@ -20,11 +22,11 @@ export function Layout({ children }: { children: ReactNode }) {
   return (
     <div className="flex min-h-screen flex-col">
       <header className="sticky top-0 z-40 border-b border-border bg-card">
-        <div className="mx-auto flex h-[60px] max-w-[1360px] items-center gap-3 px-4 md:gap-8 md:px-6">
+        <div className="mx-auto flex h-[60px] max-w-[1360px] items-center gap-3 px-4 md:px-6 xl:gap-8">
           <Button
             variant="ghost"
             size="icon"
-            className="md:hidden"
+            className="xl:hidden"
             aria-label="Open navigation"
             onClick={() => setOpen(true)}
           >
@@ -33,7 +35,7 @@ export function Layout({ children }: { children: ReactNode }) {
           <NavLink to="/" className="text-xl font-bold tracking-[-0.01em] text-foreground">
             Verdant
           </NavLink>
-          <nav aria-label="Main" className="hidden h-full items-stretch gap-6 md:flex">
+          <nav aria-label="Main" className="hidden h-full items-stretch gap-6 xl:flex">
             {NAV.map((n) => (
               <NavLink
                 key={n.to}
