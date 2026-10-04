@@ -13,9 +13,11 @@ Deadline: **2026-10-04 21:00 PDT**. Internal submission target: **20:45 PDT**. F
 
 **Central goal, citizen science (user, 2026-10-04):** people at the shore are one of Verdant's sensors. A citizen report is visible everywhere a score is visible: in the header, on the dashboard, on the map, in the Sampling priority list, on the site page and in the score itself. Section 20 specifies how; the video and the Devpost text give it the longest single segment and paragraph.
 
+**Central problem, report feedback loop (user, 2026-10-04):** rangers depend on citizen reports of algae blooms, and those reports are often hard to act on. Verdant makes reporting easy (a guided three-step flow with a picture guide of blooms and look-alikes), triages every report through a ranger review instead of trusting it blindly, and shows each reporter what happened to their report, including "You got it right." Section 21 specifies how. No statistic on report reliability is claimed.
+
 **Tagline:** "See the bloom before it becomes a warning."
 
-**One-sentence pitch:** "Verdant is an explainable early-warning platform that combines citizen observations from people at the shore with satellite imagery and environmental conditions to identify emerging harmful algal bloom risk and prioritize monitoring across Lake Mead, and it runs on any OneAquaHealth city through one site configuration."
+**One-sentence pitch:** "Verdant is an explainable early-warning platform that makes it easy for people at the shore to report what they see, has rangers triage every report and tells reporters what their report led to, and combines those reviewed observations with satellite imagery and environmental conditions to identify emerging harmful algal bloom risk and prioritize monitoring across Lake Mead, and it runs on any OneAquaHealth city through one site configuration."
 
 ## 2. The presentation-first rule
 
@@ -33,10 +35,10 @@ These are the weights and exact criterion titles from the Devpost rules page.
 
 | Criterion (weight) | Features and assets that answer it |
 |---|---|
-| **Impact & Alignment** (30%) | Sampling priority list with a recommended first sampling target; cited opening statistic (Section 19); One Health panel (environment, human, animal) on the site detail page; multi-hazard pathways; citizen report form built on the OneAquaHealth citizen-science stream questions; "Community reports" feed, report pins on the map and "Community observations" on the site page (Section 20); manager action recommendations; the "Verdant for OneAquaHealth cities" page; video segment 6; Devpost paragraphs 1 and "Citizen science" |
-| **Innovation & Creativity** (20%) | Before/after score moment when a citizen report is submitted (79 counting to 81, Section 20 Task 20.7); the site page stating how many points citizen evidence adds; per-factor contribution bars ("Why is risk elevated?"); one-switch region swap from Lake Mead to Coimbra; Devpost paragraph 2 |
+| **Impact & Alignment** (30%) | Sampling priority list with a recommended first sampling target; cited opening statistic (Section 19); One Health panel (environment, human, animal) on the site detail page; multi-hazard pathways; citizen report form built on the OneAquaHealth citizen-science stream questions; "Community reports" feed, report pins on the map and "Community observations" on the site page (Section 20); manager action recommendations; the "Verdant for OneAquaHealth cities" page; the report feedback loop that answers the rangers' problem of hard-to-act-on citizen reports (Section 21: ranger Report queue with reporter track records, reviewed outcomes on "My reports"); video segment 6; Devpost paragraphs 1 and "Citizen science" |
+| **Innovation & Creativity** (20%) | Before/after score moment when a citizen report is submitted (79 counting to 81, Section 20 Task 20.7); the site page stating how many points citizen evidence adds; review-weighted citizen evidence (new report 10, confirmed 20, not a bloom 0; Section 21.3) and the "You got it right." outcome shown to the reporter; per-factor contribution bars ("Why is risk elevated?"); one-switch region swap from Lake Mead to Coimbra; Devpost paragraph 2 |
 | **Technical Implementation** (20%) | Tested TypeScript risk engine (`src/engine/`); site-agnostic `SiteConfig`; Resilience Map CSV parser; FHIR-shaped JSON export; public GitHub repo with README; Devpost paragraph 3 |
-| **Usability & User Experience** (15%) | "Report what you see" call to action in the header on every page (Section 20); four-page app with one clear navigation path; colour-coded map; risk meter; plain-language explanations; disclaimers placed next to every score; mobile layout; Devpost paragraph 4 |
+| **Usability & User Experience** (15%) | "Report what you see" call to action in the header on every page (Section 20); three-step guided report flow with large tappable choices, photo first and the "Is it a bloom?" picture guide, plus a status timeline per report (Section 21); four-page app with one clear navigation path; colour-coded map; risk meter; plain-language explanations; disclaimers placed next to every score; mobile layout; Devpost paragraph 4 |
 | **Feasibility & Scalability** (15%) | Site configs for all five OAH cities; Methodology page architecture diagram; data-source cards; official Lake Mead elevation card; "Data sources and citations" table; future-work list naming field-sample validation; Devpost paragraph 5 |
 
 ## 4. Scope
@@ -50,9 +52,10 @@ These are the weights and exact criterion titles from the Devpost rules page.
 6. Risk engine with unit tests.
 7. FHIR-shaped JSON export of sites, risk scores and citizen reports.
 8. README, Devpost text, demo video, deployed URL.
-9. Citizen science prominence per Section 20: header call to action, "Community reports" feed and KPI, report pins on the map, report-count badges in the Sampling priority list, "Community observations" on the site page, before/after score moment on the report page. Reports live in React state only; a page reload drops submitted reports, by design.
+9. Citizen science prominence per Section 20: header call to action, "Community reports" feed and KPI, report pins on the map, report-count badges in the Sampling priority list, "Community observations" on the site page, before/after score moment on the report page. Reports live in React state only; a page reload drops submitted reports, by design. (Superseded by Section 21.8: reports and outcomes persist in `localStorage` until "Reset demo data".)
+10. Report feedback loop per Section 21: guided three-step report flow, report status lifecycle, "My reports" page, ranger "Report queue" demonstration page, review-weighted citizen evidence.
 
-**Out of scope (closed list):** live satellite ingestion; live weather APIs; authentication; database or backend; photo storage; real-time notifications; machine-learning models; a FHIR server; a separate agency dashboard; a before/after imagery slider.
+**Out of scope (closed list):** live satellite ingestion; live weather APIs; authentication; database or backend; photo storage; real-time notifications; machine-learning models; a FHIR server; a separate agency dashboard (the Section 21 Report queue is one demonstration page in the same app); a before/after imagery slider.
 
 ## 5. Assumptions
 
@@ -184,6 +187,7 @@ type SiteConfig = {
 
 Routes use react-router. The navigation order is Dashboard · Report a Bloom · OAH Cities · Methodology. The active region (`lake-mead` | `coimbra`) lives in React context and is shown in the header as a two-state switch.
 - Header citizen-science call to action: Section 20, Task 20.2.
+- Section 21 adds "My reports" (`/my-reports`) and "Report queue" (`/rangers`) to the nav, which becomes Dashboard · Report a Bloom · My reports · Report queue · OAH Cities · Methodology (Task 21.5), and replaces the report form with a three-step flow (Task 21.3).
 
 1. **`/` Dashboard.**
    - KPI cards:
@@ -334,7 +338,7 @@ Risk tokens (also exposed as `--color-risk-*`). Solid = markers, meter, chart do
 Risk badge (one component, `RiskBadge`): tint background, ink text, 1px border in the solid colour, icon 14px + score (Mono) + category word. Never colour without the word. Icons: lucide-react only (installed by shadcn; no second icon library), stroke width 1.75 everywhere.
 
 **11.4 Layout, spacing, radius, shadow.**
-- Shell: header 60px, `bg-card`, bottom hairline; wordmark "Verdant" Sans 700 20px left; nav (Dashboard, Report a Bloom, OAH Cities, Methodology) Sans 500 14px, active link = ink with 2px accent underline; region switch right, as a 2-segment control (Lake Mead | Coimbra), active segment `bg-primary text-primary-foreground`. Below 768px: nav moves into a shadcn `Sheet` opened by a `Menu` icon button; region switch stays visible. Content container `max-w-[1360px] mx-auto px-6` (px-4 below 768px). Footer: disclaimer (§8.2) in 14px muted ink above a hairline.
+- Shell: header 60px, `bg-card`, bottom hairline; wordmark "Verdant" Sans 700 20px left; nav (Dashboard, Report a Bloom, OAH Cities, Methodology) Sans 500 14px, active link = ink with 2px accent underline; region switch right, as a 2-segment control (Lake Mead | Coimbra), active segment `bg-primary text-primary-foreground`. Below 768px: nav moves into a shadcn `Sheet` opened by a `Menu` icon button; region switch stays visible. (Section 21, Task 21.5: with six nav items the inline nav shows at 1280px and wider, the `Sheet` below 1280px.) Content container `max-w-[1360px] mx-auto px-6` (px-4 below 768px). Footer: disclaimer (§8.2) in 14px muted ink above a hairline.
 - Spacing: 4px base; only Tailwind steps 1, 2, 3, 4, 6, 8, 12, 16. Section gap 48px (`gap-12`) desktop, 32px mobile. Inside panels 16px or 24px.
 - Radius: 4px (`rounded-sm`) on every rectangle (buttons, inputs, panels, popups, badges). Markers and meter pointer are the only round shapes. No `rounded-xl`, no pills.
 - Shadow: none on page elements; panels are separated by 1px `border` hairlines. One shadow token, `0 6px 24px rgb(20 33 31 / 0.14)`, used only on Leaflet popups, `Select`/dropdown content and `Sheet`.
@@ -490,24 +494,24 @@ Speakers are A (Frontend/Map), B (Data/Risk Model) and C (Product/Citizen Scienc
 | Time | Speaker | Screen | Script |
 |---|---|---|---|
 | 0:00–0:25 | C | Title card with the statistic and the on-screen source line "Source: CDC, MMWR 69(50), Dec 18, 2020" (Section 19.2 row C1), then a Lake Mead photo, then Dashboard | Spoken, exactly: "Across the United States, 18 states reported 421 harmful algal bloom events, 389 cases of human illness and 413 cases of animal illness from 2016 to 2018." Then: "At Lake Mead, the National Park Service warns that bloom toxins can make people sick and can kill dogs. Monitoring cannot continuously cover every part of the lake." |
-| 0:25–0:40 | C | Dashboard, cursor resting on the header button "Report what you see" | Verdant, Track 6 Resilience Informatics: an explainable early warning that combines satellite, environmental and citizen signals. Spoken, exactly: "Agencies sample a few points a few times a month. People at the shore see the water every day, so Verdant treats them as sensors." |
-| 0:40–1:15 | A | Risk map with the community report pins visible, popups, Sampling priority list, official elevation card | The map, the categories, the square community report pins next to the site markers, Areas Requiring Attention, the Sampling priority list with Callville Bay as the recommended first sampling target and its 3 reports, the official Reclamation elevation card beside the labelled prototype values, and Boulder Basin led by heat and low water, which shows the multi-hazard view. |
-| 1:15–1:50 | B | `/site/callville-bay` | 79, Very High, Increasing. Why is risk elevated: the contribution bars. The Verdant recommendation "Recommend field sampling" and "Recommended first sampling target", next to "Official advisory: none issued". The disclaimer. |
-| 1:50–2:50 | C | Citizen science segment, in this order: (1) Dashboard "Community reports" feed, 5 s; (2) `/site/callville-bay` "Community observations" showing "Citizen evidence: 64/100, adds 9.6 points to the Algal bloom score.", then click "Add an observation at Callville Bay"; (3) `/report` with Callville Bay preselected: the intro, the OAH source line, two answers, the warning, "Submit report"; (4) the success state counting 79 to 81 and "Citizen evidence 64 to 74"; (5) "View updated site": the section now reads 74/100 and 11.1 points; (6) "See it on the dashboard": the new report on top of the feed tagged "Submitted in this session", a fourth pin at Callville Bay, Callville Bay at 81 in the Sampling priority list | Spoken, exactly: "Citizen reports add coverage between agency samples." Then: "The form uses the OneAquaHealth citizen-science stream questions. Each report raises that site's citizen evidence, and the score shows exactly how many points the community adds." Then read the warning on screen: "A citizen report does not confirm a harmful algal bloom. Laboratory or agency testing is required for confirmation." |
-| 2:50–3:05 | B | One Health panel | Environment, human health and animal health; visitor guidance. |
+| 0:25–0:40 | C | Dashboard, cursor resting on the header button "Report what you see" | Verdant, Track 6 Resilience Informatics. Spoken, exactly: "Rangers depend on people at the shore to report blooms. But a report can be hard to act on: the wrong spot, no photo, or duckweed that looks like algae. Verdant makes reporting easy, has rangers triage every report, and tells the reporter what happened." |
+| 0:40–1:05 | A | Risk map with the community report pins visible, popups, Sampling priority list, official elevation card | The map, the categories, the square community report pins next to the site markers, the Sampling priority list with Callville Bay as the recommended first sampling target and its 3 reports, the official Reclamation elevation card beside the labelled prototype values, and Boulder Basin led by heat and low water. |
+| 1:05–1:30 | B | `/site/callville-bay` | 79, Very High, Increasing. Why is risk elevated: the contribution bars. The Verdant recommendation "Recommend field sampling" next to "Official advisory: none issued". The disclaimer. |
+| 1:30–2:55 | C | Report feedback loop (Section 21), in this order: (1) `/site/callville-bay` "Community observations" showing "Citizen evidence: 64/100, adds 9.6 points to the Algal bloom score.", click "Add an observation at Callville Bay", 5 s; (2) `/report` Step 1 "Where are you?" with Callville Bay selected, Next; Step 2 "What do you see?": "Add a photo", the "Is it a bloom?" guide, tap "Looks like a bloom" and "lots", Next; Step 3 "Check and send": the warning, "Submit report", 20 s; (3) success: 79 struck through, 81 counting up, "Report VR-xxxx", "Your report is in the ranger queue.", 10 s; (4) "Report queue" in the nav: the new report on top with "You (demo reporter). Record: 2 of 3 reviewed reports matched the field result." and the demonstration label; click "Request field sample", then "Confirmed by field sample", 20 s; (5) "My reports": the new report's timeline Received, Field sample requested, Confirmed by field sample, "You got it right.", "Your report helped prioritize Callville Bay for sampling.", record now 3 of 4; scroll to "Close, but not a bloom this time." on the Las Vegas Bay report, 20 s; (6) Dashboard: Callville Bay at 82 in the Sampling priority list, the new report on top of the feed, 10 s | Spoken, exactly: "Reporting takes three steps and a photo. The guide shows what a bloom looks like, and what only looks like one." Then: "Every report goes to a ranger queue with the reporter's track record. A new report adds 10 points of citizen evidence, a confirmed one adds 20, and a report ruled not a bloom adds nothing." Then: "And the reporter sees what their report led to: you got it right." Then read the warning on screen: "A citizen report does not confirm a harmful algal bloom. Laboratory or agency testing is required for confirmation." |
+| 2:55–3:05 | B | One Health panel | Environment, human health and animal health; visitor guidance. |
 | 3:05–3:35 | A | `/oah-cities` → Run on Coimbra → Dashboard | Lake Mead is the pilot. The same engine runs on a OneAquaHealth city through one site config and a Resilience Map export. Benevento, Ghent, Oslo and Toulouse are configured next. |
 | 3:35–3:45 | A | The "Export FHIR JSON" button on the site detail page of the Coimbra rank-1 site, clicked once; the download bar shows `verdant-coimbra-fhir.json` | Spoken, exactly (this is the only FHIR mention in the video, 10 seconds or less): "One click exports every score and citizen report as FHIR-shaped JSON for the OneAquaHealth implementation guide." |
-| 3:45–4:10 | B | `/methodology` diagram | Architecture, Sentinel-2 NDCI as a proxy rather than toxin detection, and the scale path. |
-| 4:10–4:30 | C | Dashboard, "Community reports" feed in view | Spoken, exactly: "Anyone at the shore can add to this map. Verdant does not replace environmental experts. It helps them know where to look first." |
+| 3:45–4:05 | B | `/methodology` diagram and the citizen-evidence weighting paragraph (Task 21.7) | Architecture, Sentinel-2 NDCI as a proxy rather than toxin detection, review-weighted citizen evidence, and the scale path. |
+| 4:05–4:30 | C | "My reports", "You got it right." in view | Spoken, exactly: "Anyone at the shore can add to this map, and every reporter sees what their report led to. Verdant does not replace environmental experts. It helps them know where to look first." |
 
-Recording note for 1:50–2:50: record steps (1) to (6) in one take after a page reload, so the feed, the pins and the score start from the seed state (Callville Bay 79, 3 reports, 7 reports in total).
+Recording note for 1:30–2:55: before the take, click "Reset demo data" on `/my-reports` and reload, so the feed, the pins, the queue and the score start from the seed state (Callville Bay 79, 3 reports, 7 reports in total, record 2 of 3). Record steps (1) to (6) in one take. The Section 21.7 cuts name the fallback for each step.
 
 ## 14. Devpost description (draft; task 10.1 finalizes it)
 
 - **Track alignment:** Track 6, Resilience Informatics. Verdant turns scattered environmental and citizen signals into early warning and monitoring priorities for freshwater sites.
 - **Inspiration / What it does / How we built it / Challenges / Accomplishments / What we learned / What's next:** these are written in task 10.1 from Sections 1, 7, 8 and 9.
 - **Impact & Alignment.** Verdant links freshwater conditions to human and animal health. Every score names its hazard pathway, its evidence and a next step for rangers, water agencies, researchers, residents and visitors. Lake Mead is the pilot; the same engine runs on OneAquaHealth's Coimbra data and is configured for Benevento, Ghent, Oslo and Toulouse.
-- **Citizen science.** Agencies sample a few points a few times a month; people at the shore see the water every day. Verdant treats their reports as one of its sensors. The report form uses the OneAquaHealth citizen-science stream questions. Every report shows up in the dashboard's "Community reports" feed, as a pin on the map and in the site's "Community observations", and it raises that site's citizen evidence by 10 points, so a manager can read exactly how much the community moved the score (Callville Bay: 79 to 81). Reports never confirm a bloom: the form says so above the submit button, and the score only tells experts where to sample first.
+- **Citizen science and the report feedback loop.** Rangers depend on people at the shore to report blooms, and those reports are often hard to act on: the wrong spot, no photo, or a look-alike such as duckweed. Verdant attacks that from both ends. Reporting is three steps: pick the site (or use your location), add a photo and compare it with an "Is it a bloom?" guide of blooms and look-alikes, then send. The questions come from the OneAquaHealth citizen-science stream survey. Every report goes to a ranger Report queue that shows the reporter's track record, and its weight in the score follows the review: a new report adds 10 points of citizen evidence (Callville Bay: 79 to 81), a report confirmed by field sample adds 20 (82), and a report ruled not a bloom adds nothing (back to 79). The reporter follows the report on "My reports" from Received to the outcome and sees "You got it right." or what the ranger found instead. Ranger outcomes in the prototype are demonstration data and say so on screen. A report never confirms a bloom by itself: the form says so above the submit button, and only a field sample can.
 - **Innovation & Creativity.** A citizen report changes the risk score on screen, and the site page states how many points citizen evidence adds. Every score breaks down into factor contributions. One configuration switch moves Verdant from a US reservoir to a European urban stream network.
 - **Technical Implementation.** A tested TypeScript risk engine with fixed, published weights and partial-data coverage. A Resilience Map CSV parser. FHIR-shaped JSON export aligned to the OneAquaHealth FHIR IG profiles. React, TypeScript, Leaflet and Recharts.
 - **Usability & User Experience.** Four pages, one path from map to explanation to action. Disclaimers sit next to every score, and the layout works on a phone in the field.
@@ -517,7 +521,7 @@ Recording note for 1:50–2:50: record steps (1) to (6) in one take after a page
 ## 15. README outline
 
 1. Verdant: tagline, deployed link, video link, screenshot.
-2. Problem and solution.
+2. Problem and solution, led by the Section 1 central problem (rangers depend on hard-to-act-on citizen reports) and the Section 21 report feedback loop: guided reporting, ranger triage, review-weighted evidence (10 / 20 / 0), "My reports" outcomes, demonstration-data note.
 3. Track 6 alignment.
 4. Risk model: pathways, weights, equation, categories, coverage.
 5. Data: Lake Mead prototype data, Coimbra Resilience Map export or synthetic fallback, labels.
@@ -553,19 +557,21 @@ Recording note for 1:50–2:50: record steps (1) to (6) in one take after a page
 6. Trend chart becomes a trend label only. Trigger: Recharts fails to render at 16:15 PDT.
 7. Deployment is replaced by recording the video on `npm run dev` and submitting the repo link. Trigger: the Vercel deploy fails at 19:00 PDT.
 
-The never-cut list: the map, the risk engine and its tests, the site detail page, the disclaimer, the OAH-cities page, the video, and the submission.
+Section 20 cuts: Section 20.4. Section 21 cuts, with clock triggers: Section 21.7.
+
+The never-cut list: the map, the risk engine and its tests, the Section 21.7 never-cut items, the site detail page, the disclaimer, the OAH-cities page, the video, and the submission.
 
 ## 18. Core message and final pitch
 
-- **Problem:** monitoring cannot continuously cover every part of a lake or an urban stream network.
-- **Solution:** combine satellite, environmental and citizen observations into an explainable, multi-hazard risk score.
-- **Citizen science:** people at the shore are sensors between agency samples; every report is visible on the map, in the feed and on the site page, and the score states how many points it adds.
+- **Problem:** monitoring cannot continuously cover every part of a lake or an urban stream network, so rangers depend on citizen reports, and those reports are often hard to act on.
+- **Solution:** make reporting easy, have rangers triage every report, and combine the reviewed citizen observations with satellite and environmental data into an explainable, multi-hazard risk score.
+- **Citizen science:** people at the shore are sensors between agency samples; every report is visible on the map, in the feed and on the site page, its weight follows the ranger's review (new 10, confirmed 20, not a bloom 0), and the reporter sees the outcome on "My reports": "You got it right."
 - **Impact:** experts see where follow-up monitoring is needed first.
 - **One Health:** protects aquatic ecosystems, recreational users, pets, wildlife and downstream communities.
 - **Responsible AI:** supports human decisions and never diagnoses or confirms toxic blooms.
 - **Scale:** Lake Mead is the pilot; OneAquaHealth cities run on the same engine through one site config.
 
-**Final pitch:** "Verdant transforms scattered environmental signals into actionable early warning. By combining reports from people at the shore with satellite observations and environmental conditions, Verdant helps identify where harmful algal bloom risk may be increasing across Lake Mead, and the same engine already runs on OneAquaHealth's urban streams, so experts know where to look first."
+**Final pitch:** "Verdant transforms scattered environmental signals into actionable early warning. It makes reporting a bloom easy, has rangers triage every report, and shows each reporter what their report led to. By combining those reviewed reports from people at the shore with satellite observations and environmental conditions, Verdant helps identify where harmful algal bloom risk may be increasing across Lake Mead, and the same engine already runs on OneAquaHealth's urban streams, so experts know where to look first."
 
 ## 19. Data sources and citations
 
@@ -591,6 +597,7 @@ The never-cut list: the map, the risk engine and its tests, the site detail page
 | C8 OAH citizen-science / field protocol (report form, A4) | Harmonized OneAquaHealth procedures for sampling-site characterization and ecosystem-health and biological indicators | Calapez, A. R. et al., "OneAquaHealth Field Sampling Protocols for Urban Stream Ecosystems", 2026-05-22, DOI 10.5281/zenodo.20344421 | Zenodo (OneAquaHealth, Horizon Europe) | https://zenodo.org/records/20344421 | 2026-10-04 |
 | C9 Coimbra Earth-observation summary (satellite signal chart) | Monthly NDVI and NDWI area means for Coimbra, 2020-01 to 2026-09 | Resilience Map, Earth-observation area summary export (file eo_summary_area_Coimbra_1969-01-01_to_2026-10-03.csv) | OneAquaHealth Project (served from the oneaquahealth.eu domain) | https://apps.oneaquahealth.eu/resmap/ | 2026-10-04 |
 | C10 Citizen-science stream questions (report form, Task 20.7) | Seven citizen-science questions (foam, riparian vegetation, filamentous algae, hydrology, diptera, ticks, wildlife) as used in a OneAquaHealth citizen-science form; reproduced in a public hackathon repository and not verified against the official OAH app | `codes.js` in the AquaLink repository | GitHub user Sravya1802 (public repository) | https://github.com/Sravya1802/aqualink | 2026-10-04 |
+| C11 Bloom vs look-alike guide (report form "Is it a bloom?", Task 21.3; video 0:25–0:40) | Cyanobacteria blooms can look like blue or green paint spilled into the water, a coloured crust along the shoreline, puffy surface scums, or swirls beneath the surface; duckweed, long strands of green algae and filamentous macro-algae are sometimes confused with them | "Identifying Cyanobacteria Blooms" | Illinois Environmental Protection Agency | https://epa.illinois.gov/topics/water-quality/monitoring/algal-bloom/identifying.html | 2026-10-04 |
 
 ### 19.3 Official Lake Mead data element
 
@@ -706,4 +713,172 @@ Never cut from this section: 20.1, 20.2, the 20.3 feed and subtitle, 20.6, the 2
 
 ### 20.5 Done-check for the whole section
 
-The orchestrator runs `npm run build` and `npx vitest run`, then walks the Section 13 1:50–2:50 sequence steps (1) to (6) on `npm run dev` after a reload, and confirms every string in Section 20.3 appears as written, at 1440 px and 375 px, with no console errors.
+The orchestrator runs `npm run build` and `npx vitest run`, then walks the Section 13 citizen sequence (1:30–2:55 after the Section 21 amendment; before Section 21 lands, the Section 20 strings only) on `npm run dev` after a reload, and confirms every string in Section 20.3 appears as written, at 1440 px and 375 px, with no console errors.
+
+## 21. Report feedback loop
+
+**Why (user, 2026-10-04, verbatim; this is the central problem statement):** "the issue is that rangers often depend on citizens to report algae blooms that can often be unreliable so we're trying to combat that by making it easy to report, and users should feel a sense of accomplishment after reporting because they can see if the report got addressed, or if they got it right".
+
+**What judges must see:** (1) the problem: rangers depend on citizen reports, and a report can be hard to act on (wrong spot, no photo, a look-alike such as duckweed); (2) reporting is fast and guided, with a picture guide of what a bloom looks like and what only looks like one; (3) every report is triaged by a ranger, not blindly trusted, and its weight in the score depends on the outcome; (4) the reporter sees what happened: "You got it right." No claim is made about how often citizen reports are wrong; no statistic on report reliability is used anywhere.
+
+### 21.1 Rules for this section
+
+1. Every task is executed by an execution-tier agent (`model: "sonnet"`) unless marked orchestrator. TDD applies to Task 21.1 only. Every other task is visual and is verified with `npm run dev` in the browser at 1440 px and 375 px.
+2. Every agent follows Section 11, names `impeccable`, applies the `ponytail` ladder, reads graphify-first (AGENTS.md point 8; no graph exists as of 13:40 PDT, so the agent says so and reads the named files directly), and runs `no-ai-slop` on user-facing text beyond the exact strings below. Exact strings here are copied verbatim.
+3. Every Section 20.1 rule 4 string stays unchanged: the warning, the success sentence, "View updated site", "Report a Bloom", "Citizen reports", "Reports", "Sampling priority list", "Why citizen observations matter", every Section 8.2 and 8.3 string. The success sentence may be followed by the new lines in Task 21.4.
+4. Honesty: every ranger outcome in the app is demonstration data and is labelled so (exact label strings in Tasks 21.5 and 21.6). A citizen report never confirms a bloom by itself; the outcome "Confirmed by field sample" is the only confirming label and it always names the field sample.
+5. No backend and no new dependency. Persistence is `localStorage` only, every read and write wrapped in try/catch, so the app works when storage throws.
+6. Start condition: Section 21 starts after the Section 20 tasks have landed and `npm run build` passes. Step 1 (Tasks 21.1, 21.2) edits no Section 20 file, so the orchestrator may start it as soon as Section 20 Step 2 is dispatched; Step 2 waits for Section 20 to land because it edits `Report.tsx`, `Layout.tsx` and `CommunityReportItem.tsx`.
+7. Time box: Step 1 35 minutes, Step 2 60 minutes; the section is done by 17:45 PDT and frozen at 18:15 PDT. Task 8.1 polish then covers these screens.
+
+### 21.2 Report status lifecycle (exact ids and labels)
+
+| `ReportStatus` id | Label (exact) | Kind | Citizen evidence weight (user-submitted reports) | Icon (lucide) |
+|---|---|---|---|---|
+| `received` | Received | open | 10 | `Inbox` |
+| `reviewing` | Ranger reviewing | open | 10 | `Search` |
+| `sample-requested` | Field sample requested | open | 10 | `FlaskConical` |
+| `confirmed` | Confirmed by field sample | outcome | 20 | `CircleCheck` |
+| `not-bloom` | Not a bloom | outcome | 0 | `CircleX` |
+| `more-info` | Needs more info | outcome | 10 | `CircleHelp` |
+
+Allowed transitions (ranger buttons, Task 21.6): `received` to `reviewing`; `received` or `reviewing` to `sample-requested`; any open status to any outcome. Outcomes are final in this prototype.
+
+### 21.3 Score rule (reports are weighted by review, not trusted blindly)
+
+- A site's displayed `citizen_evidence` = min(100, prototype value + the sum of the weights in 21.2 over the **user-submitted** reports at that site). Seed reports (`dataTag` `synthetic-demo`) carry statuses for display only; their evidence is already inside the Section 6.1 prototype values, so they add 0 and the Section 6.1 table is unchanged.
+- Callville Bay (prototype citizen evidence 64, algal bloom 79): one new report (Received) gives 74 and 81, the existing 79 to 81 moment, unchanged; Ranger reviewing, Field sample requested or Needs more info keep 74 and 81; Confirmed by field sample gives 84 and **82** (34.8 + 15.6 + 10.95 + 12.6 + 8.5 = 82.45); Not a bloom gives 64 and **79**.
+- `applyCitizenReport` (Section 7) is unchanged and remains the "new report adds 10" rule; `src/engine/score.test.ts` and `src/lib/communityReports.test.ts` are not edited. The new rule lives in `withReportEvidence` (Task 21.1) with its own tests. The dashboard line "Each new report raises that site's citizen evidence by 10 points, capped at 100." stays true.
+
+### 21.4 Order, parallelism and file ownership
+
+| Step | Agent | Tasks | Owns these files (no other agent edits them) | Section 20 files touched |
+|---|---|---|---|---|
+| 1 (sequential) | Agent L | 21.1 then 21.2 | `src/types.ts`, `src/lib/reportLoop.ts` (new), `src/lib/reportLoop.test.ts` (new), `src/data/lakeMeadReports.ts`, `src/components/ReportStatusTag.tsx` (new), `src/state/RegionContext.tsx`, `src/App.tsx`, `src/pages/MyReports.tsx` (new, placeholder only), `src/pages/RangerQueue.tsx` (new, placeholder only) | none |
+| 2 (parallel) | Agent D | 21.3, 21.4 | `src/pages/Report.tsx`, `src/components/BloomGuide.tsx` (new) | `Report.tsx` (20.7) |
+| 2 (parallel) | Agent E | 21.5 | `src/pages/MyReports.tsx`, `src/components/ReportTimeline.tsx` (new), `src/components/Layout.tsx` | `Layout.tsx` (20.2) |
+| 2 (parallel) | Agent F | 21.6, 21.7 | `src/pages/RangerQueue.tsx`, `src/components/CommunityReportItem.tsx`, `src/pages/Methodology.tsx` | `CommunityReportItem.tsx` (20.1) |
+| any time | Orchestrator, inline | 21.8 | `src/data/citations.ts`, `src/data/citations.test.ts`, PLAN.md Section 19.2 (one row) | none |
+
+Step 2 agents import only from `src/lib/reportLoop.ts`, `ReportStatusTag.tsx` and `useRegion()`; none edits a Step 1 file.
+
+### 21.5 Tasks
+
+- **21.1 Lifecycle logic, types, seed outcomes.** Effort M. Agent L. TDD applies. Priority P1 (never cut).
+  - `src/types.ts`: add `export type ReportStatus = "received" | "reviewing" | "sample-requested" | "confirmed" | "not-bloom" | "more-info";` and optional fields on `CitizenReport`: `reporterId?: string; status?: ReportStatus; rangerNote?: string; statusHistory?: { status: ReportStatus; at: string }[];`. Optional, so FHIR and Section 20 code compile unchanged.
+  - `src/lib/reportLoop.ts` exports:
+    - `STATUS_LABEL: Record<ReportStatus, string>` and `EVIDENCE_WEIGHT: Record<ReportStatus, number>`, exactly the 21.2 table; `isOutcome(status)`; `NEXT_STEP_LABEL`: `received` "Next: Ranger reviewing", `reviewing` "Next: field sample or outcome", `sample-requested` "Next: outcome".
+    - `withReportEvidence(site, reports)`: per 21.3. A report counts when `siteId === site.id` and `dataTag === "user-submitted"`; missing `status` counts as `received`. When the site has no `citizen_evidence` and no counted reports, it is left missing.
+    - `setStatus(report, status, at, note?)`: returns a new report with `status`, `rangerNote` (when given) and `statusHistory` appended `{ status, at }`; never mutates.
+    - `trackRecord(reports, reporterId)`: `{ filed, decided, matched }` where `decided` counts `confirmed` + `not-bloom` and `matched` counts `confirmed`.
+    - `recordLine(rec)`: exactly "{matched} of {decided} reviewed reports matched the field result." or, when `decided` is 0, "No reviewed reports yet."
+    - `reportCode(report)`: seed `report-{n}` gives "VR-{1000+n}"; `user-{ms}` gives "VR-" + the last 4 digits of `ms`.
+    - `REPORTER_NAME`: `{ you: "You (demo reporter)", "reporter-b": "Reporter B", "reporter-c": "Reporter C" }`.
+    - `nearestSite(lat, lon, sites)`: the site with the smallest equirectangular distance.
+    - `loadReportState(storage = globalThis.localStorage)` and `saveReportState(state, storage = globalThis.localStorage)`, key `verdant.reports.v1`, value `{ submitted: CitizenReport[], seedStatus: Record<string, Pick<CitizenReport, "status" | "statusHistory" | "rangerNote">> }`; load returns `null` on a missing key, bad JSON or a throwing storage; save swallows errors. `clearReportState(storage)` removes the key inside try/catch.
+  - `src/data/lakeMeadReports.ts`: add to the seven seed reports (ids, sites, text and timestamps unchanged):
+    - report-1 Callville Bay: `reporterId "you"`, `confirmed`, note "Demo outcome: a field sample on Oct 2 confirmed a bloom at the marina docks.", history received 2026-10-01T08:30Z, reviewing 2026-10-01T15:00Z, sample-requested 2026-10-01T16:00Z, confirmed 2026-10-02T18:00Z.
+    - report-2 Callville Bay: `reporter-b`, `sample-requested`, history received, reviewing, sample-requested on 2026-10-02 after 16:10Z.
+    - report-3 Callville Bay: `reporter-c`, `reviewing`.
+    - report-4 Las Vegas Bay: `you`, `not-bloom`, note "Demo outcome: the brown-green water after the storms was stirred-up sediment, not a bloom.", history received, reviewing, not-bloom 2026-10-02T09:00Z.
+    - report-5 Las Vegas Bay: `reporter-b`, `received`.
+    - report-6 Overton Arm: `you`, `confirmed`, note "Demo outcome: a field sample on Oct 3 confirmed a bloom in the shallow cove.", history through confirmed 2026-10-03T17:00Z.
+    - report-7 Boulder Basin: `you`, `more-info`, note "Demo outcome: the ranger asks where exactly the fish were, and for a photo if you go back."
+    - Every history entry is at or after the report's `createdAt`.
+  - `src/components/ReportStatusTag.tsx`: `ReportStatusTag({ status })`: the 21.2 icon (14px, stroke 1.75) plus label, Sans 500 12px, 4px radius, padding 2px 8px, 1px border. Open statuses: `--muted` fill, ink text. `confirmed`: `--primary` border and text. `not-bloom` and `more-info`: dashed `--border`, muted ink. Never a risk colour.
+  - Tests (`src/lib/reportLoop.test.ts`): Callville plus one user-submitted report gives citizen evidence 74 and algal bloom 81 for `received`, `reviewing`, `sample-requested` and `more-info`; 84 and 82 for `confirmed`; 64 and 79 for `not-bloom`; the 3 seed Callville reports add 0 (64, 79); two `received` user reports give 84; a site at 95 plus one report caps at 100; a report at another site adds 0; `setStatus` appends history and leaves the input unchanged; `trackRecord(lakeMeadReports, "you")` is `{ filed: 4, decided: 3, matched: 2 }` and its `recordLine` is "2 of 3 reviewed reports matched the field result."; `trackRecord(lakeMeadReports, "reporter-b")` gives "No reviewed reports yet."; `reportCode` of report-1 is "VR-1001" and of `user-1759600000123` is "VR-0123"; `nearestSite(36.15, -114.70, sites)` is Callville Bay and `nearestSite(36.06, -114.34, sites)` is Temple Basin; `loadReportState` on a throwing stub returns `null`, on bad JSON returns `null`, and round-trips a saved state through a Map-backed stub.
+  - Done: `npx vitest run` passes (every existing test unchanged and green) and `npm run build` exits 0.
+
+- **21.2 Shared report state, persistence, routes.** Effort M. Agent L, after 21.1. Priority P1 (never cut, except persistence per 21.7).
+  - `src/state/RegionContext.tsx`:
+    - State: `submitted: CitizenReport[]` and `seedStatus`, both initialised from `loadReportState()` (empty when `null`), saved with `saveReportState` in a `useEffect` on change.
+    - `reports` = the region's seed reports (with `seedStatus` overrides merged by id) plus the `submitted` reports whose `siteId` is in the region's sites. Switching region no longer drops submitted reports.
+    - `sites` = `config.sites.map((s) => withReportEvidence(s, reports))` in `useMemo`. The `sites` `useState`, `setSites` and the `applyCitizenReport` call are removed (nothing outside this file uses `setSites`).
+    - `addReport(r)`: fills `reporterId "you"`, `status "received"` and `statusHistory [{ status: "received", at: r.createdAt }]` when absent, then appends to `submitted`. Its signature is unchanged, so `Report.tsx` keeps working, and its 79 to 81 preview still matches because a Received report weighs 10.
+    - New: `updateReportStatus(id, status, note?)` (uses `setStatus` with `new Date().toISOString()`; updates `submitted` when the id is there, else `seedStatus`) and `resetDemo()` (calls `clearReportState()` and empties both).
+  - `src/App.tsx`: routes `/my-reports` to `MyReports` and `/rangers` to `RangerQueue`. Both page files are created here as placeholders rendering their H1 only ("My reports", "Report queue"); Agents E and F replace the bodies.
+  - Done: build passes; all tests pass; in the browser, submitting a Callville Bay report still shows 79 to 81; a reload keeps the submitted report and Callville at 81 (Task 21.5 adds the "Reset demo data" button that clears it).
+
+- **21.3 Guided three-step report flow (easier reporting).** Effort L. Agent D. Priority P1.
+  - Files: `src/pages/Report.tsx`, `src/components/BloomGuide.tsx` (new).
+  - The H1, intro paragraph, OAH source line, aside and "Why citizen observations matter" stay as Section 20.7 left them. The form becomes three steps shown one at a time, mobile-first, single column `max-w-[640px]`. Above each step: "Step {n} of 3" (Mono 12px muted) and the step title as H2 (20px Sans 600). Buttons: "Next" (primary) and "Back" (outline), 44px minimum height, full width below 640 px. Answers survive moving between steps.
+  - **Step 1, title exactly "Where are you?"**
+    - Sites as large tappable buttons (one column below 640 px, two columns above; each at least 56px tall; site name Sans 600 16px with its `RiskBadge` on the right). Selected: 2px `--primary` border, lucide `Check`, `aria-pressed="true"`. `?site=` preselects (Section 20.7); otherwise no site is preselected.
+    - An outline button "Use my location" with lucide `LocateFixed`: calls `navigator.geolocation.getCurrentPosition` and selects `nearestSite`; then shows "Nearest site: {name}" (14px muted); on error or no support shows exactly "Location unavailable. Pick a site below." The button is the first item in the 21.7 cut order.
+    - "Next" is disabled until a site is selected.
+  - **Step 2, title exactly "What do you see?"**
+    - Photo first: a full-width dashed `--border` box button, 96px tall, lucide `Camera` icon and the text "Add a photo", backed by `<input type="file" accept="image/*" capture="environment">`; helper "Photo stays on your device" (unchanged); preview under it once chosen.
+    - `BloomGuide` (H3 exactly "Is it a bloom?"): two groups of illustrated tiles, each tile a 64px square drawn as inline SVG using only Section 11.3 colours (`--risk-low` solid and tint for green, `--primary` for water, `--muted` for background), with a 14px caption. Group 1, heading "Looks like a bloom": "Spilled green paint", "Green crust along the shore", "Puffy green scum", "Swirls under the surface". Group 2, heading "Often mistaken for one": "Duckweed: tiny separate leaves", "Long strands of green algae", "Filamentous macro-algae". Under the tiles, data-label style, exactly: "Guide based on Illinois EPA, Identifying Cyanobacteria Blooms. Drawings, not photos." (row C11).
+    - Directly under the guide, a single-choice question "Which matches what you see?" with three large choice buttons (min height 48px): "Looks like a bloom", "Looks like a look-alike", "Not sure". Stored as the first observation entry "Guide match: {answer}".
+    - The bloom questions from `src/data/reportFields.ts`, in this order, as large tappable choice buttons instead of selects (options verbatim): `algae`, `foam`, then `wildlife` (multi, with the existing "none" exclusivity and the "Animals present: yes/no" line).
+    - The other four fields (`riparian`, `hydrology`, `diptera`, `ticks`) sit in a native `<details>` with summary exactly "More questions (optional)", same choice buttons.
+    - "Next" is always enabled (every answer is optional).
+  - **Step 3, title exactly "Check and send"**: a summary list (site name, "Photo added" or "No photo", each answered question as "{label}: {answers}"), the Notes textarea labelled "Anything else? (optional)", the unchanged warning `Alert`, then "Submit report" (unchanged label) and "Back".
+  - Observation text format stays Section 20.7's `"{label}: {answers joined by ", "}"`, with "Guide match: ..." first.
+  - Done: from `/site/callville-bay`, "Add an observation at Callville Bay" opens Step 1 with Callville Bay selected; Next, tap "Looks like a bloom" and "lots", Next, Submit report: the Section 20.7 success state appears with 79 to 81; on 375 px every step fits with no horizontal scroll and every choice is at least 44px tall; keyboard Tab reaches every choice; "Use my location" with location blocked shows the exact error line.
+
+- **21.4 Accomplishment moment after submit.** Effort S. Agent D. Priority P1.
+  - File: `src/pages/Report.tsx` (success state only).
+  - Directly after the unchanged success sentence, in this order: "Report {reportCode}" in Mono 14px; the line exactly "Your report is in the ranger queue."; the line exactly "A ranger reviews it next. Check My reports to see what they found." (16px muted). Then the Section 20.7 before/after block and links unchanged, then a primary button "Track it in My reports" with lucide `ListChecks`, linking to `/my-reports`, and an outline button "File another report" that resets the form to Step 1.
+  - Done: after a Callville Bay submission the success state reads, top to bottom: the success sentence, "Report VR-xxxx", "Your report is in the ranger queue.", the follow-up line, 79 struck through, 81, the evidence line, "View updated site", "See it on the dashboard", "Track it in My reports".
+
+- **21.5 "My reports" page, timeline, navigation.** Effort M. Agent E. Priority P1.
+  - Files: `src/pages/MyReports.tsx`, `src/components/ReportTimeline.tsx` (new), `src/components/Layout.tsx`.
+  - Navigation: order becomes Dashboard · Report a Bloom · My reports · Report queue · OAH Cities · Methodology (links `/my-reports`, `/rangers`). Inline nav shows at 1280 px and wider; below 1280 px the nav lives in the existing `Sheet`. The "Report what you see" button keeps its Section 20.2 behaviour (768 px and wider, hidden on `/report`). Done-check: header on one line at 1440, 1280 and 768 px.
+  - Page `/my-reports`:
+    - H1 "My reports". Under it, data-label style, exactly: "Demonstration outcomes. In this prototype, a ranger outcome is set by hand on the Report queue page."
+    - Record band (one bordered strip, three cells split by hairlines, values Mono 28px): "Reports filed" (`filed`), "Reviewed" (`decided`), "Matched the field result" (`matched`). Under the band: "Your record: " + `recordLine` (16px ink).
+    - The reports with `reporterId "you"` in the active region, newest first. Each row (hairline bottom border, padding 16px 0): line 1 `reportCode` (Mono 12px), site name as a link to `/site/:id` (Sans 600 16px), `formatReportTime`; line 2 `reportSummary`; line 3 `ReportStatusTag`. Then the message block in the "Verdant recommendation" label style (11.4) with the label "Outcome" for outcomes and "Status" for open statuses, content exactly:
+      - `received`: "Your report is in the ranger queue."
+      - `reviewing`: "A ranger is reviewing your report."
+      - `sample-requested`: "A ranger requested a field sample at {site}. Your report helped prioritize {site} for sampling."
+      - `confirmed`: first line "You got it right." (20px Sans 600), then "A field sample confirmed a bloom at {site}. Your report helped prioritize {site} for sampling.", then the `rangerNote` in 14px muted.
+      - `not-bloom`: first line "Close, but not a bloom this time." (20px Sans 600), then the `rangerNote`, then "Check the guide on the report page to tell blooms from look-alikes." with "the guide" linking to `/report`.
+      - `more-info`: first line "The ranger needs one more detail." (20px Sans 600), then the `rangerNote`, then an outline button "Add a follow-up report" linking to `/report?site={siteId}`.
+    - Below the message, `ReportTimeline({ report })`: one row per `statusHistory` entry, oldest first: the 21.2 icon (16px, `--primary` for reached steps), the label (Sans 500 14px), the time via `formatReportTime` (Mono 12px muted); rows joined by a 1px `--border` vertical connector; for an open status a final muted row with `NEXT_STEP_LABEL`. No dots.
+    - Empty state, exactly: "You have not filed a report in {region name} yet." with a primary button "Report what you see".
+    - Page foot: a text link "Ranger view: open the Report queue" to `/rangers`, and an outline button "Reset demo data" with the helper "Clears reports and outcomes saved in this browser." calling `resetDemo()`.
+  - Done: after a reload with reset data, Lake Mead shows Reports filed 4, Reviewed 3, Matched 2, "Your record: 2 of 3 reviewed reports matched the field result."; report-6 and report-1 show "You got it right.", report-4 "Close, but not a bloom this time.", report-7 "The ranger needs one more detail."; after a Callville Bay submission the new report is on top with Received and "Your report is in the ranger queue."; Coimbra shows the empty state; 375 px has no horizontal scroll.
+
+- **21.6 Ranger "Report queue" page.** Effort M. Agent F. Priority P2 (in scope; cut per 21.7).
+  - File: `src/pages/RangerQueue.tsx`.
+  - H1 "Report queue". Under it, data-label style, exactly: "Demonstration ranger view. Outcomes here are set by hand to show the feedback loop. No real ranger or lab result is involved." Intro (16px muted, 68ch), exactly: "Reports at higher-risk sites come first. Each one shows the reporter's track record, so a ranger can weigh it before acting."
+  - H2 "Open reports ({n})": every report with an open status, sorted by its site's score descending, then newest first. Row: `reportCode`, site name with `RiskBadge`, `formatReportTime`, `reportSummary`; reporter line "{REPORTER_NAME}. Record: {recordLine}" (14px); `ReportStatusTag`; buttons (outline, size sm, 36px tall, wrap on mobile): "Start review" (only when `received`), "Request field sample" (when `received` or `reviewing`), then "Confirmed by field sample", "Not a bloom", "Needs more info". Clicking calls `updateReportStatus` with the note: confirmed "Demo outcome: a field sample confirmed a bloom at {site}."; not-bloom "Demo outcome: the ranger found no bloom at {site}. It was likely a look-alike such as duckweed or strands of green algae."; more-info "Demo outcome: the ranger asks for a photo and the exact spot on the shore."; no note for the open transitions. The changed row gets the Section 11.7 1200ms fade.
+  - Under each row's buttons, 12px muted: for user-submitted reports "Score weight: {EVIDENCE_WEIGHT[status]} points of citizen evidence."; for seed reports "Demo report: its evidence is already in the prototype values."
+  - H2 "Decided ({n})": outcome reports, newest first, same row without buttons, plus the `rangerNote`.
+  - Empty state for open reports, exactly: "No open reports for {region name}."
+  - Done: on Lake Mead, Open shows 3 seed reports (report-2, report-3, report-5) with Callville reports first; after a Callville submission the new report heads the list with "You (demo reporter). Record: 2 of 3 reviewed reports matched the field result."; "Request field sample" then "Confirmed by field sample" moves it to Decided, the dashboard shows Callville Bay at 82, `/site/callville-bay` shows "Citizen evidence: 84/100, adds 12.6 points to the Algal bloom score.", and `/my-reports` shows "You got it right." with record 3 of 4; marking a fresh report "Not a bloom" returns Callville Bay to 79.
+
+- **21.7 Status on community items and the weight rule on Methodology.** Effort S. Agent F. Priority P2.
+  - `src/components/CommunityReportItem.tsx`: line 3 starts with `ReportStatusTag` (when `status` is set), before the Section 20 tag label. Nothing else changes.
+  - `src/pages/Methodology.tsx`: directly under the Section 7 risk equations, a paragraph, exactly: "Citizen evidence is weighted by review. A new report adds 10 points to its site's citizen evidence. A report confirmed by field sample adds 20. A report a ranger marks Not a bloom adds 0. Demo reports are already counted in the prototype values."
+  - Done: the dashboard feed and the site page show a status tag on every Lake Mead report; the Methodology paragraph shows verbatim.
+
+- **21.8 Citation row C11 for the bloom guide.** Effort S. Orchestrator, inline.
+  - Files: `src/data/citations.ts`, `src/data/citations.test.ts` (expected ids end with "C11"), PLAN.md Section 19.2 (row C11, already added by this amendment). Done: `npx vitest run src/data` passes and the Methodology table shows C11.
+
+### 21.6 Video, Devpost, README
+
+Section 13 (segments 0:25–0:40, 1:30–2:55, 4:05–4:30), Section 14 ("Citizen science" paragraph) and Section 15 (item 2) carry this section's story. The recording note in Section 13 requires clicking "Reset demo data" on `/my-reports` before the take.
+
+### 21.7 Cut order (first cut first)
+
+1. "Use my location" in Step 1. Trigger: Task 21.3 not done at 17:00 PDT.
+2. `BloomGuide` drawings become a two-column text list with the same captions and source line. Trigger: 21.3 not done at 17:15 PDT.
+3. `localStorage` persistence: state stays in React only; "Reset demo data" then just empties state. Trigger: 21.2 persistence tests failing at 17:15 PDT.
+4. Ranger page `/rangers` (21.6): replaced by the same outcome buttons rendered inside each open row on `/my-reports` under the data label "Demo: act as the ranger"; the "Report queue" nav item is removed; video step (4) is filmed on `/my-reports`. Trigger: 21.6 not done at 17:45 PDT.
+5. Three-step flow: the form stays on one screen with the Step 2 order (photo, match question, bloom questions as choice buttons, "More questions (optional)"), then the warning and submit. Trigger: 21.3 not done at 17:45 PDT.
+6. 21.7 status tags on community items. Trigger: not done at 18:00 PDT.
+
+Never cut: 21.1, the 21.2 shared state (with or without persistence), 21.4, 21.5 with its seed outcomes and "You got it right.", 21.8, every demonstration label.
+
+### 21.8 Conflicts resolved by this section
+
+- Section 4 item 9 ("a page reload drops submitted reports, by design") is superseded: submitted reports and outcomes persist in `localStorage` until "Reset demo data".
+- Section 4 out-of-scope "a separate agency dashboard": the Report queue is one demonstration page inside the same app, not a separate dashboard; "authentication" stays out of scope (the reporter is the fixed demo reporter "you").
+- Section 11.4 nav breakpoint moves from 768 px to 1280 px for the inline nav (six items); the CTA keeps 768 px.
+- Section 20.1 rule 3 ("reports stay in `RegionContext` state; a reload resets") is superseded by Task 21.2; the 7-seed-report counts in Sections 9 and 20 are unchanged because no seed report is added.
+
+### 21.9 Done-check for the whole section
+
+The orchestrator runs `npm run build` and `npx vitest run`, clicks "Reset demo data", reloads, walks the Section 13 1:30–2:55 steps (1) to (6) on `npm run dev`, and confirms every exact string in Section 21.5 at 1440 px and 375 px with no console errors.
