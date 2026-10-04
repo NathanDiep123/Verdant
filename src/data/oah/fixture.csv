@@ -1,0 +1,4 @@
+site_id,site_name,latitude,longitude,date,pathogen_risk,contamination_level,ecosystem_health,temperature,precipitation
+s1,Fixture North,40.21,-8.43,2026-09-01,10,5,90,15,2
+s1,Fixture North,40.21,-8.43,2026-09-02,30,15,70,25,12
+s2,Fixture South,40.19,-8.41,2026-09-02,70,45,40,20,22
