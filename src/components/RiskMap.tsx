@@ -10,7 +10,7 @@ import { PATHWAYS } from "@/engine/pathways";
 import type { Category } from "@/types";
 
 const ATTRIBUTION =
-  '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>';
+  'Tiles &copy; Esri, HERE, Garmin, &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors';
 
 const RANGES: Record<Category, string> = { Low: "0-25", Moderate: "26-50", High: "51-75", "Very High": "76-100" };
 const CATEGORIES: Category[] = ["Low", "Moderate", "High", "Very High"];
@@ -73,9 +73,8 @@ export function RiskMap({ rows, center, zoom }: { rows: SiteRow[]; center: [numb
     <div className="relative h-[380px] overflow-hidden rounded-sm border bg-card lg:h-full">
       <MapContainer center={center} zoom={zoom} scrollWheelZoom={!touch} className="h-full w-full">
         <TileLayer
-          url="https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png"
-          subdomains="abcd"
-          maxZoom={20}
+          url="https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Light_Gray_Base/MapServer/tile/{z}/{y}/{x}"
+          maxZoom={16}
           attribution={ATTRIBUTION}
         />
         <Recenter center={center} zoom={zoom} />

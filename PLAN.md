@@ -340,7 +340,7 @@ Risk badge (one component, `RiskBadge`): tint background, ink text, 1px border i
 - Methodology (Read mode): @1024+ left sticky in-page nav `w-[220px]` (anchors to each section), content column max 72ch. Equations in `bg-muted` blocks, Mono 14px, 16px padding. Architecture SVG spans the content column, strokes `--foreground` 1.5px, nodes `bg-card` with hairline border, flow arrows `--primary`. Citations table full content width inside an `overflow-x-auto` wrapper (the only permitted horizontal scroll). @375: nav hidden, single column.
 
 **11.5 Map.**
-- Tiles: CARTO Positron (OSM data, free, no key). URL `https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png`, `subdomains: "abcd"`, `maxZoom: 20`. Attribution exactly: `&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>`. This satisfies §8 item 1 "OSM tiles".
+- Tiles: Esri World Light Gray Canvas (free, no key; built on OpenStreetMap and other data), URL `https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Light_Gray_Base/MapServer/tile/{z}/{y}/{x}`, `maxZoom: 16`, attribution `Tiles &copy; Esri, HERE, Garmin, &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors`; CARTO Positron was dropped because its tiles show an "API key required" watermark.
 - Map frame: 1px `--border`, 4px radius, `bg-card`; zoom control top-right; scroll-wheel zoom off on mobile.
 - Markers: Leaflet `divIcon`, circle sized per 11.3, fill = risk solid, 2px `#FBFCFB` stroke plus 1px outer `#14211F` at 40% (box-shadow ring), site score centred in Mono 600 12px (13px for High/Very High). Very High also carries the pulse ring (11.7). Larger markers render above smaller (`zIndexOffset` = score × 10).
 - Legend: bottom-left inside the map, `bg-card` hairline box, four rows of marker swatch + icon + category word + range (Mono 12px).
@@ -379,7 +379,7 @@ Risk badge (one component, `RiskBadge`): tint background, ink text, 1px border i
 - [ ] All radii 4px except markers/meter pointer; no shadow outside popups/dropdowns/sheet.
 - [ ] "Prototype demonstration data" (or A3 label) visible on every screen with prototype values; Official data card has no prototype label; disclaimer on site detail and footer.
 - [ ] "Verdant recommendation" and "Official advisory: none issued" appear together on site detail; the word "advisory" never labels Verdant output.
-- [ ] Map uses CARTO Positron with the exact attribution; Callville Bay marker is red, 36px, pulsing; popups match 11.5.
+- [ ] Map uses the Section 11.5 tiles with their attribution; Callville Bay marker is red, 36px, pulsing; popups match 11.5.
 - [ ] Report submit shows 79 → 81 counting in the aside and on the dashboard; reduced motion shows the final value instantly.
 - [ ] No horizontal page scroll at 375px (citations table scrolls inside its wrapper only); nav on one line at 1440px.
 - [ ] No 11.8 anti-pattern present; zero em/en dashes in rendered text; no emoji; no console errors.
