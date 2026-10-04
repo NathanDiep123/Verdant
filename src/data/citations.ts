@@ -85,6 +85,15 @@ export const citations: Citation[] = [
     url: "https://apps.oneaquahealth.eu/resmap/",
     accessed: A,
   },
+  {
+    id: "C10",
+    item: "C10 Citizen-science stream questions (report form, Task 20.7)",
+    claim: "Seven citizen-science questions (foam, riparian vegetation, filamentous algae, hydrology, diptera, ticks, wildlife) as used in a OneAquaHealth citizen-science form; reproduced in a public hackathon repository and not verified against the official OAH app",
+    source: "`codes.js` in the AquaLink repository",
+    publisher: "GitHub user Sravya1802 (public repository)",
+    url: "https://github.com/Sravya1802/aqualink",
+    accessed: A,
+  },
 ];
 
 export const lakeMeadOfficial = {
