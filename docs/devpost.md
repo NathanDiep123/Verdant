@@ -19,7 +19,7 @@ Verdant scores each monitoring site on hazard pathways. At Lake Mead there are t
 - The dashboard shows a risk map, KPI cards, the official Lake Mead elevation from the U.S. Bureau of Reclamation, and a Sampling priority list that tags the top site as the recommended first sampling target.
 - The site page shows a risk meter, a score for each pathway, factor contribution bars under "Why is risk elevated?", a 7-day trend, a One Health panel for environment, human health and animal health, and a disclaimer.
 - A citizen can submit a bloom report, and the site's score updates on screen. The form warns that a report does not confirm a bloom.
-- The OneAquaHealth cities page runs the same engine on Coimbra with one click. Benevento, Ghent, Oslo and Toulouse are configured next.
+- The OneAquaHealth cities page runs the same engine on Coimbra with one click and shows a 24-month satellite signal chart from a Resilience Map export. Coimbra site scores are synthetic. Benevento, Ghent, Oslo and Toulouse are configured next.
 - One button exports sites, scores and reports as FHIR-shaped JSON.
 
 Lake Mead values are prototype demonstration data and are labelled that way on every screen.
@@ -28,7 +28,7 @@ Lake Mead values are prototype demonstration data and are labelled that way on e
 
 The core is a TypeScript risk engine with fixed, published pathway weights that sum to 1.00. When a factor is missing, the score uses the factors that are present and the page shows "Partial data". Unit tests check every pathway's weights, every expected site score, the category boundaries, partial-data handling, trends, the citizen-report update, and that the contribution points add up to the score.
 
-The interface is React and TypeScript with Leaflet for the map and Recharts for the trend chart. Each city is a `SiteConfig`: a map center, a list of pathways and a set of sites. A PapaParse-based parser reads a OneAquaHealth Resilience Map CSV export into that shape for Coimbra. The FHIR export builds a `Bundle` of `Location` and `Observation` resources. There is no backend.
+The interface is React and TypeScript with Leaflet for the map and Recharts for the trend chart. Each city is a `SiteConfig`: a map center, a list of pathways and a set of sites. A PapaParse-based parser reads a OneAquaHealth Resilience Map CSV export into that shape. For Coimbra, the one export we could get is an area-level satellite summary, which feeds a 24-month NDVI and NDWI chart; the 20 Coimbra sites use the real Resilience Map site names with synthetic scores, labelled as such. The FHIR export builds a `Bundle` of `Location` and `Observation` resources. There is no backend.
 
 ## Challenges
 

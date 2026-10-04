@@ -61,7 +61,7 @@ These are the reconciliations of the user's answers.
    - `waterborne_pathogen` (Las Vegas Wash urban runoff and recreation);
    - `heat_low_water` (reservoir drawdown and heat).
    The site risk score is the highest pathway score. The pathway that sets it is the **leading pathway**.
-3. **A3:** The real Resilience Map CSV export feeds the OAH-city demo only, for **Coimbra**. Lake Mead uses prototype data. When the CSV is not in `data/raw/oah-coimbra.csv` by 15:00 PDT, the Coimbra dataset is synthetic. It is then labelled "Synthetic demo, structured as a Resilience Map export", and the export parser is still built and tested on a fixture.
+3. **A3:** The only Resilience Map export available is an area-level Earth-observation summary for **Coimbra** (`data/raw/oah-coimbra-eo-summary.csv`, monthly NDVI and NDWI, 2020-01 to 2026-09), and it drives the satellite signal chart. Per-site Coimbra values stay synthetic, shown under the 20 real Resilience Map site names and labelled "Synthetic demo, structured as a Resilience Map export", because the export has no per-site columns; Lake Mead uses prototype data.
 4. **A4:** I could not retrieve the official OAH citizen-science protocol fields. The Zenodo record 10.5281/zenodo.20344421 exposes only a PDF, and the FHIR IG CI build returned 404. The report form keeps the user's options, each marked **TO REPLACE with OAH protocol fields**. Task 5.1 attempts the replacement once. When that attempt fails, the user's options ship unchanged.
 5. **A5:** The FHIR IG canonical base URL is `http://hl7.eu/fhir/ig/oah`, read from the IG's `sushi-config.yaml` on 2026-10-04 (Section 19, row C6). It is stored in one constant, `OAH_IG_BASE = "http://hl7.eu/fhir/ig/oah"`, in `src/fhir/constants.ts`. The profile ids `location-oah` and `observation-indicators-oah` are unverified, because the IG CI build returned 404 on 2026-10-04. The README states that the profile ids are unverified.
 6. **A6:** All team members are students, so eligibility needs no action.
@@ -117,7 +117,7 @@ Expected engine output (asserted in tests):
   - `runoff` ← precipitation
 - `src/data/oah/columnMap.ts` holds the exact header names. The implementer writes them after reading the CSV header.
 - Each mapped column is min-max normalized to 0–100 across the city's sites. A column already on a 0–100 scale is used as-is.
-- When the CSV is missing at 15:00 PDT, or has no per-site rows, the fallback applies: 5 synthetic Coimbra sites at real coordinates along the Mondego basin, labelled per A3, built in the same shape.
+- When the CSV is missing at 15:00 PDT, or has no per-site rows, the fallback applies: 20 synthetic Coimbra sites (the real Resilience Map site names C1 to C20 at approximate coordinates), labelled per A3, built in the same shape.
 
 ### 6.3 Site configs: `src/config/sites.ts`
 
@@ -216,6 +216,7 @@ Routes use react-router. The navigation order is Dashboard · Report a Bloom · 
    - Intro: "Lake Mead serves as Verdant's pilot site, but the architecture is designed to support other lakes, reservoirs, and urban freshwater ecosystems using the same satellite and environmental monitoring workflow."
    - Five city cards (Benevento, Coimbra, Ghent, Oslo, Toulouse), each showing its `dataStatus` badge and its pathways.
    - Coimbra card button "Run Verdant on Coimbra": it sets the active region to `coimbra` and navigates to `/`.
+   - Below the cards, the satellite signal chart for Coimbra (monthly NDVI and NDWI means, last 24 months, citation row C9). It also shows on the Dashboard when the region is `coimbra`.
    - A 3-step "How to add a city" panel: export the Resilience Map CSV, map its columns, add the `SiteConfig`.
 5. **`/methodology` Methodology.**
    - How Verdant Works: satellite observation → environmental data → citizen reports → risk scoring → human review → field sampling.
@@ -411,7 +412,7 @@ Risk badge (one component, `RiskBadge`): tint background, ink text, 1px border i
 ### Phase 2: Data and engine [13:45–14:45]
 
 - **2.1** Write the engine (`src/engine/pathways.ts`, `score.ts`, `explain.ts`, `score.test.ts`) per Section 7. Done: `npx vitest run src/engine` passes all 7 test groups.
-- **2.2** Write the Lake Mead data (`src/data/lakeMead.ts`, `src/data/lakeMeadReports.ts`) per Section 6.1, and the citations data (`src/data/citations.ts`): one exported array holding every Section 19.2 row verbatim, plus one exported object `lakeMeadOfficial` holding the Section 19.3 element. Done: test group 2 passes against this data, and `citations.length` equals the Section 19.2 row count (8).
+- **2.2** Write the Lake Mead data (`src/data/lakeMead.ts`, `src/data/lakeMeadReports.ts`) per Section 6.1, and the citations data (`src/data/citations.ts`): one exported array holding every Section 19.2 row verbatim, plus one exported object `lakeMeadOfficial` holding the Section 19.3 element. Done: test group 2 passes against this data, and `citations.length` equals the Section 19.2 row count (9).
 - **2.3** Write site configs and region context (`src/config/sites.ts`, `src/state/RegionContext.tsx`) for 6 configs per Section 6.3. Done: the build passes, and a temporary `/` shows 6 Lake Mead markers sitting on water.
 - **2.4** Write the Coimbra data (`src/data/oah/parseResmapCsv.ts`, `columnMap.ts`, `coimbra.ts`, `parseResmapCsv.test.ts`).
   - When the CSV exists, map it. Else build the A3 fallback.
@@ -577,6 +578,7 @@ The never-cut list: the map, the risk engine and its tests, the site detail page
 | C6 OAH FHIR IG (FHIR export, A5) | IG "OneAquaHealth Project", id `hl7.eu.fhir.oah`, canonical `http://hl7.eu/fhir/ig/oah`, version 0.1.0-ci-build | `sushi-config.yaml` in the `hl7-eu/oah` repository | HL7 Europe / OneAquaHealth Project | https://github.com/hl7-eu/oah | 2026-10-04 |
 | C7 OAH Resilience Map (Coimbra data, OAH-cities page) | Source of the Coimbra CSV export (A3) | "Resilience Map" web application | OneAquaHealth Project (served from the oneaquahealth.eu domain; the page names no publisher) | https://apps.oneaquahealth.eu/resmap/ | 2026-10-04 |
 | C8 OAH citizen-science / field protocol (report form, A4) | Harmonized OneAquaHealth procedures for sampling-site characterization and ecosystem-health and biological indicators | Calapez, A. R. et al., "OneAquaHealth Field Sampling Protocols for Urban Stream Ecosystems", 2026-05-22, DOI 10.5281/zenodo.20344421 | Zenodo (OneAquaHealth, Horizon Europe) | https://zenodo.org/records/20344421 | 2026-10-04 |
+| C9 Coimbra Earth-observation summary (satellite signal chart) | Monthly NDVI and NDWI area means for Coimbra, 2020-01 to 2026-09 | Resilience Map, Earth-observation area summary export (file eo_summary_area_Coimbra_1969-01-01_to_2026-10-03.csv) | OneAquaHealth Project (served from the oneaquahealth.eu domain) | https://apps.oneaquahealth.eu/resmap/ | 2026-10-04 |
 
 ### 19.3 Official Lake Mead data element
 
