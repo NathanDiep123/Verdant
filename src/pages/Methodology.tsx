@@ -94,7 +94,7 @@ function Equation({ id }: { id: PathwayId }) {
 
 export default function Methodology() {
   return (
-    <div className="mx-auto w-full max-w-[1360px] px-4 py-8 md:px-6 lg:grid lg:grid-cols-[220px_minmax(0,1fr)] lg:gap-12">
+    <div className="w-full py-8 md:py-12 lg:grid lg:grid-cols-[220px_minmax(0,1fr)] lg:gap-12">
       <nav aria-label="On this page" className="hidden lg:block">
         <ul className="sticky top-20 flex flex-col gap-2 border-l border-border text-sm font-medium">
           {SECTIONS.map(([id, label]) => (
@@ -114,7 +114,7 @@ export default function Methodology() {
         <header className={PROSE}>
           <h1 className="text-[28px] font-bold leading-[1.1] tracking-[-0.02em] md:text-[40px]">Methodology</h1>
           <p className="mt-3 text-muted-foreground">
-            How a Verdant score is built, what it rests on, and what it has not yet been tested against.
+            How a Verdant score is built, and what it has not yet been tested against.
           </p>
         </header>
 
@@ -252,11 +252,6 @@ export default function Methodology() {
           <h2 className={H2}>Data sources and citations</h2>
           <CitationsTable />
         </section>
-
-        <p className={`${PROSE} border-t border-border pt-4 text-sm text-muted-foreground`}>
-          Verdant identifies conditions associated with increased bloom risk. It does not confirm toxin presence or
-          replace field sampling.
-        </p>
       </div>
     </div>
   );

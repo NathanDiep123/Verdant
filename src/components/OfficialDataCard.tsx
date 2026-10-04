@@ -18,7 +18,7 @@ export function OfficialDataCard() {
       </p>
       <p className="mt-2 font-mono text-xs text-muted-foreground">
         {o.sourceLine}{" "}
-        <a href={o.url} target="_blank" rel="noreferrer" className="text-primary underline underline-offset-2">
+        <a href={o.url} target="_blank" rel="noreferrer" className="break-all text-primary underline underline-offset-2">
           {o.url.replace("https://", "")}
         </a>
       </p>

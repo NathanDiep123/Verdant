@@ -30,7 +30,7 @@ export default function Dashboard() {
   const dataLabel = regionId === "lake-mead" ? "Prototype demonstration data" : COIMBRA_LABEL[coimbraDataStatus];
 
   return (
-    <div className="flex flex-col gap-8 md:gap-12">
+    <div className="flex flex-col gap-8 py-8 md:gap-12 md:py-12">
       <div className="flex flex-col gap-3">
         <h1 className="text-[28px] leading-[1.1] font-bold tracking-[-0.02em] md:text-[40px]">
           Where to sample first at {config.name}
@@ -49,10 +49,10 @@ export default function Dashboard() {
       </div>
 
       <div className="grid gap-6 lg:h-[620px] lg:grid-cols-12">
-        <div className="lg:col-span-7 lg:h-full">
+        <div className="lg:col-span-6 lg:h-full">
           <RiskMap rows={rows} center={config.center} zoom={config.zoom} />
         </div>
-        <div className="lg:col-span-5 lg:h-full lg:min-h-0">
+        <div className="lg:col-span-6 lg:h-full lg:min-h-0">
           <SamplingPriorityList rows={rows} />
         </div>
       </div>

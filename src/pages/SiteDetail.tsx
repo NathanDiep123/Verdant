@@ -55,7 +55,7 @@ export default function SiteDetail() {
   const prototype = config.dataStatus === "prototype";
 
   return (
-    <div className="flex flex-col gap-8 md:gap-12">
+    <div className="flex flex-col gap-8 py-8 md:gap-12 md:py-12">
       <section className="grid gap-8 md:grid-cols-12 md:gap-12">
         <div className="md:col-span-5">
           <Link to="/" className="inline-flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground">
@@ -142,7 +142,6 @@ export default function SiteDetail() {
       <OneHealthPanel lakeMead={config.id === "lake-mead"} />
 
       <section className="flex flex-col items-start gap-4 border-t border-border pt-6">
-        <p className="max-w-[68ch] text-sm text-muted-foreground">{DISCLAIMER}</p>
         <Button variant="outline" onClick={() => downloadFhirJson(config, results, reports)}>
           <Download strokeWidth={1.75} aria-hidden />
           Export FHIR JSON

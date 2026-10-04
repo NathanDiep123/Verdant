@@ -3,6 +3,8 @@ import { Link } from "react-router";
 import { TriangleAlert } from "lucide-react";
 import { useRegion } from "@/state/RegionContext";
 import { applyCitizenReport, scoreSite } from "@/engine/score";
+import { PATHWAYS } from "@/engine/pathways";
+import { RiskBadge } from "@/components/RiskBadge";
 import { reportFields } from "@/data/reportFields";
 import type { CitizenReport, SiteRecord } from "@/types";
 import { Alert, AlertDescription } from "@/components/ui/alert";
@@ -28,7 +30,9 @@ export default function Report() {
 
   useEffect(() => () => { if (photo) URL.revokeObjectURL(photo); }, [photo]);
 
-  const site = sites.find((s) => s.id === siteId);
+  const topId = sites.reduce((best, s) => (scoreSite(s, config).siteScore > scoreSite(best, config).siteScore ? s : best), sites[0])?.id ?? "";
+  const activeId = sites.some((s) => s.id === siteId) ? siteId : topId;
+  const site = sites.find((s) => s.id === activeId);
   const current = site ? scoreSite(site, config) : null;
   const wildlife = answers.wildlife ?? [];
   const animalsPresent = wildlife.some((a) => a !== "none");
@@ -72,9 +76,9 @@ export default function Report() {
       <p className="text-sm font-medium text-muted-foreground">{site.name}</p>
       <p className="flex items-baseline gap-3">
         <span className="font-mono text-[28px] font-semibold leading-none tabular-nums lg:text-[40px]">{current.siteScore}</span>
-        <span className="text-sm font-medium">{current.category}</span>
+        <RiskBadge category={current.category} />
       </p>
-      <p className="font-mono text-xs text-muted-foreground">Leading pathway: {current.leadingPathway}</p>
+      <p className="font-mono text-xs text-muted-foreground">Leading pathway: {PATHWAYS[current.leadingPathway].label}</p>
     </div>
   );
 
@@ -98,16 +102,12 @@ export default function Report() {
               <p className="text-xl font-semibold leading-[1.3]">Report received. Your observation has been added to the community monitoring layer.</p>
               <p className="font-mono text-sm tabular-nums">{done.site.name} risk score: {done.before} {"->"} {done.after}</p>
               <Link to={`/site/${done.site.id}`} className="w-fit text-sm font-medium text-primary underline underline-offset-4">View updated site</Link>
-              <section className="flex max-w-[68ch] flex-col gap-2 border-t border-border pt-6">
-                <h2 className="text-xl font-semibold leading-[1.3]">Why citizen observations matter</h2>
-                <p className="leading-[1.55]">Agencies sample a lake at a few points and a few times a month. Reports from people at the shore fill the gaps between those samples. Several reports at one site are a reason to look there sooner.</p>
-              </section>
             </div>
           ) : (
             <form onSubmit={submit} className="flex flex-col gap-6" noValidate>
               <div className="flex flex-col gap-2">
                 <Label htmlFor="site">Site</Label>
-                <Select value={siteId} onValueChange={(v) => { setSiteId(v ?? ""); setError(""); }}>
+                <Select value={activeId} onValueChange={(v) => { setSiteId(v ?? ""); setError(""); }}>
                   <SelectTrigger id="site" className="w-full">
                     <SelectValue placeholder="Choose a site">{site?.name}</SelectValue>
                   </SelectTrigger>
@@ -175,6 +175,10 @@ export default function Report() {
               <Button type="submit" className="w-full sm:w-fit">Submit report</Button>
             </form>
           )}
+          <section className="mt-8 flex max-w-[68ch] flex-col gap-2 border-t border-border pt-6">
+            <h2 className="text-xl font-semibold leading-[1.3]">Why citizen observations matter</h2>
+            <p className="leading-[1.55]">Agencies sample a lake at a few points and a few times a month. Reports from people at the shore fill the gaps between those samples. Several reports at one site are a reason to look there sooner.</p>
+          </section>
         </div>
       </div>
     </div>

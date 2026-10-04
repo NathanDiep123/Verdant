@@ -41,11 +41,11 @@ export function SamplingPriorityList({ rows }: { rows: SiteRow[] }) {
       </div>
 
       <div className="min-h-0 flex-1 overflow-auto">
-        <Table className="hidden table-fixed md:table">
+        <Table className="hidden xl:table">
           <TableHeader className="bg-muted">
             <TableRow>
               {(
-                [["Rank", "w-9"], ["Site", "w-20"], ["Risk", "w-[100px]"], ["Leading pathway", "w-[76px]"], ["Trend", "w-[72px]"], ["Reports", "w-[58px]"], ["Action", ""]] as const
+                [["Rank", ""], ["Site", ""], ["Risk", ""], ["Leading pathway", ""], ["Trend", ""], ["Reports", ""], ["Action", ""]] as const
               ).map(([h, w]) => (
                 <TableHead key={h} className={`h-auto px-1.5 py-2 text-sm font-medium whitespace-normal text-foreground first:pl-3 last:pr-3 ${w}`}>
                   {h}
@@ -66,7 +66,7 @@ export function SamplingPriorityList({ rows }: { rows: SiteRow[] }) {
                     {r.site.name}
                   </Link>
                 </TableCell>
-                <TableCell className="px-1.5 py-3">
+                <TableCell className="px-1.5 py-3 whitespace-nowrap">
                   <RiskBadge category={r.result.category} score={r.result.siteScore} size="sm" />
                 </TableCell>
                 <TableCell className="px-1.5 py-3 text-sm whitespace-normal">{PATHWAYS[r.result.leadingPathway].label}</TableCell>
@@ -88,7 +88,7 @@ export function SamplingPriorityList({ rows }: { rows: SiteRow[] }) {
           </TableBody>
         </Table>
 
-        <ol className="md:hidden">
+        <ol className="xl:hidden">
           {rows.map((r, i) => (
             <li
               key={r.site.id}

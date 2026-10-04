@@ -31,7 +31,7 @@ export function TrendChart({ history, category }: { history: number[]; category:
       className="h-[260px] w-full"
     >
       <ResponsiveContainer width="100%" height="100%">
-        <LineChart data={data} margin={{ top: 8, right: 12, bottom: 0, left: -12 }}>
+        <LineChart data={data} margin={{ top: 8, right: 24, bottom: 0, left: -12 }}>
           {BANDS.map((b) => (
             <ReferenceArea
               key={b.key}

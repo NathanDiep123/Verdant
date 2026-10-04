@@ -28,7 +28,7 @@ export default function OahCities() {
           Lake Mead serves as Verdant's pilot site, but the architecture is designed to support other lakes, reservoirs, and urban freshwater ecosystems using the same satellite and environmental monitoring workflow.
         </p>
         <p className="max-w-[68ch] text-base leading-[1.55] text-muted-foreground">
-          Lake Mead is the pilot because anyone can see the water at risk; the same engine runs on OneAquaHealth's urban streams.
+          Lake Mead is the pilot because anyone can see the water at risk. The same engine runs on OneAquaHealth's urban streams.
         </p>
       </header>
 
