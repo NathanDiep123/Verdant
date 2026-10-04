@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 import { Link } from "react-router";
-import { MapContainer, Marker, Popup, TileLayer, useMap, ZoomControl } from "react-leaflet";
+import { MapContainer, Marker, Pane, Popup, TileLayer, useMap, ZoomControl } from "react-leaflet";
 import L from "leaflet";
 import { ArrowRight } from "lucide-react";
 import { SpecimenTag } from "@/components/FieldMarks";
@@ -14,7 +14,7 @@ import { PATHWAYS } from "@/engine/pathways";
 import type { Category, CitizenReport } from "@/types";
 
 const ATTRIBUTION =
-  'Tiles &copy; Esri, HERE, Garmin, &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors';
+  "Imagery &copy; Esri, Maxar, Earthstar Geographics, and the GIS User Community; labels &copy; Esri";
 
 const RANGES: Record<Category, string> = { Low: "0-25", Moderate: "26-50", High: "51-75", "Very High": "76-100" };
 const CATEGORIES: Category[] = ["Low", "Moderate", "High", "Very High"];
@@ -40,7 +40,7 @@ function pinIcon(k: number, n: number, siteDiameter: number) {
   const dx = Math.cos(angle) * radius;
   const dy = Math.sin(angle) * radius;
   const html =
-    `<div style="width:16px;height:11px;filter:drop-shadow(0 0 0.5px #1E2B22) drop-shadow(0 0 0.5px #1E2B22);">` +
+    `<div style="width:16px;height:11px;filter:drop-shadow(0 0 0.5px #1E2B22) drop-shadow(0 0 0.5px #1E2B22) drop-shadow(0 1px 3px rgb(0 0 0 / 0.5));">` +
     `<div style="position:relative;width:16px;height:11px;background:var(--primary);` +
     `clip-path:polygon(4px 0,100% 0,100% 100%,4px 100%,0 50%);">` +
     `<span style="position:absolute;left:4px;top:4.5px;width:2px;height:2px;border-radius:9999px;background:var(--card);"></span>` +
@@ -78,7 +78,7 @@ const PIN_SHAPE = "[clip-path:polygon(4px_0,100%_0,100%_100%,4px_100%,0_50%)]";
 
 function Legend({ showPins }: { showPins: boolean }) {
   return (
-    <div className="mt-2 md:absolute md:bottom-3 md:left-3 md:z-[1000] md:mt-0 md:rounded-sm md:border md:bg-card/95 md:px-3 md:py-1">
+    <div className="mt-2 md:absolute md:bottom-3 md:left-3 md:z-[1000] md:mt-0 md:rounded-sm md:border md:border-input md:bg-card md:px-3 md:py-1">
       <ul className="flex flex-wrap gap-x-4 gap-y-1 md:block md:space-y-0 md:divide-y md:divide-dashed md:divide-border">
         {CATEGORIES.map((c) => {
           const { color, icon: Icon } = CATEGORY_STYLE[c];
@@ -137,14 +137,21 @@ export function RiskMap({ rows, center, zoom }: { rows: SiteRow[]; center: [numb
 
   return (
     <div className="relative xl:h-full">
-      <div className="relative h-[420px] overflow-hidden rounded-sm border bg-muted xl:h-full">
+      <div className="relative h-[420px] overflow-hidden rounded-sm border bg-[#26332a] xl:h-full">
       <MapContainer center={center} zoom={zoom} zoomControl={false} scrollWheelZoom={!touch} className="h-full w-full">
         <ZoomControl position="topright" />
         <TileLayer
-          url="https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Light_Gray_Base/MapServer/tile/{z}/{y}/{x}"
+          url="https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}"
           maxZoom={16}
           attribution={ATTRIBUTION}
         />
+        <Pane name="labels" style={{ zIndex: 350 }}>
+          <TileLayer
+            url="https://server.arcgisonline.com/ArcGIS/rest/services/Reference/World_Boundaries_and_Places/MapServer/tile/{z}/{y}/{x}"
+            maxZoom={16}
+            pane="labels"
+          />
+        </Pane>
         <FitSites points={points} center={center} zoom={zoom} />
         {rows.map((r, i) => (
           <Marker

@@ -156,7 +156,7 @@
   }
   .leaflet-container {
     font-family: var(--font-sans);
-    background: #e9e1cc;
+    background: #26332a;
   }
   .leaflet-popup-content h1,
   .leaflet-popup-content h2,
@@ -175,9 +175,12 @@
   }
 }
 
-/* Warm the tiles to paper. Tile pane only, never markers, popups or controls. */
+/* Mute the imagery to the notebook palette. Tile pane only: the labels pane, markers, popups and controls stay unfiltered. */
 .leaflet-tile-pane {
-  filter: sepia(0.35) saturate(0.85) hue-rotate(-6deg) contrast(0.96) brightness(1.02);
+  filter: saturate(0.55) sepia(0.28) hue-rotate(-8deg) contrast(1.05) brightness(0.92);
+}
+.leaflet-labels-pane {
+  opacity: 0.9;
 }
 
 /* Unlayered so they beat leaflet.css. Controls and attribution follow the tokens. */
@@ -223,7 +226,9 @@
     justify-content: center;
     border-radius: 9999px;
     border: 2px solid var(--card);
-    box-shadow: 0 0 0 1.5px var(--foreground);
+    box-shadow:
+      0 0 0 1.5px var(--foreground),
+      0 1px 6px rgb(0 0 0 / 0.45);
     font-family: var(--font-mono);
     font-weight: 500;
     font-size: 12px;
