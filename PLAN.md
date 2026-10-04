@@ -276,9 +276,113 @@ This text appears on the site detail page and in the footer of every page.
 - shadcn components: `button card badge table tabs input textarea select checkbox label separator alert switch`.
 - Deploy target: Vercel (static build, `npm run build` → `dist/`), with a SPA rewrite in `vercel.json`.
 
-## 11. Design direction (placeholder)
+## 11. Design direction
 
-**Status: NOT YET WRITTEN.** Task 1.2 runs the `impeccable` init step and the `design-taste-frontend` pass. That pass replaces this section with the direction: typography, color tokens, layout approach, the map and marker style, and the explicit anti-patterns to avoid. The direction must be in this file before Task 3.1 starts. Every later UI task names `impeccable` and follows this section (AGENTS.md point 3).
+Status: WRITTEN (Task 1.2). Product context lives in `PRODUCT.md`. Every UI task names `impeccable` and follows this section without reinterpretation (AGENTS.md point 3). Design read: Operate-mode monitoring tool for agency staff and judges, in a field-survey-instrument language. Dials: VARIANCE 4, MOTION 2, DENSITY 5. Light theme only; no dark mode is built.
+
+**11.1 Thesis.** Verdant looks like a hydrological survey instrument, not a SaaS dashboard: a cool paper-grey sheet, ink type, hairline rules and one deep reservoir-blue accent, so the only saturated colour on screen is risk. Numbers are the hero; every score is set in mono, sits next to its category word and icon, and is one click from its explanation.
+
+**11.2 Typography.**
+- Families: `Schibsted Grotesk` (all text, headings, UI) and `IBM Plex Mono` (every number, score, factor id, equation, data label). No third family. No serif.
+- Import, first line of `src/index.css`, before `@import "tailwindcss";`:
+  `@import url("https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=Schibsted+Grotesk:wght@400;500;600;700&display=swap");`
+- Tailwind mapping in `@theme inline`: `--font-sans: "Schibsted Grotesk", ui-sans-serif, system-ui, sans-serif;` `--font-mono: "IBM Plex Mono", ui-monospace, monospace;`. All mono numbers use `tabular-nums`.
+- Scale (size / line-height / weight / use):
+  - 72px / 1 / Mono 600: site-detail score numeral only (48px below 768px).
+  - 40px / 1.1 / Sans 700, tracking -0.02em: page H1 (28px below 768px).
+  - 28px / 1.2 / Sans 600: KPI values (Mono 600), section H2.
+  - 20px / 1.3 / Sans 600: H3, card titles, popup site name.
+  - 16px / 1.55 / Sans 400: body, form controls, explanation sentence. Prose max width 68ch.
+  - 14px / 1.45 / Sans 500: table cells, nav links, buttons, factor labels.
+  - 12px / 1.4 / Mono 500: data labels (prototype/official/source lines), axis ticks, units, "pts". Sentence case, no letter-spacing, no uppercase.
+- Uppercase is used nowhere except the category word inside risk badges (Sans 600, 12px, tracking 0.04em).
+
+**11.3 Colour tokens** (`src/index.css`, `:root`; hex values exact). shadcn reads the semantic names; Tailwind gets `--color-*` via `@theme inline { --color-X: var(--X); }` for every token below.
+
+| CSS variable | Hex | shadcn/Tailwind role |
+|---|---|---|
+| `--background` | `#F3F5F4` | page background (`bg-background`) |
+| `--card`, `--popover` | `#FBFCFB` | surfaces: map frame, tables, popups, inputs |
+| `--foreground`, `--card-foreground`, `--popover-foreground` | `#14211F` | ink |
+| `--muted` | `#E7ECEA` | quiet fills: table header, hover row, `secondary` |
+| `--muted-foreground` | `#56645F` | muted ink: meta lines, helper text |
+| `--border`, `--input` | `#D3DBD8` | hairlines, input borders |
+| `--primary`, `--ring` | `#174C6B` | accent: primary button, links, focus ring, contribution bars, "Official data" badge |
+| `--primary-foreground` | `#FBFCFB` | text on accent |
+| `--secondary` / `--accent` | `#E7ECEA` | shadcn hover surfaces (never coloured) |
+| `--secondary-foreground` / `--accent-foreground` | `#14211F` | |
+| `--destructive` | `#B3261E` | form errors only |
+| `--radius` | `0.25rem` | |
+
+Risk tokens (also exposed as `--color-risk-*`). Solid = markers, meter, chart dots. Tint + text = badges and table cells. Lightness is non-monotonic on purpose, so every category also carries a size, an icon (lucide-react) and its word.
+
+| Category | `--risk-*` solid | `--risk-*-tint` | `--risk-*-ink` | Icon | Marker diameter | Number on marker |
+|---|---|---|---|---|---|---|
+| Low | `#3E9A5A` | `#E2F1E6` | `#1D5C34` | `ShieldCheck` | 24px | ink `#14211F` |
+| Moderate | `#F2C230` | `#FBF0C6` | `#6B5300` | `Eye` | 28px | ink `#14211F` |
+| High | `#E8762B` | `#FCE5D3` | `#8A3D0B` | `TriangleAlert` | 32px | ink `#14211F` |
+| Very High | `#B3261E` | `#F8DEDB` | `#8C1D16` | `OctagonAlert` | 36px | `#FBFCFB` |
+
+Risk badge (one component, `RiskBadge`): tint background, ink text, 1px border in the solid colour, icon 14px + score (Mono) + category word. Never colour without the word. Icons: lucide-react only (installed by shadcn; no second icon library), stroke width 1.75 everywhere.
+
+**11.4 Layout, spacing, radius, shadow.**
+- Shell: header 60px, `bg-card`, bottom hairline; wordmark "Verdant" Sans 700 20px left; nav (Dashboard, Report a Bloom, OAH Cities, Methodology) Sans 500 14px, active link = ink with 2px accent underline; region switch right, as a 2-segment control (Lake Mead | Coimbra), active segment `bg-primary text-primary-foreground`. Below 768px: nav moves into a shadcn `Sheet` opened by a `Menu` icon button; region switch stays visible. Content container `max-w-[1360px] mx-auto px-6` (px-4 below 768px). Footer: disclaimer (§8.2) in 14px muted ink above a hairline.
+- Spacing: 4px base; only Tailwind steps 1, 2, 3, 4, 6, 8, 12, 16. Section gap 48px (`gap-12`) desktop, 32px mobile. Inside panels 16px or 24px.
+- Radius: 4px (`rounded-sm`) on every rectangle (buttons, inputs, panels, popups, badges). Markers and meter pointer are the only round shapes. No `rounded-xl`, no pills.
+- Shadow: none on page elements; panels are separated by 1px `border` hairlines. One shadow token, `0 6px 24px rgb(20 33 31 / 0.14)`, used only on Leaflet popups, `Select`/dropdown content and `Sheet`.
+- Dashboard @1440: row 1 = KPI strip, one bordered band split into 5 cells by vertical hairlines: Region status, Highest-risk site, Citizen reports, Areas Requiring Attention, then the Official data cell (4px left border in `--primary`, "Official data" badge, value Mono 28px, source line Mono 12px with link). Row 2 = 12-col grid: map `col-span-7`, height 620px; "Sampling priority list" `col-span-5`, same height, scroll inside if needed. Data label "Prototype demonstration data" sits directly above the KPI strip, left-aligned. @375: KPI strip becomes 2x2 grid, official cell full width beneath, map full width 380px tall, priority list renders as stacked rows (rank + site + badge on line 1; leading pathway, trend, reports, action on line 2). No horizontal scroll.
+- Priority list: rank in Mono 20px muted, site Sans 600, `RiskBadge`, trend as lucide `TrendingUp`/`TrendingDown`/`MoveRight` + word, action text. Rows separated by one bottom hairline (no top borders). Rank-1 row has no risk-tinted background; it gets a 3px left `--primary` border and the "Verdant recommendation" label block containing "Recommended first sampling target".
+- "Verdant recommendation" label style: 3px left border `--primary`, padding 8px 12px, label 12px Sans 600 in `--primary`, content 14px ink. "Official advisory: none issued" sits beside it as plain 14px muted text with 1px dashed `--border` box. Never coloured red/orange.
+- Data labels: "Prototype demonstration data" and the A3 Coimbra label = Mono 12px muted ink, 1px dashed border, 4px radius, padding 2px 8px. "Official data" = solid `--primary` background, `--primary-foreground` text, Mono 12px.
+- Site detail @1440: hero band, 2 columns 5/7. Left: H1 site name, meta line (trend, last updated) 14px muted, then score numeral 72px + `RiskBadge` on one baseline. Right: risk meter (11.6) on top, then the recommendation pair (Verdant recommendation | Official advisory). Below: 7/5 grid, "Why is risk elevated?" with explanation sentence and contribution bars left, 7-day chart right (Recharts line, stroke `--foreground` 2px, dots coloured by category, no gridlines except a hairline at y=25/50/75 for category bounds, y 0-100). Then the three pathway scores as one bordered strip split by vertical hairlines (not three cards). Then One Health panel: three columns (Environment, Human health, Animal health) each with lucide icon (`Leaf`, `User`, `PawPrint`) + 14px text, visitor guidance below full width. Then disclaimer, then "Export FHIR JSON" secondary button (outline, `Download` icon). @375: everything single column in that order; score numeral 48px.
+- Report form: single left-aligned column `max-w-[640px]` plus a sticky aside `w-[320px]` on the right (@1024+), showing the selected site's live `RiskBadge`, score Mono 40px and leading pathway; this is where the 79 to 81 change is seen in the video. Labels above inputs, helper/errors below, `gap-2` per field. Observation types as a 2-column checkbox grid. Warning (§8 item 3) is a shadcn `Alert` with `TriangleAlert`, tint `--muted`, ink text, directly above the submit button. Submit = primary button "Submit report". Success state replaces the form in place with the confirmation sentence and a link "View updated site". @375: aside moves above the form as a compact one-line summary.
+- OAH Cities: H1 + intro (68ch). Cities as one bordered list, 5 rows split by hairlines: city name Sans 600 20px, country muted, `dataStatus` label (Mono 12px dashed style), pathway ids in Mono 12px; the Coimbra row alone has the primary button "Run Verdant on Coimbra" right-aligned. "How to add a city" below as an ordered list whose items start with the verb (Export, Map, Add), numbers in Mono 28px muted.
+- Methodology (Read mode): @1024+ left sticky in-page nav `w-[220px]` (anchors to each section), content column max 72ch. Equations in `bg-muted` blocks, Mono 14px, 16px padding. Architecture SVG spans the content column, strokes `--foreground` 1.5px, nodes `bg-card` with hairline border, flow arrows `--primary`. Citations table full content width inside an `overflow-x-auto` wrapper (the only permitted horizontal scroll). @375: nav hidden, single column.
+
+**11.5 Map.**
+- Tiles: CARTO Positron (OSM data, free, no key). URL `https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png`, `subdomains: "abcd"`, `maxZoom: 20`. Attribution exactly: `&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>`. This satisfies §8 item 1 "OSM tiles".
+- Map frame: 1px `--border`, 4px radius, `bg-card`; zoom control top-right; scroll-wheel zoom off on mobile.
+- Markers: Leaflet `divIcon`, circle sized per 11.3, fill = risk solid, 2px `#FBFCFB` stroke plus 1px outer `#14211F` at 40% (box-shadow ring), site score centred in Mono 600 12px (13px for High/Very High). Very High also carries the pulse ring (11.7). Larger markers render above smaller (`zIndexOffset` = score × 10).
+- Legend: bottom-left inside the map, `bg-card` hairline box, four rows of marker swatch + icon + category word + range (Mono 12px).
+- Popup: `bg-card`, 4px radius, the one shadow token, padding 12px, width 240px. Content: site name 20px Sans 600; `RiskBadge`; leading pathway and trend 14px; "View analysis" text link in `--primary` with `ArrowRight` icon. Restyle Leaflet's default popup tip and close button to these tokens in `src/index.css` `@layer base` (no new CSS file).
+
+**11.6 Risk meter and contribution bars.**
+- Risk meter: full-width horizontal scale 0-100, height 14px, four equal segments (0-25, 26-50, 51-75, 76-100) with 2px gaps; segments show the category tint, the current category segment shows its solid colour. Pointer: 2px ink vertical line 22px tall at the score position, score in Mono 600 14px above it. Below: tick labels 0, 25, 50, 75, 100 Mono 12px muted and category words under each segment centre in 12px. Score change animates the pointer position (11.7).
+- Contribution bars ("Why is risk elevated?"): one row per contribution, sorted descending. Grid columns: factor label (Sans 500 14px, human name) 180px | bar | value. Bar height 10px, 2px radius, fill `--primary`, length = points as % of 100 (so bars sum to the pathway score), no background track. Value column Mono 12px: "34.8 pts" and under it muted "87 × 0.40". Missing factors list below as muted 12px "No data: citizen evidence". Partial-data note "Partial data: X% of factors" above the bars when coverage < 1. @375: label above bar, value right of bar.
+
+**11.7 Motion** (the only motion in the app; all disabled under `prefers-reduced-motion: reduce`).
+- Very High marker pulse: a ring pseudo-element in the risk solid colour, `scale 1 → 1.9`, `opacity 0.5 → 0`, 1800ms, `cubic-bezier(0.16, 1, 0.3, 1)`, infinite, defined as one `@keyframes verdant-pulse` in `src/index.css`.
+- Live score change on report submit: the score numeral counts from old to new over 600ms ease-out (requestAnimationFrame in a small hook writing to a ref, not React state per frame); the risk meter pointer translates over 600ms same easing; marker size/colour and badge swap with 300ms transitions; the changed priority-list row and the report aside get a 1200ms fade from `--muted` to transparent background.
+- Hover/focus: colour and border transitions 120ms. No entrance animations, no scroll reveals, no skeleton shimmer, no page transitions.
+
+**11.8 Anti-patterns rejected** (pattern → what Verdant does instead).
+1. Purple/blue gradient backgrounds or gradient text → flat `#F3F5F4` page, single flat accent `#174C6B`, zero gradients.
+2. Generic rounded cards on a grid (default shadcn `Card` with `rounded-xl shadow-sm`) → hairline-divided bands and strips, 4px radius, no shadow.
+3. Default shadcn spacing and shadows → spacing limited to the 11.4 steps; shadow only on popups/dropdowns/sheet.
+4. Centered hero with emoji → no hero on any page; dashboard opens on data, H1s left-aligned; zero emoji anywhere.
+5. Stock "clean SaaS" look (Inter + slate-900 + white) → Schibsted Grotesk + IBM Plex Mono on cool paper-grey with ink.
+6. Three equal feature cards → pathway scores as one divided strip; One Health as three text columns with no boxes.
+7. KPI tiles with giant numbers, icons in coloured circles, and fake trend deltas → one 5-cell KPI band, Mono values, no decorative icon bubbles, no invented percentages.
+8. Colour-only risk encoding → colour + marker size + icon + category word + number, everywhere.
+9. Uppercase tracked eyebrows above every heading → no eyebrows; headings stand alone.
+10. Decorative status dots before list items and nav links → none; only map markers are dots.
+11. Progress bars with grey background tracks → contribution bars have no track; only the risk meter shows its full scale, because the scale is the information.
+12. Em dashes and en dashes in UI copy → hyphens, commas, periods (copy also passes `no-ai-slop`).
+13. Default Leaflet blue pin markers and popup chrome → sized circle markers with scores, restyled popup.
+14. Red/orange styling on Verdant's own recommendation (alarm theatre) → recommendation uses the accent label style; only risk badges carry risk colour.
+
+**11.9 Polish checklist** (`impeccable` polish pass, Task 8.1, runs every item at 1440px and 375px).
+- [ ] Only Schibsted Grotesk and IBM Plex Mono load; every number is Mono with `tabular-nums`.
+- [ ] Only colours from 11.3 appear (grep for stray hex, `slate-`, `gray-`, `zinc-`, `blue-`, `purple-`).
+- [ ] Every risk mention shows colour + icon + word; Moderate and High are told apart in a deuteranopia simulation by icon and size.
+- [ ] Text contrast ≥ 4.5:1 for body and badge text; focus ring `--ring` visible on every interactive element.
+- [ ] All radii 4px except markers/meter pointer; no shadow outside popups/dropdowns/sheet.
+- [ ] "Prototype demonstration data" (or A3 label) visible on every screen with prototype values; Official data card has no prototype label; disclaimer on site detail and footer.
+- [ ] "Verdant recommendation" and "Official advisory: none issued" appear together on site detail; the word "advisory" never labels Verdant output.
+- [ ] Map uses CARTO Positron with the exact attribution; Callville Bay marker is red, 36px, pulsing; popups match 11.5.
+- [ ] Report submit shows 79 → 81 counting in the aside and on the dashboard; reduced motion shows the final value instantly.
+- [ ] No horizontal page scroll at 375px (citations table scrolls inside its wrapper only); nav on one line at 1440px.
+- [ ] No 11.8 anti-pattern present; zero em/en dashes in rendered text; no emoji; no console errors.
 
 ## 12. Task list
 
