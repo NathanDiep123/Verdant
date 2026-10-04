@@ -11,11 +11,11 @@ export type SiteRow = { site: SiteRecord; result: SiteResult; trend: Trend; repo
 
 const TREND_ICON = { Increasing: TrendingUp, Decreasing: TrendingDown, Stable: MoveRight } as const;
 
-export function TrendLabel({ trend, stacked }: { trend: Trend; stacked?: boolean }) {
+export function TrendLabel({ trend, small }: { trend: Trend; small?: boolean }) {
   const Icon = TREND_ICON[trend];
   return (
-    <span className={`inline-flex gap-1.5 text-sm ${stacked ? "flex-col items-start gap-0.5" : "items-center"}`}>
-      <Icon className="size-4 shrink-0" strokeWidth={1.75} aria-hidden />
+    <span className={`inline-flex items-center gap-1.5 ${small ? "text-[13px]" : "text-sm"}`}>
+      <Icon className={small ? "size-3.5 shrink-0" : "size-4 shrink-0"} strokeWidth={1.75} aria-hidden />
       {trend}
     </span>
   );
@@ -59,13 +59,11 @@ export function SamplingPriorityList({ rows }: { rows: SiteRow[] }) {
       </div>
 
       <div className="min-h-0 flex-1 overflow-auto">
-        <Table className="hidden xl:table">
+        <Table className="hidden lg:table">
           <TableHeader className="bg-muted">
             <TableRow>
-              {(
-                [["Rank", ""], ["Site", ""], ["Risk", ""], ["Leading pathway", ""], ["Trend", ""], ["Reports", ""], ["Action", ""]] as const
-              ).map(([h, w]) => (
-                <TableHead key={h} className={`h-auto px-1.5 py-2 text-sm font-medium whitespace-normal text-foreground first:pl-3 last:pr-3 ${w}`}>
+              {["Rank", "Site / Leading pathway", "Risk / Trend", "Reports", "Action"].map((h) => (
+                <TableHead key={h} className="h-auto px-1.5 py-2 text-sm font-medium whitespace-nowrap text-foreground first:pl-3 last:pr-3">
                   {h}
                 </TableHead>
               ))}
@@ -76,29 +74,29 @@ export function SamplingPriorityList({ rows }: { rows: SiteRow[] }) {
               <Fragment key={r.site.id}>
               <TableRow className={`align-top hover:bg-muted/60 ${i === 0 ? "border-b-0 border-l-[3px] border-l-primary" : ""}`}>
                 <TableCell className="py-3 pr-1 pl-3 font-mono text-lg tabular-nums text-muted-foreground">{i + 1}</TableCell>
-                <TableCell className="px-1.5 py-3 whitespace-normal">
+                <TableCell className="px-1.5 py-3 whitespace-nowrap">
                   <Link
                     to={`/site/${r.site.id}`}
-                    className="text-sm font-semibold hover:text-primary hover:underline focus-visible:outline-2 focus-visible:outline-ring"
+                    className="font-semibold hover:text-primary hover:underline focus-visible:outline-2 focus-visible:outline-ring"
                   >
                     {r.site.name}
                   </Link>
+                  <p className="mt-0.5 text-[13px] text-muted-foreground">{PATHWAYS[r.result.leadingPathway].label}</p>
                 </TableCell>
                 <TableCell className="px-1.5 py-3 whitespace-nowrap">
                   <RiskBadge category={r.result.category} score={r.result.siteScore} size="sm" />
-                </TableCell>
-                <TableCell className="px-1.5 py-3 text-sm whitespace-normal">{PATHWAYS[r.result.leadingPathway].label}</TableCell>
-                <TableCell className="px-1.5 py-3">
-                  <TrendLabel trend={r.trend} stacked />
+                  <div className="mt-1">
+                    <TrendLabel trend={r.trend} small />
+                  </div>
                 </TableCell>
                 <TableCell className="px-1.5 py-3">
                   <ReportCount id={r.site.id} count={r.reportCount} />
                 </TableCell>
-                <TableCell className="py-3 pr-3 pl-1.5 text-sm whitespace-normal">{recommend(r.result.category)}</TableCell>
+                <TableCell className="py-3 pr-3 pl-1.5 text-[13px] whitespace-normal">{recommend(r.result.category)}</TableCell>
               </TableRow>
               {i === 0 && (
                 <TableRow className="border-l-[3px] border-l-primary hover:bg-transparent">
-                  <TableCell colSpan={7} className="px-4 pt-0 pb-3">
+                  <TableCell colSpan={5} className="px-4 pt-0 pb-3">
                     <FirstTarget />
                   </TableCell>
                 </TableRow>
@@ -108,7 +106,7 @@ export function SamplingPriorityList({ rows }: { rows: SiteRow[] }) {
           </TableBody>
         </Table>
 
-        <ol className="xl:hidden">
+        <ol className="lg:hidden">
           {rows.map((r, i) => (
             <li
               key={r.site.id}

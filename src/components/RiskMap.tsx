@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 import { Link } from "react-router";
-import { MapContainer, Marker, Popup, TileLayer, useMap } from "react-leaflet";
+import { MapContainer, Marker, Popup, TileLayer, useMap, ZoomControl } from "react-leaflet";
 import L from "leaflet";
 import { ArrowRight } from "lucide-react";
 import { Switch } from "@/components/ui/switch";
@@ -50,18 +50,30 @@ function pinIcon(k: number, n: number, siteDiameter: number) {
   });
 }
 
-function Recenter({ center, zoom }: { center: [number, number]; zoom: number }) {
+/** Fits the region's sites with padding on load and on region switch; the toggle sits top-left, so the top gets more room. */
+function FitSites({ points, center, zoom }: { points: [number, number][]; center: [number, number]; zoom: number }) {
   const map = useMap();
+  const key = points.join("|");
   useEffect(() => {
-    map.setView(center, zoom);
-  }, [map, center, zoom]);
+    if (points.length === 0) {
+      map.setView(center, zoom);
+      return;
+    }
+    map.fitBounds(L.latLngBounds(points), {
+      paddingTopLeft: [40, 56],
+      paddingBottomRight: [40, 40],
+      maxZoom: zoom + 1,
+      animate: false,
+    });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [map, key, center, zoom]);
   return null;
 }
 
 function Legend({ showPins }: { showPins: boolean }) {
   return (
-    <div className="absolute bottom-3 left-3 z-[1000] rounded-sm border bg-card px-3 py-2">
-      <ul className="space-y-1">
+    <div className="mt-2 md:absolute md:bottom-3 md:left-3 md:z-[1000] md:mt-0 md:rounded-sm md:border md:bg-card md:px-3 md:py-2">
+      <ul className="flex flex-wrap gap-x-4 gap-y-1 md:block md:space-y-1">
         {CATEGORIES.map((c) => {
           const { color, icon: Icon, markerSize } = CATEGORY_STYLE[c];
           return (
@@ -72,7 +84,7 @@ function Legend({ showPins }: { showPins: boolean }) {
                 aria-hidden
               />
               <Icon className="size-3.5 shrink-0" strokeWidth={1.75} aria-hidden />
-              <span className="w-16 font-sans font-medium">{c}</span>
+              <span className="font-sans font-medium md:w-16">{c}</span>
               <span className="text-muted-foreground">{RANGES[c]}</span>
             </li>
           );
@@ -110,17 +122,20 @@ export function RiskMap({ rows, center, zoom }: { rows: SiteRow[]; center: [numb
       return list.map((report, k) => ({ report, row, icon: pinIcon(k, list.length, d) }));
     });
   }, [reports, rows]);
+  const points = useMemo(() => rows.map((r) => [r.site.lat, r.site.lon] as [number, number]), [rows]);
   const touch = typeof window !== "undefined" && window.matchMedia("(max-width: 767px)").matches;
 
   return (
-    <div className="relative h-[380px] overflow-hidden rounded-sm border bg-card lg:h-full">
-      <MapContainer center={center} zoom={zoom} scrollWheelZoom={!touch} className="h-full w-full">
+    <div className="relative xl:h-full">
+      <div className="relative h-[420px] overflow-hidden rounded-sm border bg-card xl:h-full">
+      <MapContainer center={center} zoom={zoom} zoomControl={false} scrollWheelZoom={!touch} className="h-full w-full">
+        <ZoomControl position="topright" />
         <TileLayer
           url="https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Light_Gray_Base/MapServer/tile/{z}/{y}/{x}"
           maxZoom={16}
           attribution={ATTRIBUTION}
         />
-        <Recenter center={center} zoom={zoom} />
+        <FitSites points={points} center={center} zoom={zoom} />
         {rows.map((r, i) => (
           <Marker
             key={r.site.id}
@@ -185,6 +200,7 @@ export function RiskMap({ rows, center, zoom }: { rows: SiteRow[]; center: [numb
         <Switch checked={showPins} onCheckedChange={setShowPins} />
         Community reports ({reports.filter((r) => rows.some((x) => x.site.id === r.siteId)).length})
       </label>
+      </div>
       <Legend showPins={showPins} />
     </div>
   );

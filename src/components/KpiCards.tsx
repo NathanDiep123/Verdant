@@ -11,7 +11,7 @@ function Cell({ title, children }: { title: string; children: React.ReactNode })
   return (
     <div className="bg-card p-4">
       <p className="text-sm font-medium text-muted-foreground">{title}</p>
-      <div className="mt-2">{children}</div>
+      <div className="mt-1">{children}</div>
     </div>
   );
 }
@@ -40,30 +40,32 @@ export function KpiCards({
   return (
     <div
       className={`grid grid-cols-2 gap-px overflow-hidden rounded-sm border bg-border ${
-        showOfficial ? "lg:grid-cols-[repeat(4,1fr)_1.5fr]" : "lg:grid-cols-4"
+        showOfficial ? "lg:grid-cols-[1.25fr_repeat(3,1fr)_2fr]" : "lg:grid-cols-4"
       }`}
     >
       <div className="border-l-[3px] border-l-primary bg-card p-4">
         <p className="text-sm font-medium text-muted-foreground">Citizen reports</p>
-        <p className="mt-2 font-mono text-[28px] leading-[1.2] font-semibold tabular-nums">{reportCount}</p>
-        <p className="mt-1 text-sm text-muted-foreground">From {siteCount} {siteCount === 1 ? "site" : "sites"}</p>
-        <Link
-          to="/report"
-          className="mt-2 inline-flex items-center gap-1 text-sm font-medium text-primary underline-offset-4 hover:underline"
-        >
-          Add a report
-          <ArrowRight className="size-4" strokeWidth={1.75} aria-hidden />
-        </Link>
+        <p className="mt-1 font-mono text-[28px] leading-[1.2] font-semibold tabular-nums">{reportCount}</p>
+        <div className="mt-1 flex flex-wrap items-center justify-between gap-x-3 text-sm">
+          <span className="text-muted-foreground">From {siteCount} {siteCount === 1 ? "site" : "sites"}</span>
+          <Link
+            to="/report"
+            className="inline-flex items-center gap-1 font-medium text-primary underline-offset-4 hover:underline"
+          >
+            Add a report
+            <ArrowRight className="size-4" strokeWidth={1.75} aria-hidden />
+          </Link>
+        </div>
       </div>
       <Cell title="Region status">
         {rows.length ? <RiskBadge category={status} size="md" /> : <span className="text-sm">No sites</span>}
-        <p className="mt-2 text-sm text-muted-foreground">Highest category at {regionName}</p>
+        <p className="mt-1 text-sm text-muted-foreground">Highest category at {regionName}</p>
       </Cell>
       <Cell title="Highest-risk site">
         {top ? (
           <>
             <p className="text-sm font-semibold">{top.site.name}</p>
-            <div className="mt-2">
+            <div className="mt-1">
               <RiskBadge category={top.result.category} score={top.result.siteScore} size="md" />
             </div>
           </>

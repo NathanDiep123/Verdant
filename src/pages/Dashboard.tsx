@@ -32,16 +32,16 @@ export default function Dashboard() {
   const dataLabel = regionId === "lake-mead" ? "Prototype demonstration data" : COIMBRA_LABEL[coimbraDataStatus];
 
   return (
-    <div className="flex flex-col gap-8 py-8 md:gap-12 md:py-12">
-      <div className="flex flex-col gap-3">
-        <h1 className="text-[28px] leading-[1.1] font-bold tracking-[-0.02em] md:text-[40px]">
-          Where to sample first at {config.name}
-        </h1>
-        <p className="max-w-[68ch] text-base text-muted-foreground">
-          Scores combine satellite signals, environmental data and reports from people at the shore.
-        </p>
-        <div>
-          <span className="inline-block rounded-sm border border-dashed px-2 py-0.5 font-mono text-xs text-muted-foreground">
+    <div className="flex flex-col gap-8 md:gap-12">
+      <div className="flex flex-col gap-4">
+        <div className="flex flex-col gap-2">
+          <h1 className="text-[28px] leading-[1.1] font-bold tracking-[-0.02em] md:text-[40px]">
+            Where to sample first at {config.name}
+          </h1>
+          <p className="max-w-[68ch] text-base text-muted-foreground">
+            Scores combine satellite signals, environmental data and shore reports.
+          </p>
+          <span className="w-fit rounded-sm border border-dashed px-2 py-0.5 font-mono text-xs text-muted-foreground">
             {dataLabel}
           </span>
         </div>
@@ -52,14 +52,13 @@ export default function Dashboard() {
           regionName={config.name}
           showOfficial={regionId === "lake-mead"}
         />
-      </div>
-
-      <div className="grid gap-6 lg:h-[620px] lg:grid-cols-12">
-        <div className="lg:col-span-6 lg:h-full">
-          <RiskMap rows={rows} center={config.center} zoom={config.zoom} />
-        </div>
-        <div className="lg:col-span-6 lg:h-full lg:min-h-0">
-          <SamplingPriorityList rows={rows} />
+        <div className="mt-2 grid gap-6 xl:h-[620px] xl:grid-cols-12">
+          <div className="xl:col-span-7 xl:h-full">
+            <RiskMap rows={rows} center={config.center} zoom={config.zoom} />
+          </div>
+          <div className="xl:col-span-5 xl:h-full xl:min-h-0">
+            <SamplingPriorityList rows={rows} />
+          </div>
         </div>
       </div>
 
