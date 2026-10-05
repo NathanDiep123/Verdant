@@ -1,4 +1,4 @@
-import type { Category, FactorId, Trend } from "../types";
+import type { FactorId } from "../types";
 import { defineStrings } from "./lang";
 
 export const SITE_DETAIL = defineStrings({
@@ -147,33 +147,8 @@ export const SITE_DETAIL = defineStrings({
   },
 });
 
-export const TREND_WORD = defineStrings({
-  en: { Increasing: "Increasing", Decreasing: "Decreasing", Stable: "Stable" } satisfies Record<Trend, string>,
-  pt: { Increasing: "A subir", Decreasing: "A descer", Stable: "Estável" },
-  es: { Increasing: "En aumento", Decreasing: "En descenso", Stable: "Estable" },
-});
-
-/** Output of engine `recommend()`; English values must match it. */
-export const RECOMMEND = defineStrings({
-  en: {
-    Low: "Routine observation",
-    Moderate: "Continue monitoring",
-    High: "Prioritize follow-up observation",
-    "Very High": "Recommend field sampling",
-  } satisfies Record<Category, string>,
-  pt: {
-    Low: "Observação de rotina",
-    Moderate: "Continuar a monitorizar",
-    High: "Dar prioridade à observação de seguimento",
-    "Very High": "Recomendar amostragem de campo",
-  },
-  es: {
-    Low: "Observación de rutina",
-    Moderate: "Seguir monitoreando",
-    High: "Priorizar la observación de seguimiento",
-    "Very High": "Recomendar muestreo de campo",
-  },
-});
+// Shared with the Dashboard so both pages say the same thing.
+export { RECOMMEND, TREND as TREND_WORD } from "./dashboard";
 
 export const FACTOR_LABEL = defineStrings({
   en: {

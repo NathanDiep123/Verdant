@@ -110,9 +110,6 @@ export const lakeMeadOfficial = {
   value: "1,037.93",
   unit: "ft",
   asOf: "2026-10-03",
-  displayText: "Lake Mead elevation: 1,037.93 ft (Oct 3, 2026)",
-  sourceLine:
-    "Source: U.S. Bureau of Reclamation, Lower Colorado River Operations. Accessed 2026-10-04.",
   url: "https://www.usbr.gov/lc/region/g4000/hourly/levels.html",
   accessed: A,
 };

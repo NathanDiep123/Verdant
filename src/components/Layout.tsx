@@ -40,7 +40,7 @@ export function Layout({ children }: { children: ReactNode }) {
           <NavLink to="/" className="font-heading text-2xl leading-none tracking-[-0.01em] text-foreground">
             Verdant
           </NavLink>
-          <nav aria-label="Main" className="hidden h-full items-stretch gap-5 xl:flex">
+          <nav aria-label={s.navMain} className="hidden h-full items-stretch gap-5 xl:flex">
             {NAV.map((n) => (
               <NavLink
                 key={n.to}
@@ -78,7 +78,7 @@ export function Layout({ children }: { children: ReactNode }) {
       </header>
 
       <Sheet open={open} onOpenChange={setOpen}>
-        <SheetContent side="left" className="gap-0 p-0">
+        <SheetContent side="left" closeLabel={s.close} className="gap-0 p-0">
           <SheetTitle className="border-b border-border px-4 py-4 font-heading text-2xl font-normal">Verdant</SheetTitle>
           <Link
             to="/oah-cities"
@@ -91,7 +91,7 @@ export function Layout({ children }: { children: ReactNode }) {
             </span>
             <span className="font-mono text-xs">{nextCities().join(", ")}</span>
           </Link>
-          <nav aria-label="Main" className="flex flex-col">
+          <nav aria-label={s.navMain} className="flex flex-col">
             {NAV.map((n) => (
               <NavLink
                 key={n.to}

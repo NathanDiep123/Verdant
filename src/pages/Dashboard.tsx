@@ -31,7 +31,7 @@ export default function Dashboard() {
     [sites, config, reports],
   );
 
-  const dataLabel = 
+  const dataLabel =
     regionId === "lake-mead" ? s.dataLakeMead : coimbraDataStatus === "synthetic-demo" ? s.dataSynthetic : s.dataExport;
 
   return (

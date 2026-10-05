@@ -1,7 +1,6 @@
 import { Line, LineChart, ReferenceArea, ReferenceLine, ResponsiveContainer, XAxis, YAxis } from "recharts";
 import type { Category } from "@/types";
-import { fmt as tpl } from "@/i18n/lang";
-import { LOCALE } from "@/i18n/lang";
+import { fmt as tpl, LOCALE } from "@/i18n/lang";
 import { RISK_WORD } from "@/i18n/shared";
 import { SITE_DETAIL } from "@/i18n/siteDetail";
 import { useLang } from "@/state/LanguageContext";
