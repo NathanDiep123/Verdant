@@ -91,7 +91,7 @@ function FitSites({ points, center, zoom, top }: { points: [number, number][]; c
 function BasemapSwitch({ value, onChange }: { value: Basemap; onChange: (b: Basemap) => void }) {
   const { lang } = useLang();
   const s = DASHBOARD[lang];
-  const options: [Basemap, string][] = [["map", s.mapStyleMap], ["satellite", s.mapStyleSatellite]];
+  const options: [Basemap, string][] = [["satellite", s.mapStyleSatellite], ["map", s.mapStyleMap]];
   return (
     <div
       role="group"

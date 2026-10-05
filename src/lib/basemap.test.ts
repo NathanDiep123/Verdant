@@ -15,20 +15,24 @@ const broken = {
 } as unknown as Storage;
 
 describe("basemap choice", () => {
-  it("defaults to map", () => expect(loadBasemap(store())).toBe("map"));
-  it("round-trips satellite", () => {
+  it("defaults to satellite", () => expect(loadBasemap(store())).toBe("satellite"));
+  it("round-trips both values", () => {
     const s = store();
+    saveBasemap("map", s);
+    expect(loadBasemap(s)).toBe("map");
+    expect(s.getItem("verdant.basemap")).toBe("map");
     saveBasemap("satellite", s);
     expect(loadBasemap(s)).toBe("satellite");
     expect(s.getItem("verdant.basemap")).toBe("satellite");
   });
-  it("falls back to map on an unknown value", () => expect(loadBasemap(store("terrain"))).toBe("map"));
+  it("loads a stored map as map", () => expect(loadBasemap(store("map"))).toBe("map"));
+  it("falls back to satellite on an unknown value", () => expect(loadBasemap(store("terrain"))).toBe("satellite"));
   it("survives throwing storage", () => {
-    expect(loadBasemap(broken)).toBe("map");
-    expect(() => saveBasemap("satellite", broken)).not.toThrow();
+    expect(loadBasemap(broken)).toBe("satellite");
+    expect(() => saveBasemap("map", broken)).not.toThrow();
   });
   it("survives missing storage", () => {
-    expect(loadBasemap(undefined)).toBe("map");
+    expect(loadBasemap(undefined)).toBe("satellite");
     expect(() => saveBasemap("map", undefined)).not.toThrow();
   });
 });

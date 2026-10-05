@@ -11,9 +11,9 @@ const defaultStorage = (): Storage | undefined => {
 
 export function loadBasemap(storage: Storage | undefined = defaultStorage()): Basemap {
   try {
-    return storage?.getItem(KEY) === "satellite" ? "satellite" : "map";
+    return storage?.getItem(KEY) === "map" ? "map" : "satellite";
   } catch {
-    return "map";
+    return "satellite";
   }
 }
 
