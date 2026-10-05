@@ -20,7 +20,7 @@ Verdant is a working demonstration of a report-to-outcome workflow, with six pag
 
 Review changes how much a report counts: a new report adds 10 citizen-evidence points, a confirmed one adds 20, and one ruled not a bloom adds 0. At Callville Bay the score goes from 79 to 81 on a new report, to 82 once confirmed, and back to 79 if ruled not a bloom.
 
-**These weights are demonstration rules, not validated. A citizen report never confirms a bloom, and every ranger outcome here is simulated.**
+**These weights are demonstration rules, not validated. A citizen report never confirms a bloom, and every ranger outcome here is simulated. Verdant flags conditions associated with higher bloom risk. It does not confirm toxins or replace field sampling, and its scores are not an official advisory.**
 
 ### What is real and what is demonstration data
 
@@ -86,8 +86,6 @@ The path is map, explanation, report, outcome. Reporting takes three steps with 
 ## Scale
 
 A new city needs site coordinates, suitable data such as a Resilience Map CSV, a validated scoring model, and a local review process. Existing systems connect through the CSV import and the FHIR-shaped export, and both need validation with partners. There is no server to run today, so a small agency-supported pilot is the natural first step.
-
-**Verdant flags conditions associated with higher bloom risk. It does not confirm toxins or replace field sampling, and its scores are not an official advisory.**
 
 ---
 
