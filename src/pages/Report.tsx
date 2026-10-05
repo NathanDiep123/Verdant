@@ -279,9 +279,9 @@ export default function Report() {
     </div>
   );
 
-  /** Back, "Step n of 3" and Next. Fixed to the bottom edge below 1024px, an inline row above it. */
+  /** Back, "Step n of 3" and Next. Sticks to the bottom edge below 1024px, an inline row above it. */
   const bar = (
-    <div className="fixed inset-x-0 bottom-0 z-30 border-t border-border bg-card/95 pb-[env(safe-area-inset-bottom)] lg:static lg:z-auto lg:border-0 lg:bg-transparent lg:pb-0">
+    <div className="sticky bottom-0 z-30 -mx-4 border-t border-border bg-card pb-[env(safe-area-inset-bottom)] md:-mx-6 lg:static lg:z-auto lg:mx-0 lg:border-0 lg:bg-transparent lg:pb-0">
       <div className="mx-auto flex h-16 max-w-[640px] items-center gap-3 px-4 lg:h-auto lg:px-0">
         <div className="w-[88px] shrink-0">
           {step > 1 && (
@@ -346,7 +346,7 @@ export default function Report() {
   });
 
   return (
-    <div className="flex flex-col gap-8 pb-24 md:gap-12 lg:pb-0">
+    <div className="flex flex-col gap-8 md:gap-12">
       <header className="flex max-w-[68ch] flex-col gap-2">
         <h1 className="text-[1.875rem] leading-[1.05] tracking-[-0.015em] md:text-[2.5rem]">{s.title}</h1>
         <p className="leading-[1.55] text-muted-foreground">{s.intro}</p>
