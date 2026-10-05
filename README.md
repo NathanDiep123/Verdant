@@ -34,8 +34,6 @@ Built for the OneAquaHealth IEEE Global Hackathon 2026, Track 6.
 
 ![Verdant for OneAquaHealth cities page with five city cards](docs/screenshots/oah-cities.png)
 
-![Coimbra dashboard with the satellite signal chart](docs/screenshots/coimbra-dashboard.png)
-
 ![Methodology page with the architecture diagram](docs/screenshots/methodology.png)
 
 ![Dashboard at phone width](docs/screenshots/dashboard-mobile.png)
