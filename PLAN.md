@@ -1472,3 +1472,7 @@ Risk words inside uppercase stamps (`MUITO ALTO`, `MUY ALTO`) must fit the stamp
   - Done: all three commands exit 0, no overflow or stray English outside 24.1 items 3-4, review findings resolved.
 - **25.T10 Gallery re-run.** Depends: T9.
   - Re-run the gallery plan already agreed with the user (6 varied 1800×1200 images in `docs/gallery/` plus the README carousel gif), as agreed; not redesigned here. Run after T9 so the images show the basemap switch and the new languages.
+
+### 25.11 Amendment (user, 2026-10-05): basemap default swapped
+
+The user reversed the 25.2 default: **Satellite is the default basemap and comes first in the switch ("Satellite | Map"); the clean light map is the option.** `loadBasemap` returns "satellite" when nothing valid is stored (any stored value other than "map" loads as satellite); the stored key stays `verdant.basemap`. Files: `src/lib/basemap.ts`, `src/lib/basemap.test.ts`, `src/components/RiskMap.tsx` (button order, default state, `data-basemap` initial value; `FitSites` and the pin/legend contrast checks are re-verified on satellite as the first view), `src/index.css` only if the default container background must change. Strings are unchanged (`mapStyleMap`, `mapStyleSatellite`). Verify: `npx tsc -p tsconfig.app.json --noEmit`, `npx vitest run`, `npm run build`. The README and the gallery images use the default (satellite) first view.
