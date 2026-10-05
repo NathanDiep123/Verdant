@@ -2,6 +2,25 @@
 
 **See the bloom before it becomes a warning.**
 
+<p align="center">
+  <img src="docs/gallery/carousel.gif" alt="Verdant screenshots: dashboard, site score, report flow, ranger review, languages, slide" width="900">
+</p>
+
+<table>
+  <tr>
+    <td><a href="docs/gallery/01-dashboard.png"><img src="docs/gallery/01-dashboard.png" alt="Dashboard with the CDC statistic, KPI band and Sampling priority list" width="300"></a></td>
+    <td><a href="docs/gallery/02-callville-bay.png"><img src="docs/gallery/02-callville-bay.png" alt="Callville Bay site score of 79 Very High with factor bars and the official advisory line" width="300"></a></td>
+    <td><a href="docs/gallery/03-report-on-phones.png"><img src="docs/gallery/03-report-on-phones.png" alt="The three-step report flow on three phones" width="300"></a></td>
+  </tr>
+  <tr>
+    <td><a href="docs/gallery/04-ranger-and-payoff.png"><img src="docs/gallery/04-ranger-and-payoff.png" alt="Ranger report queue with the reporter's You got it right outcome card" width="300"></a></td>
+    <td><a href="docs/gallery/05-three-languages.png"><img src="docs/gallery/05-three-languages.png" alt="The dashboard header and statistic in English, Portuguese and Norwegian" width="300"></a></td>
+    <td><a href="docs/gallery/06-slide.png"><img src="docs/gallery/06-slide.png" alt="Pitch deck slide: Verdant, from observation to follow-up" width="300"></a></td>
+  </tr>
+</table>
+
+The gallery images are rebuilt with `node scripts/gallery/build-gallery.mjs`, and the screenshots below with `node scripts/gallery/capture-screenshots.mjs`. Both need a machine where the map tiles load.
+
 Verdant is an explainable early-warning prototype for freshwater One Health risk. It combines satellite-derived, environmental and citizen-reported signals into a risk score for each monitoring site, and it tells a ranger which site to sample first. Citizens report what they see, rangers review each report, and reporters see what their report led to. Lake Mead is the pilot. The same engine runs on a OneAquaHealth city through one site configuration.
 
 Built for the OneAquaHealth IEEE Global Hackathon 2026, Track 6.
@@ -12,9 +31,11 @@ Built for the OneAquaHealth IEEE Global Hackathon 2026, Track 6.
 
 ### Pages
 
-- **Dashboard**: risk map with community report pins, KPI cards, Community reports feed, Sampling priority list.
+The header has six links (Dashboard, Report a Bloom, My reports, Report queue, OAH Cities, Methodology), a Lake Mead | Coimbra | More cities switch, a "Report what you see" button, and a flag switch for seven languages: English, Português, Español, Français, Italiano, Nederlands and Norsk. The Italian, Dutch and Norwegian texts still need a native-speaker review.
+
+- **Dashboard**: statistic hero, KPI band, risk map with community report pins and a Satellite | Map basemap switch (Satellite is the default), Community reports feed, Sampling priority list.
 - **Site detail**: risk meter, pathway scores, factor contributions, 7-day trend, Community observations, FHIR export.
-- **Report a Bloom**: three-step guided report with a photo and an "Is it a bloom?" picture guide. A "Report what you see" button sits on every page.
+- **Report a Bloom**: three-step guided report with a photo and an "Is it a bloom?" picture guide.
 - **My reports**: each report's status timeline and outcome, for example "You got it right."
 - **Report queue**: ranger triage of each report, with the reporter's track record.
 - **OAH Cities**: five city cards, with Coimbra running the same engine and a satellite signal chart.
@@ -22,19 +43,19 @@ Built for the OneAquaHealth IEEE Global Hackathon 2026, Track 6.
 
 ### Screenshots
 
-![Dashboard with risk map, KPI cards and Sampling priority list](docs/screenshots/dashboard.png)
+![Dashboard with the statistic hero, KPI band, risk map and Sampling priority list](docs/screenshots/dashboard.png)
 
 ![Site detail page with risk meter, pathway scores and factor contribution bars](docs/screenshots/site-detail.png)
 
-![Report a Bloom page with the citizen report form](docs/screenshots/report.png)
+![Report a Bloom page with the three-step citizen report form](docs/screenshots/report.png)
 
 ![My reports page with a status timeline for each report](docs/screenshots/my-reports.png)
 
-![Ranger report queue with each reporter's track record](docs/screenshots/rangers.png)
+![Report queue with each reporter's track record](docs/screenshots/rangers.png)
 
 ![Verdant for OneAquaHealth cities page with five city cards](docs/screenshots/oah-cities.png)
 
-![Coimbra dashboard with the satellite signal chart](docs/screenshots/coimbra-dashboard.png)
+![Coimbra dashboard with its sites and the satellite signal chart](docs/screenshots/coimbra-dashboard.png)
 
 ![Methodology page with the architecture diagram](docs/screenshots/methodology.png)
 
