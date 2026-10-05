@@ -7,7 +7,7 @@
 // on port 4971). Needs Playwright with a Chromium (set PLAYWRIGHT_MODULE and
 // CHROMIUM_PATH if they differ from lib.mjs), Python 3 with Pillow, and curl.
 // Picture 06 is a slide from docs/presentation/verdant-presentation.pptx: the script
-// renders slide 3 with soffice + pdftoppm, or uses the PNG named in SLIDE_PNG.
+// renders slide 2 with soffice + pdftoppm, or uses the PNG named in SLIDE_PNG.
 // Raw captures go to a temp folder, are laid out in HTML pages (Young Serif and DM Mono
 // captions), and are screenshotted at 1800x1200. No map imagery is ever drawn by hand.
 import { execFileSync } from "node:child_process";
@@ -156,8 +156,8 @@ function slidePng() {
   if (process.env.SLIDE_PNG && existsSync(process.env.SLIDE_PNG)) return process.env.SLIDE_PNG;
   const pptx = join(ROOT, "docs/presentation/verdant-presentation.pptx");
   execFileSync("soffice", ["--headless", "--convert-to", "pdf", "--outdir", WORK, pptx], { stdio: "ignore" });
-  execFileSync("pdftoppm", ["-r", "220", "-f", "3", "-l", "3", "-png", join(WORK, "verdant-presentation.pdf"), join(WORK, "slide")]);
-  return join(WORK, "slide-3.png");
+  execFileSync("pdftoppm", ["-r", "220", "-f", "2", "-l", "2", "-png", join(WORK, "verdant-presentation.pdf"), join(WORK, "slide")]);
+  return join(WORK, "slide-2.png");
 }
 
 // ------------------------------------------------------------------ layouts
@@ -252,7 +252,7 @@ function layouts(m) {
     const w = 1500, h = Math.round(w * 1238 / 2200);
     let html = `<div class="frame" style="left:150px;top:100px;width:${w + 2}px;height:${h + 2}px"></div>`;
     html += `<img class="abs" src="slide.png" style="left:151px;top:101px;width:${w}px;height:${h}px">`;
-    html += caption("From observation to follow-up", "Pitch deck, slide 3", 150, 100 + h + 60, 1200);
+    html += caption("From observation to follow-up", "Pitch deck, slide 2", 150, 100 + h + 60, 1200);
     L["06-slide"] = page(html);
   }
   return L;
