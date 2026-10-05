@@ -5,9 +5,7 @@ import { cn } from "@/lib/utils";
 const stripes = Array.from({ length: 7 }, (_, i) => i * 2);
 const dots = [0, 1, 2].flatMap((r) => [0, 1, 2, 3].map((c) => [1 + c * 2, 1.25 + r * 2.5] as const));
 
-type FlagId = "en" | "pt" | "es" | "fr" | "it" | "nl" | "nb";
-
-const ART: Record<FlagId, ReactNode> = {
+const ART: Record<Lang, ReactNode> = {
   en: (
     <>
       <rect width="20" height="14" fill="#fff" />

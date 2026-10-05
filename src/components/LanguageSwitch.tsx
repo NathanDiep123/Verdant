@@ -1,6 +1,6 @@
-import { useRef } from "react";
+import { Fragment, useRef } from "react";
 import { Flag } from "@/components/Flags";
-import { Select, SelectContent, SelectItem, SelectTrigger } from "@/components/ui/select";
+import { Select, SelectContent, SelectItem, SelectSeparator, SelectTrigger } from "@/components/ui/select";
 import { COMMON } from "@/i18n/common";
 import { fmt, LANGS, LANG_CODE, LANG_NAME, type Lang } from "@/i18n/lang";
 import { useLang, useStrings } from "@/state/LanguageContext";
@@ -33,12 +33,15 @@ export function LanguageSwitch() {
         alignItemWithTrigger={false}
         className="w-auto min-w-44 rounded-sm border-input p-1 shadow-none"
       >
-        {LANGS.map((l) => (
-          <SelectItem key={l} value={l} className="gap-2.5">
-            <Flag lang={l} />
-            <span className="flex-1">{LANG_NAME[l]}</span>
-            <span className="mr-5 font-mono text-xs text-muted-foreground">{LANG_CODE[l]}</span>
-          </SelectItem>
+        {LANGS.map((l, i) => (
+          <Fragment key={l}>
+            {i === 3 && <SelectSeparator className="my-1 border-t border-dashed border-input bg-transparent" />}
+            <SelectItem value={l} className="gap-2.5">
+              <Flag lang={l} />
+              <span className="flex-1">{LANG_NAME[l]}</span>
+              <span className="mr-5 font-mono text-xs text-muted-foreground">{LANG_CODE[l]}</span>
+            </SelectItem>
+          </Fragment>
         ))}
       </SelectContent>
     </Select>

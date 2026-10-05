@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { fmt, loadLang, pickLang, saveLang } from "./lang";
+import { fmt, HTML_LANG, LANG_CODE, LANG_NAME, LANGS, LOCALE, loadLang, pickLang, saveLang } from "./lang";
 
 const fakeStorage = () => {
   const m = new Map<string, string>();
@@ -19,11 +19,31 @@ const throwing = {
 
 describe("pickLang", () => {
   it("a valid stored value wins", () => expect(pickLang("es", ["pt-PT"])).toBe("es"));
-  it("ignores an invalid stored value", () => expect(pickLang("fr", ["pt-PT"])).toBe("pt"));
+  it("ignores an invalid stored value", () => expect(pickLang("de", ["pt-PT"])).toBe("pt"));
   it("pt-BR maps to pt", () => expect(pickLang(null, ["pt-BR"])).toBe("pt"));
-  it("skips unsupported languages", () => expect(pickLang(null, ["fr", "es-MX"])).toBe("es"));
+  it("skips unsupported languages", () => expect(pickLang(null, ["de", "es-MX"])).toBe("es"));
   it("first supported entry wins", () => expect(pickLang(null, ["en-GB", "pt"])).toBe("en"));
+  it("maps the new languages", () => {
+    expect(pickLang(null, ["fr-CA"])).toBe("fr");
+    expect(pickLang(null, ["it"])).toBe("it");
+    expect(pickLang(null, ["nl-BE"])).toBe("nl");
+    expect(pickLang(null, ["nb-NO"])).toBe("nb");
+  });
+  it("maps no and nn to nb", () => {
+    expect(pickLang(null, ["no"])).toBe("nb");
+    expect(pickLang(null, ["nn-NO"])).toBe("nb");
+  });
+  it("a stored nb wins", () => expect(pickLang("nb", ["pt"])).toBe("nb"));
   it("empty list gives en", () => expect(pickLang(null, [])).toBe("en"));
+});
+
+describe("language tables", () => {
+  it("have seven entries each", () => {
+    expect(LANGS).toHaveLength(7);
+    for (const t of [HTML_LANG, LOCALE, LANG_NAME, LANG_CODE]) expect(Object.keys(t).sort()).toEqual([...LANGS].sort());
+    expect(LANG_CODE.nb).toBe("NO");
+    expect(HTML_LANG.nb).toBe("nb");
+  });
 });
 
 describe("fmt", () => {

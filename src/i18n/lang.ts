@@ -1,17 +1,18 @@
-export const LANGS = ["en", "pt", "es"] as const;
+export const LANGS = ["en", "pt", "es", "fr", "it", "nl", "nb"] as const;
 export type Lang = (typeof LANGS)[number];
 
-export const HTML_LANG: Record<Lang, string> = { en: "en", pt: "pt-PT", es: "es" };
-export const LOCALE: Record<Lang, string> = { en: "en-US", pt: "pt-PT", es: "es-ES" };
-export const LANG_NAME: Record<Lang, string> = { en: "English", pt: "Português", es: "Español" };
-export const LANG_CODE: Record<Lang, string> = { en: "EN", pt: "PT", es: "ES" };
+export const HTML_LANG: Record<Lang, string> = { en: "en", pt: "pt-PT", es: "es", fr: "fr", it: "it", nl: "nl", nb: "nb" };
+export const LOCALE: Record<Lang, string> = { en: "en-US", pt: "pt-PT", es: "es-ES", fr: "fr-FR", it: "it-IT", nl: "nl-NL", nb: "nb-NO" };
+export const LANG_NAME: Record<Lang, string> = { en: "English", pt: "Português", es: "Español", fr: "Français", it: "Italiano", nl: "Nederlands", nb: "Norsk" };
+export const LANG_CODE: Record<Lang, string> = { en: "EN", pt: "PT", es: "ES", fr: "FR", it: "IT", nl: "NL", nb: "NO" };
 
 const isLang = (v: unknown): v is Lang => LANGS.includes(v as Lang);
 
 export function pickLang(stored: string | null, browser: readonly string[]): Lang {
   if (isLang(stored)) return stored;
   for (const tag of browser) {
-    const primary = tag.toLowerCase().split("-")[0];
+    const lower = tag.toLowerCase().split("-")[0];
+    const primary = lower === "no" || lower === "nn" ? "nb" : lower;
     if (isLang(primary)) return primary;
   }
   return "en";
