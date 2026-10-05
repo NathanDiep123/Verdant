@@ -1,158 +1,136 @@
-# Verdant — 3:50 video script
+# Verdant demo video — revised 3:50 timeline
 
-## 0:00–0:20 · Slide 1 — Why this matters
+## 0:00–0:20 · Slide 1 — The problem and One Health
 
-**Show:** Verdant's name above three large numbers:
+**Show:**
 
-- 421 reported harmful algal bloom events
-- 389 human illnesses
-- 413+ animal illnesses
-
-Below: 18 U.S. states · 2016–2018 · National figures, not Lake Mead-specific
-
-Footer: Source: CDC, MMWR 69(50), December 18, 2020.
+- Title: "Healthier water starts with better observations."
+- Three connected labels: Environment · People · Animals
+- Below: 421 bloom events · 389 human illnesses · 413+ animal illnesses
+- 18 U.S. states, 2016–2018 — not Lake Mead-specific
+- Footer: Source: CDC, MMWR 69(50), December 18, 2020
 
 **Say:**
-"From 2016 through 2018, reports from eighteen U.S. states linked harmful algal blooms to three hundred eighty-nine human illnesses and at least four hundred thirteen animal illnesses, across four hundred twenty-one reported bloom events. This connects environmental, human, and animal health."
+"Water ecosystem health connects people, animals, and the environment. From 2016 to 2018, eighteen U.S. states reported four hundred twenty-one harmful algal bloom events, associated with hundreds of human and animal illnesses. Monitoring and useful citizen observations are both part of the response."
 
-## 0:20–0:40 · Slide 2 — The reporting gap
+## 0:20–0:40 · Slide 2 — The gap Verdant addresses
 
-**Show:** Title: "People see the water. Rangers need usable evidence."
+**Show:**
 
-Three short points:
-
-- Unclear locations and missing details
-- Blooms confused with look-alikes
-- Reporters need feedback
-
-Use a simple diagram: Shore observation → Ranger → Follow-up, with question marks between the steps.
+- Title: "Turn an observation into useful follow-up."
+- Diagram: Citizen observation → Ranger review → Sampling priority → Reporter feedback
+- Bottom line: Track 6: Resilience Informatics
+- Lake Mead: pilot workflow · Coimbra: OneAquaHealth application
 
 **Say:**
-"Monitoring cannot cover every shoreline continuously. People at the water can help, but an observation may have an unclear location, missing details, or confuse duckweed with a bloom. Without feedback, the reporter also misses a chance to learn whether their observation helped."
+"Typically rangers rely on citizen reports to address these issues, though a report may lack detail, confuse a bloom with a look-alike, or leave the reporter without feedback. Verdant connects guided reporting, ranger review, and explainable sampling priorities. We used Lake Mead as a pilot to demonstrate the workflow; we used Coimbra to show its application to a OneAquaHealth case-study city and its scalability to other locations"
 
-## 0:40–0:50 · Slide 3 — Introduce Verdant
-
-**Show:** Title: "Verdant: from observation to follow-up"
-
-One line underneath: Report → Review → Prioritize sampling → Share the outcome
-
-Small footer: Lake Mead pilot · Track 6: Resilience Informatics
-
-**Say:**
-"Verdant connects guided citizen reporting, explainable site scores, and ranger review. Let's follow one observation at our Lake Mead pilot."
-
-**Transition:** Cut directly to the website.
-
-## 0:50–1:10 · Website — Find where to look first
+## 0:40–1:00 · Website — Find the first sampling target
 
 **Show and do:**
 
-- Start on the Lake Mead dashboard, scrolled to the map.
-- Keep "Prototype demonstration data" visible briefly.
-- Point to the colored risk circles and blue square report markers.
+- Start on the Lake Mead dashboard, with the prototype-data label visible.
+- Show the map's colored risk circles and blue square report markers.
 - Move to the Sampling priority list.
-- Hold on Callville Bay — 79 — Recommended first sampling target.
-- Click Callville Bay near the end of the segment.
+- Point to Callville Bay — 79 — Recommended first sampling target.
+- Click Callville Bay.
 
 **Say:**
-"The dashboard brings site scores and community observations onto one map. These Lake Mead scores are demonstration data. Colored circles show risk categories, while blue squares show reports. The sampling priority list puts Callville Bay first and recommends field sampling."
+"Here is the working prototype. The map combines site scores with community reports, and the priority list recommends where to investigate first. Callville Bay leads this demonstration. These are prototype scores, not live measurements or verified predictions of a harmful bloom."
 
-## 1:10–1:30 · Website — Explain the recommendation
+## 1:00–1:20 · Website — Explain what the score means
 
 **Show and do:**
 
-- Hold on Callville Bay's 79 / Very High score.
-- Show "Recommend field sampling" beside "Official advisory: none issued."
-- Scroll to "Why is risk elevated?"
-- Point to Chlorophyll, Water temperature, and Citizen evidence.
+- Show "Why is risk elevated?"
+- Point to the contribution bars for chlorophyll, water temperature, and citizen evidence.
+- Briefly show "Recommend field sampling" beside "Official advisory: none issued."
 - Scroll to Community observations.
-- Click "Add an observation at Callville Bay."
+- Click Add an observation at Callville Bay.
 
 **Say:**
-"Opening a site explains the recommendation. Here, chlorophyll and water temperature contribute most, alongside citizen evidence. The score suggests where to investigate; it does not confirm toxins or issue an official advisory. Now, imagine we notice something at this shoreline."
+"The site page shows exactly which factors contribute to the score. These fixed weights are transparent prototype assumptions that still need field validation. Citizen evidence is one contribution. The recommendation supports sampling decisions; it does not confirm toxins or replace an official advisory."
 
-## 1:30–2:05 · Website — Submit an observation
+## 1:20–1:55 · Website — File a guided report
 
 **Show and do:**
 
-- 1:30–1:35: Callville Bay is already selected. Click Next.
-- 1:35–1:43: Show Add a photo and the "Is it a bloom?" guide. Pause over the bloom drawings and duckweed comparison.
-- 1:43–1:50: Select "Looks like a bloom." Under the green slime/stringy algae question, select "Lots."
-- 1:50–1:57: Click Next. Show Check and send and the warning above Submit report.
-- 1:57–2:05: Click Submit report. Hold on the report code, ranger-queue message, and expected 79 → 81 score change.
+- 1:20–1:25: Show Callville Bay selected. Click Next.
+- 1:25–1:35: Show the optional photo control and "Is it a bloom?" guide. Pause on bloom drawings and duckweed.
+- 1:35–1:42: Select Looks like a bloom, then Lots for green slime/stringy algae.
+- 1:42–1:48: Click Next. Show the summary and warning, then Submit report.
+- 1:48–1:55: Hold on the new report identifier and 79 → 81 change. Add an editing caption with the actual identifier: "Follow report VR-____."
 
 **Say:**
-"Reporting takes three steps. First, choose the site. Next, describe what you see. You can add a photo, and the picture guide helps distinguish possible blooms from look-alikes. We'll select 'Looks like a bloom' and 'Lots,' then check and send. The report enters the ranger queue, and this example score rises from seventy-nine to eighty-one. That increase flags an observation for follow-up; it is not proof of a bloom."
+"Let's talk about reporting possible blooms.
+A person at the shore selects a site, compares their observation with the bloom and look-alike guide, and submits what they know. Photos are optional, and uncertain answers can be skipped. Here, the report adds ten citizen-evidence points, which moves the overall site score by two points—not ten. The report receives an identifier so we can follow that same observation through review."
 
-## 2:05–2:30 · Website — Demonstrate ranger review
+## 1:55–2:25 · Website — Review the same report
 
 **Show and do:**
 
-- Open Report queue from the navigation.
-- Briefly hold on "Demonstration ranger view."
-- Find the report code you just created.
-- Point to its reporter track record and current status.
-- Click Request field sample on that report.
-- Pause so the changed status is visible.
-- Click Confirmed by field sample on that same report.
-- Keep a small video caption visible: "Simulated review — no actual field sample."
+- Open Report queue.
+- Keep "Demonstration ranger view" visible briefly.
+- Find the same report identifier shown after submission.
+- Point to its reporter track record.
+- Click Request field sample.
+- Pause on the changed status.
+- Click Confirmed by field sample for that report.
+- Keep this caption visible: "Simulated outcome — no actual field sample."
 
 **Say:**
-"On the ranger side, the queue shows each report and the reporter's track record. We'll simulate requesting a sample and recording a confirmed result. New reports add ten citizen-evidence points; confirmed reports contribute twenty, while reports ruled 'Not a bloom' contribute zero. These are prototype rules, and this outcome is simulated."
+"The ranger queue shows the same report, its status, and the reporter's history. We'll simulate requesting a sample and recording a confirmed result. Our prototype assigns ten evidence points to a new report, twenty after confirmation, and zero if ruled not a bloom. These rules demonstrate review changing the evidence weight; they are not scientifically calibrated, and duplicate or malicious reports remain a production challenge."
 
-## 2:30–2:50 · Website — Show the reporter's payoff
+## 2:25–2:45 · Website — Close the feedback loop
 
 **Show and do:**
 
 - Open My reports.
-- Find your new Callville Bay report.
+- Find the same report identifier again.
 - Hold on "You got it right."
-- Show its history: Received → Field sample requested → Confirmed by field sample.
+- Show Received → Field sample requested → Confirmed by field sample.
 - Point to "Your report helped prioritize Callville Bay for sampling."
-- If time permits, briefly show the existing "Close, but not a bloom this time." outcome below.
 
 **Say:**
-"Back in My reports, the person sees the status history and the outcome: 'You got it right.' They can see how their observation helped prioritize sampling. Other outcomes explain when it wasn't a bloom or when more detail is needed, helping people learn from reporting."
+"The reporter now sees what happened to their observation, including the review history and outcome. That closes the feedback loop: people can understand their contribution and learn from the result. Encouraging better observations and continued participation is the intended benefit, which we still need to evaluate with users."
 
-## 2:50–3:15 · Website — Show OneAquaHealth relevance
+## 2:45–3:10 · Website — Demonstrate OneAquaHealth transferability
 
 **Show and do:**
 
 - Open OAH Cities.
-- Show the five city names, keeping Coimbra in view.
-- Scroll to "Satellite signal: Coimbra area, last 24 months."
-- Hold on the chart and its Resilience Map source line.
+- Show Coimbra and the other four city names.
+- Scroll to the Coimbra satellite signal chart and its source line.
 - Return to Coimbra and click Run Verdant on Coimbra.
-- End on the changed dashboard and its synthetic-data label.
+- Hold on the changed dashboard and synthetic-data label.
 
 **Say:**
-"Lake Mead is the pilot, but the same app also runs on Coimbra, a OneAquaHealth case-study city. This chart uses real vegetation and water-index summaries from the Resilience Map. Coimbra's site scores remain synthetic demonstration data. Switching regions shows how the workflow can extend to another place as suitable data becomes available."
+"Coimbra demonstrates reuse of the workflow in a OneAquaHealth city. This chart displays real area-level vegetation and water-index summaries from the Resilience Map. It does not currently drive the synthetic site scores. The same scoring architecture supports different regional configurations, while the other four cities are configured but still need suitable site data."
 
-**Transition:** Cut back to slides.
+## 3:10–3:40 · Slide 3 — What works, what comes next, and why it matters
 
-## 3:15–3:40 · Slide 4 — Intended impact and next steps
+**Show:**
 
-**Show:** Title: "Better observations. Clearer priorities. Visible follow-up."
+- Title: "From a working demonstration to field use"
 
-Three columns:
+| Working now | Next validation and deployment steps |
+|---|---|
+| Guided reporting and outcome history | Test reporting with citizens and rangers |
+| Explainable scoring and regional configuration | Compare scores with field measurements |
+| Demonstrated ranger-review workflow | Shared backend, ranger authentication, duplicate controls |
 
-| People at the shore | Rangers and managers | One Health |
-|---|---|---|
-| Guided reports and feedback | Explainable sampling priorities | Connect environmental, human, and animal concerns |
-
-Bottom strip: Next: field validation · shared reporting backend · operational agency data
-
-Small label: Prototype — scores unvalidated; ranger outcomes simulated
+- Bottom line: Intended impact: more useful reports · clearer sampling priorities · visible follow-up
 
 **Say:**
-"The intended impact is more useful citizen observations, clearer sampling priorities, and feedback that encourages participation. That supports One Health by connecting environmental conditions with human and animal exposure. Today, this is a browser-based prototype with unvalidated scores. Next, we need field validation, shared reporting infrastructure, and operational data partnerships."
+"Today, our prototype demonstrates the interface, scoring logic, and reporting loop. Reports stay in one browser, but this is not a shared citizen-and-ranger service yet. Our next steps are a shared backend, authenticated ranger roles, and duplicate-report controls, alongside field validation and usability testing. We would measure reporting completion, usefulness to rangers, and agreement with field results before claiming better monitoring outcomes."
 
-## 3:40–3:50 · Slide 5 — Close
+## 3:40–3:50 · Slide 4 — Close
 
-**Show:** Verdant logo or name, with:
+**Show:**
 
-- See the bloom before it becomes a warning.
+- Verdant
+- Better observations. Clearer priorities. Visible follow-up.
 - verdant.albert14059.workers.dev
 
 **Say:**
-"Verdant helps people contribute and helps experts decide where to look first. See the bloom before it becomes a warning."
+"Verdant turns a shoreline observation into a visible path toward review and action, helping communities contribute and experts decide where to look first."
