@@ -27,20 +27,20 @@ export function Layout({ children }: { children: ReactNode }) {
   return (
     <div className="flex min-h-screen flex-col">
       <header className="sticky top-0 z-40 border-b border-border bg-card">
-        <div className="mx-auto flex h-[60px] max-w-[1360px] items-center gap-2 px-3 sm:gap-3 sm:px-4 md:px-6 xl:gap-8">
+        <div className="mx-auto flex h-[60px] max-w-[1360px] items-center gap-1 px-2 min-[380px]:gap-2 min-[380px]:px-3 sm:gap-3 sm:px-4 md:px-6 xl:gap-6 2xl:gap-8">
           <Button
             variant="ghost"
             size="icon"
-            className="xl:hidden"
+            className="size-8 min-[380px]:size-9 xl:hidden"
             aria-label={s.openNavigation}
             onClick={() => setOpen(true)}
           >
             <Menu strokeWidth={1.75} />
           </Button>
-          <NavLink to="/" className="font-heading text-2xl leading-none tracking-[-0.01em] text-foreground">
+          <NavLink to="/" className="font-heading text-xl leading-none min-[380px]:text-2xl tracking-[-0.01em] text-foreground">
             Verdant
           </NavLink>
-          <nav aria-label={s.navMain} className="hidden h-full items-stretch gap-5 xl:flex">
+          <nav aria-label={s.navMain} className="hidden h-full items-stretch gap-5 xl:flex xl:gap-4 2xl:gap-5">
             {NAV.map((n) => (
               <NavLink
                 key={n.to}
@@ -65,10 +65,10 @@ export function Layout({ children }: { children: ReactNode }) {
                 to="/report"
                 aria-label={s.reportCta}
                 title={s.reportCta}
-                className={cn(buttonVariants(), "hidden size-9 px-0 whitespace-nowrap md:inline-flex 2xl:w-auto 2xl:px-3")}
+                className={cn(buttonVariants(), "hidden size-9 px-0 whitespace-nowrap md:inline-flex min-[1800px]:w-auto min-[1800px]:px-3")}
               >
                 <MessageSquarePlus strokeWidth={1.75} aria-hidden />
-                <span className="hidden 2xl:inline">{s.reportCta}</span>
+                <span className="hidden min-[1800px]:inline">{s.reportCta}</span>
               </Link>
             )}
             <RegionSwitch />

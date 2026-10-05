@@ -33,7 +33,7 @@ export function RegionSwitch() {
             aria-pressed={active}
             onClick={() => setRegionId(o.id)}
             className={cn(
-              "h-8 px-2 text-sm font-medium whitespace-nowrap transition-colors duration-[120ms] first:rounded-l-[3px] max-md:last-of-type:rounded-r-[3px] focus-visible:relative focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring sm:px-2.5 md:px-3",
+              "h-8 px-1.5 text-xs min-[380px]:text-sm font-medium whitespace-nowrap transition-colors duration-[120ms] first:rounded-l-[3px] max-md:last-of-type:rounded-r-[3px] focus-visible:relative focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring min-[380px]:px-2 sm:px-2.5 md:px-3",
               active ? "bg-primary text-primary-foreground" : "text-foreground hover:bg-muted",
             )}
           >

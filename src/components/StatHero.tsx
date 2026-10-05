@@ -49,7 +49,7 @@ export function StatHero() {
           href={CDC_URL}
           target="_blank"
           rel="noreferrer"
-          className="stamp [--stamp-bg:var(--card)] -rotate-2 bg-card whitespace-nowrap px-2.5 py-1.5 font-mono text-xs leading-[1.4] text-ochre-ink hover:bg-muted"
+          className="stamp [--stamp-bg:var(--card)] -rotate-2 bg-card px-2.5 py-1.5 font-mono max-md:max-w-[calc(100%-0.5rem)] md:whitespace-nowrap text-xs leading-[1.4] text-ochre-ink hover:bg-muted"
         >
           {s.heroSource}
         </a>
