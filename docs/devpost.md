@@ -1,4 +1,4 @@
-> In three years, 18 US states alone reported 389 human and 413 animal illnesses from harmful algal blooms. Verdant shows water managers where to sample first, from a US lake to a Portuguese city. A guided citizen report goes to ranger review, and the reporter sees the outcome.
+> In three years, 18 US states alone reported 389 human and 413 animal illnesses from harmful algal blooms. Verdant shows water managers where to sample first, so a sighting at the shore can become an earlier warning for people and pets. A guided citizen report goes to ranger review, and the reporter sees the outcome.
 
 ![Verdant dashboard: risk map, sampling priority list and score breakdown](https://raw.githubusercontent.com/heliaval/Verdant/main/docs/gallery/01-dashboard.png)
 
@@ -67,7 +67,7 @@ React, TypeScript and Vite, with Leaflet maps, Recharts charts, PapaParse for CS
 - A full loop from guided report to simulated ranger review to the reporter's status history.
 - Review-weighted evidence with a tested example: 79, 81, 82, and back to 79.
 - Scores that explain themselves, factor by factor.
-- One engine for a US reservoir and a Portuguese city, switched by config.
+- One engine for Lake Mead and Coimbra, switched by config.
 - A tested seven-language interface, a Satellite or Map basemap that remembers its setting, and a layout that works on a phone.
 
 ## What we learned
