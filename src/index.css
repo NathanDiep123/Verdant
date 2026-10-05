@@ -157,6 +157,7 @@
   .leaflet-container {
     font-family: var(--font-sans);
     background: #26332a;
+    isolation: isolate;
   }
   .leaflet-popup-content h1,
   .leaflet-popup-content h2,
