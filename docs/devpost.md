@@ -112,3 +112,5 @@ The region config is the unit of reuse. A new city needs site coordinates, suita
 ---
 
 [Live prototype](https://verdant.albert14059.workers.dev/) · [Methodology and sources](https://verdant.albert14059.workers.dev/methodology) · [GitHub repository](https://github.com/heliaval/Verdant)
+
+Thank you for taking the time to look at Verdant.
