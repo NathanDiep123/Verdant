@@ -305,7 +305,33 @@
   animation: verdant-flash 1200ms ease-out 1;
 }
 
+/* Header report button: soft ring every 3s. box-shadow never affects layout or scroll size. */
+@keyframes verdant-cta-ring {
+  0% {
+    box-shadow: 0 0 0 0 rgb(31 77 58 / 0.35);
+  }
+  35%,
+  100% {
+    box-shadow: 0 0 0 9px rgb(31 77 58 / 0);
+  }
+}
+.verdant-cta {
+  animation: verdant-cta-ring 3s ease-out infinite;
+  transition: transform 150ms ease-out, background-color 150ms ease-out;
+}
+.verdant-cta:hover,
+.verdant-cta:focus-visible {
+  animation: none;
+  transform: translateY(-1px);
+}
+
 @media (prefers-reduced-motion: reduce) {
+  .verdant-cta,
+  .verdant-cta:hover,
+  .verdant-cta:focus-visible {
+    animation: none;
+    transform: none;
+  }
   .verdant-pulse::before,
   .verdant-pulse::after,
   .verdant-stamp,

@@ -64,11 +64,20 @@ export function Layout({ children }: { children: ReactNode }) {
               <Link
                 to="/report"
                 aria-label={s.reportCta}
-                title={s.reportCta}
-                className={cn(buttonVariants(), "hidden size-9 px-0 whitespace-nowrap md:inline-flex min-[1800px]:w-auto min-[1800px]:px-3")}
+                className={cn(
+                  buttonVariants(),
+                  "verdant-cta group relative hidden size-9 px-0 whitespace-nowrap md:inline-flex min-[1800px]:w-auto min-[1800px]:px-3",
+                  "hover:bg-[color-mix(in_srgb,var(--primary),white_16%)] focus-visible:bg-[color-mix(in_srgb,var(--primary),white_16%)] focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-ring",
+                )}
               >
                 <MessageSquarePlus strokeWidth={1.75} aria-hidden />
                 <span className="hidden min-[1800px]:inline">{s.reportCta}</span>
+                <span
+                  aria-hidden
+                  className="pointer-events-none absolute right-0 top-full z-50 mt-2 hidden whitespace-nowrap rounded-sm border border-border bg-card px-2 py-1 text-xs text-foreground opacity-0 transition-opacity duration-150 group-hover:opacity-100 group-focus-visible:opacity-100 md:block min-[1800px]:hidden"
+                >
+                  {s.reportCta}
+                </span>
               </Link>
             )}
             <RegionSwitch />
