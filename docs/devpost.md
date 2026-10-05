@@ -8,66 +8,64 @@ Across eighteen U.S. states, 421 harmful algal bloom events were reported during
 
 ## What it does
 
-Verdant is a working demonstration of a report-to-outcome workflow, with six pages and an interface in seven languages (English, Portuguese, Spanish, French, Italian, Dutch, Norwegian). It is for reporters at a lake or stream, for rangers and water managers who decide where to sample, and for OneAquaHealth researchers who could use reviewed observations.
+Verdant is a working demonstration of a report-to-outcome workflow, with six pages and an interface in seven languages. It is for reporters at a lake or stream, for rangers and water managers who decide where to sample, and for OneAquaHealth researchers who could use reviewed observations.
 
 | Step | What happens |
 |---|---|
-| 1. Find a site | A risk map (Satellite or Map basemap) and a sampling priority list show where follow-up is recommended. |
+| 1. Find a site | A risk map (Satellite or Map) and a sampling priority list show where follow-up is recommended. |
 | 2. Understand the score | Each site breaks its score into factor contributions and names its hazard pathway. |
-| 3. Report | A three-step form with a bloom and look-alike guide. Every question and the photo are optional, and the photo can come from the camera or the phone library. |
+| 3. Report | A three-step form with a bloom and look-alike guide. Every question and the photo are optional. |
 | 4. Review | A demonstration ranger queue lets users request sampling and record a simulated outcome. |
-| 5. See what happened | My reports shows the same report with its status history and outcome. |
+| 5. See what happened | My reports shows the report's status history and outcome. |
 
-Review changes how much a report counts. A new report adds 10 citizen-evidence points, a confirmed one adds 20, and one ruled not a bloom adds 0. At Callville Bay, the overall score goes from 79 to 81 when a report arrives, to 82 when it is confirmed, and back to 79 if it is ruled not a bloom.
+Review changes how much a report counts: a new report adds 10 citizen-evidence points, a confirmed one adds 20, and one ruled not a bloom adds 0. At Callville Bay the score goes from 79 to 81 on a new report, to 82 once confirmed, and back to 79 if ruled not a bloom.
 
-**These weights are demonstration rules, not validated. A citizen report never confirms a bloom, every ranger outcome here is simulated, and Verdant's scores are not an official advisory.**
+**These weights are demonstration rules, not validated. A citizen report never confirms a bloom, and every ranger outcome here is simulated.**
 
 ### What is real and what is demonstration data
 
 | Item | Status |
 |---|---|
 | Lake Mead scores and reports | Demonstration data |
-| Lake Mead elevation (1,037.93 ft on 2026-10-03) | Official U.S. Bureau of Reclamation snapshot, labelled separately |
+| Lake Mead elevation (1,037.93 ft on 2026-10-03) | Official U.S. Bureau of Reclamation snapshot |
 | Coimbra satellite chart | Real Resilience Map export (monthly NDVI and NDWI area means) |
 | Coimbra site scores | Synthetic; the chart does not drive them |
-| Review outcomes | Simulated |
-| Translations (pt, es, fr, it, nl, nb) | Machine-drafted, pending native-speaker review |
-| FHIR-shaped JSON export | Demonstration format, not validated against the OneAquaHealth guide |
+| Review outcomes, FHIR-shaped export | Simulated and unvalidated |
+| Translations (all but English) | Machine-drafted, pending native-speaker review |
 
 ![Callville Bay with the ranger queue showing how a review changes the score](https://raw.githubusercontent.com/heliaval/Verdant/main/docs/gallery/04-ranger-and-payoff.png)
 
 ## Challenges
 
-- **Area-level data.** The Coimbra export holds monthly area means, not the site-level measurements scoring needs. We kept the real chart and gave the 20 sites real Resilience Map names with synthetic scores, labelled as such.
-- **Recommendation versus advisory.** A sampling priority is not a confirmed hazard. We worded every score as "where to look first" and put the disclaimer next to it.
-- **Open verification.** We could not retrieve the official OneAquaHealth survey fields, so some report questions are placeholders, and the FHIR guide's profile ids are unverified. Duplicate and malicious reports are unsolved.
+- **Area-level data.** The Coimbra export holds monthly area means, not site-level measurements. We kept the real chart and gave the 20 sites real names with synthetic scores, labelled as such.
+- **Recommendation versus advisory.** A sampling priority is not a confirmed hazard, so every score reads as "where to look first" with the disclaimer beside it.
+- **Open verification.** The official OneAquaHealth survey fields and FHIR profile ids could not be retrieved, so some questions are placeholders.
 
 ## What we learned
 
-A score is more useful when people can see why it is high, and a report is worth sending when the reporter sees what it led to. Weighting evidence by review status also meant deciding what a citizen report is worth, and that choice needs field data before anyone relies on it.
+A score is more useful when people can see why it is high, and a report is worth sending when the reporter sees what it led to.
 
 ## What's next
 
-1. Test with citizens and rangers: reporting completion, clarity, and usefulness for review.
+1. Test with citizens and rangers.
 2. Validate scores against field measurements and revise the weights.
 3. Add shared storage, ranger accounts, and privacy controls.
-4. Verify OneAquaHealth fields, add live satellite and weather feeds, and validate exports with partners. None of these exist today.
-5. Have native speakers review the translations.
+4. Verify OneAquaHealth fields, add live satellite and weather feeds, and have native speakers review the translations. None of these exist today.
 
 ## Impact & Alignment with the OneAquaHealth mission
 
-Verdant supports OneAquaHealth and **Track 6: Resilience Informatics**. It turns scattered citizen and environmental signals into explainable monitoring priorities for freshwater sites.
+Verdant supports OneAquaHealth and **Track 6: Resilience Informatics** by turning scattered citizen and environmental signals into explainable monitoring priorities.
 
-- **Monitoring.** A ranked sampling list sends limited field time to the sites whose conditions look worst.
-- **Protection.** Every score names its hazard pathway and gives a next step, and the site page carries visitor guidance for people and pets.
-- **Awareness.** The bloom and look-alike guide teaches reporters what a bloom looks like before they send anything.
-- **One Health.** Each site page has an environment, human health and animal health panel next to the score.
+- **Monitoring.** A ranked sampling list sends limited field time to the worst-looking sites.
+- **Protection.** Every score names its hazard pathway and gives a next step, with visitor guidance for people and pets.
+- **Awareness.** The bloom and look-alike guide shows reporters what a bloom looks like.
+- **One Health.** Each site page pairs the score with environment, human health and animal health panels.
 
-Verdant aims to shorten the time between someone seeing a bloom and someone qualified deciding whether to sample. Earlier sampling can mean earlier warnings for people and animals. We have not measured this, and field validation comes first. Lake Mead is the US pilot and Coimbra, Portugal, is a OneAquaHealth case-study city. Benevento, Ghent, Oslo, and Toulouse are configured and need site data.
+Earlier sampling can mean earlier warnings for people and animals. We have not measured this, and field validation comes first. Lake Mead is the US pilot and Coimbra, Portugal, is a OneAquaHealth case-study city. Benevento, Ghent, Oslo, and Toulouse are configured and need site data.
 
 ## Innovation & Creativity
 
-Citizen science often ends when the report is sent. In Verdant the report keeps going. It enters ranger review, its review status changes how much it counts toward the site score, and the reporter sees the outcome in a status timeline. Scores break down into factor contributions so anyone can see why a site ranks where it does. One config object defines a region, so the same engine runs a US reservoir and a Portuguese city.
+Citizen science often ends when the report is sent. In Verdant the report keeps going: it enters ranger review, its status changes its weight in the site score, and the reporter sees the outcome. Scores break down into factors so anyone can see why a site ranks where it does, and one config object per region lets the same engine run a US reservoir and a Portuguese city.
 
 ![The same app in three languages](https://raw.githubusercontent.com/heliaval/Verdant/main/docs/gallery/05-three-languages.png)
 
@@ -75,23 +73,21 @@ Citizen science often ends when the report is sent. In Verdant the report keeps 
 
 | Layer | What we used |
 |---|---|
-| Scoring | A tested TypeScript engine with fixed, published weights, partial-data handling and a separate tested module for review weights |
-| Data sources | CDC MMWR counts (cited), a U.S. Bureau of Reclamation elevation snapshot, a Resilience Map CSV export for Coimbra parsed with PapaParse, and labelled demonstration scores for Lake Mead |
-| Maps and charts | Leaflet with Esri satellite and light-gray tiles, and Recharts |
-| Interface | React, TypeScript, Vite, Tailwind and shadcn components, with seven languages from one typed dictionary each |
-| Integration | A FHIR-shaped JSON export for the OneAquaHealth guide (profile ids unverified) |
-| Storage | The browser's local storage, with no backend yet |
-| Quality | 151 automated tests in 20 files, and a type check that fails the build when a translation key is missing |
+| Scoring | A tested TypeScript engine with fixed, published weights and a separate tested module for review weights |
+| Data | CDC counts (cited), a Bureau of Reclamation elevation snapshot, a Resilience Map CSV for Coimbra (PapaParse), and labelled demonstration scores for Lake Mead |
+| Interface | React, TypeScript, Vite, Tailwind, shadcn, Leaflet with Esri tiles, Recharts, and seven languages |
+| Integration | A FHIR-shaped JSON export (profile ids unverified) |
+| Storage and tests | Browser local storage with no backend yet, and 151 automated tests |
 
 ## UX
 
-The path is map, explanation, report, outcome. Reporting takes three steps with optional answers, a bloom and look-alike guide, and a photo from the camera or the phone library. A header switch changes the language, controls carry screen-reader labels, the switches work from the keyboard, and layouts adapt to phone screens. We have not run an accessibility audit or tested with intended users yet.
+The path is map, explanation, report, outcome. Reporting takes three steps with optional answers and a photo from the camera or phone library. Controls carry screen-reader labels, the switches work from the keyboard, and layouts adapt to phones. We have not run an accessibility audit or tested with intended users yet.
 
 ## Scale
 
-The region config is the unit of reuse. A new city needs site coordinates, suitable data (such as a Resilience Map CSV and a column map), a validated scoring model, and a local review process. Existing systems connect through the CSV import and the FHIR-shaped export, and both need validation with partners. There is no server to run today, so a small agency-supported pilot is the natural first step.
+A new city needs site coordinates, suitable data such as a Resilience Map CSV, a validated scoring model, and a local review process. Existing systems connect through the CSV import and the FHIR-shaped export, and both need validation with partners. There is no server to run today, so a small agency-supported pilot is the natural first step.
 
-Verdant is a working first step toward a shorter path between a person at the water's edge and the people who can act. A new city can join with a config and a data file, and we are excited to put it in front of real reporters and rangers.
+**Verdant flags conditions associated with higher bloom risk. It does not confirm toxins or replace field sampling, and its scores are not an official advisory.**
 
 ---
 
