@@ -325,7 +325,23 @@
   transform: translateY(-1px);
 }
 
+/* Full-width phone report bar: same ring, paused while pressed or focused. */
+.verdant-cta-bar {
+  animation: verdant-cta-ring 3s ease-out infinite;
+  transition: transform 150ms ease-out, background-color 150ms ease-out;
+}
+.verdant-cta-bar:active,
+.verdant-cta-bar:focus-visible {
+  animation: none;
+}
+.verdant-cta-bar:active {
+  transform: translateY(1px);
+  background-color: color-mix(in srgb, var(--primary), black 14%);
+}
+
 @media (prefers-reduced-motion: reduce) {
+  .verdant-cta-bar,
+  .verdant-cta-bar:active,
   .verdant-cta,
   .verdant-cta:hover,
   .verdant-cta:focus-visible {

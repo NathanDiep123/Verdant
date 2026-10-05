@@ -24,8 +24,9 @@ export function Layout({ children }: { children: ReactNode }) {
   const [open, setOpen] = useState(false);
   const s = useStrings(COMMON);
   const onReportPage = useLocation().pathname.startsWith("/report");
+  const showBar = !onReportPage && !open;
   return (
-    <div className="flex min-h-screen flex-col">
+    <div className={cn("flex min-h-screen flex-col", !onReportPage && "max-md:pb-[calc(5rem+env(safe-area-inset-bottom))]")}>
       <header className="sticky top-0 z-40 border-b border-border bg-card">
         <div className="mx-auto flex h-[60px] max-w-[1360px] items-center gap-1 px-2 min-[380px]:gap-2 min-[380px]:px-3 sm:gap-3 sm:px-4 md:px-6 xl:gap-6 2xl:gap-8">
           <Button
@@ -123,6 +124,20 @@ export function Layout({ children }: { children: ReactNode }) {
 
       <main className="mx-auto w-full max-w-[1360px] flex-1 px-4 pt-8 pb-16 md:px-6">{children}</main>
       <Footer />
+      {showBar && (
+        <div className="fixed bottom-0 left-0 right-0 z-30 border-t border-border bg-card px-3 pt-2 pb-[calc(0.5rem+env(safe-area-inset-bottom))] shadow-[0_-2px_8px_rgb(0_0_0/0.08)] min-[380px]:px-4 md:hidden">
+          <Link
+            to="/report"
+            className={cn(
+              buttonVariants(),
+              "verdant-cta-bar h-auto min-h-12 w-full gap-2 whitespace-normal py-2 text-center text-sm leading-tight",
+            )}
+          >
+            <MessageSquarePlus strokeWidth={1.75} aria-hidden />
+            <span className="line-clamp-2">{s.reportCta}</span>
+          </Link>
+        </div>
+      )}
     </div>
   );
 }
