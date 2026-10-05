@@ -1,22 +1,23 @@
 import { Area, ComposedChart, Line, ReferenceLine, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
+import { useMemo } from "react";
 import { coimbraEoSeries } from "@/data/oah/coimbraEo";
+import { DASHBOARD } from "@/i18n/dashboard";
+import { fmt, LOCALE, type Lang } from "@/i18n/lang";
+import { useLang } from "@/state/LanguageContext";
 
 const NDVI = "#2f7d4f";
 const NDWI = "var(--primary)";
 const tick = { fontSize: 12, fontFamily: "var(--font-mono)", fill: "var(--muted-foreground)" };
 
-const MONTH = new Intl.DateTimeFormat("en-US", { month: "short", year: "2-digit", timeZone: "UTC" });
-const label = (period: string) => MONTH.format(new Date(`${period}-01T00:00:00Z`));
-
-const data = coimbraEoSeries.map((r) => ({
-  ...r,
-  month: label(r.period),
-  ndviBand: [r.ndviMin, r.ndviMax],
-  ndwiBand: [r.ndwiMin, r.ndwiMax],
-}));
-
-const first = data[0];
-const last = data[data.length - 1];
+function buildData(lang: Lang) {
+  const month = new Intl.DateTimeFormat(LOCALE[lang], { month: "short", year: "2-digit", timeZone: "UTC" });
+  return coimbraEoSeries.map((r) => ({
+    ...r,
+    month: month.format(new Date(`${r.period}-01T00:00:00Z`)),
+    ndviBand: [r.ndviMin, r.ndviMax],
+    ndwiBand: [r.ndwiMin, r.ndwiMax],
+  }));
+}
 
 function Key({ color, name, note }: { color: string; name: string; note: string }) {
   return (
@@ -29,25 +30,37 @@ function Key({ color, name, note }: { color: string; name: string; note: string 
 }
 
 export function CoimbraSatelliteChart() {
+  const { lang } = useLang();
+  const s = DASHBOARD[lang];
+  const data = useMemo(() => buildData(lang), [lang]);
+  const first = data[0];
+  const last = data[data.length - 1];
   return (
     <section aria-labelledby="eo-heading" className="flex flex-col gap-4 rounded-sm border bg-card p-4 md:p-6">
       <div className="flex flex-col gap-1">
         <h2 id="eo-heading" className="text-[28px] font-semibold leading-[1.2]">
-          Satellite signal: Coimbra area, last 24 months
+          {s.eoTitle}
         </h2>
         <p className="max-w-[68ch] text-sm text-muted-foreground">
-          NDVI (vegetation) and NDWI (water) monthly means from the OneAquaHealth Resilience Map. These indices are not chlorophyll or toxin measurements.
+          {s.eoIntro}
         </p>
       </div>
 
       <div className="flex flex-wrap gap-x-6 gap-y-2">
-        <Key color={NDVI} name="NDVI" note="monthly mean, shaded min to max" />
-        <Key color={NDWI} name="NDWI" note="monthly mean, shaded min to max" />
+        <Key color={NDVI} name="NDVI" note={s.eoKey} />
+        <Key color={NDWI} name="NDWI" note={s.eoKey} />
       </div>
 
       <div
         role="img"
-        aria-label={`Monthly NDVI and NDWI means for the Coimbra area, ${first.month} to ${last.month}. NDVI mean ${first.ndviMean.toFixed(2)} to ${last.ndviMean.toFixed(2)}, NDWI mean ${first.ndwiMean.toFixed(2)} to ${last.ndwiMean.toFixed(2)}.`}
+        aria-label={fmt(s.eoAria, {
+          from: first.month,
+          to: last.month,
+          ndvi0: first.ndviMean.toFixed(2),
+          ndvi1: last.ndviMean.toFixed(2),
+          ndwi0: first.ndwiMean.toFixed(2),
+          ndwi1: last.ndwiMean.toFixed(2),
+        })}
         className="h-[280px] w-full md:h-[320px]"
       >
         <ResponsiveContainer width="100%" height="100%">
@@ -66,8 +79,12 @@ export function CoimbraSatelliteChart() {
               cursor={{ stroke: "var(--border)" }}
               contentStyle={{ background: "var(--popover)", border: "1px solid var(--border)", borderRadius: 4, fontSize: 12 }}
               formatter={(v, name) => {
-                if (Array.isArray(v)) return [`${Number(v[0]).toFixed(2)} to ${Number(v[1]).toFixed(2)}`, name === "ndviBand" ? "NDVI range" : "NDWI range"];
-                return [Number(v).toFixed(2), name === "ndviMean" ? "NDVI mean" : "NDWI mean"];
+                if (Array.isArray(v))
+                  return [
+                    fmt(s.eoRangeVal, { a: Number(v[0]).toFixed(2), b: Number(v[1]).toFixed(2) }),
+                    fmt(s.eoRange, { name: name === "ndviBand" ? "NDVI" : "NDWI" }),
+                  ];
+                return [Number(v).toFixed(2), fmt(s.eoMean, { name: name === "ndviMean" ? "NDVI" : "NDWI" })];
               }}
             />
             <Area dataKey="ndviBand" stroke="none" fill={NDVI} fillOpacity={0.14} isAnimationActive={false} activeDot={false} />
@@ -79,7 +96,7 @@ export function CoimbraSatelliteChart() {
       </div>
 
       <p className="text-xs text-muted-foreground">
-        Source: OneAquaHealth Resilience Map, Earth-observation area summary for Coimbra (row C9 in the citations table). Accessed 2026-10-04.
+        {s.eoSource}
       </p>
     </section>
   );

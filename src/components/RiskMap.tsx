@@ -6,11 +6,15 @@ import { ArrowRight } from "lucide-react";
 import { SpecimenTag } from "@/components/FieldMarks";
 import { Switch } from "@/components/ui/switch";
 import { useRegion } from "@/state/RegionContext";
-import { formatReportTime, REPORT_TAG_LABEL, reportSummary } from "@/lib/communityReports";
+import { formatReportTime, reportSummary } from "@/lib/communityReports";
+import { DASHBOARD } from "@/i18n/dashboard";
+import { fmt } from "@/i18n/lang";
+import { RISK_WORD, TAG } from "@/i18n/shared";
+import { useLang } from "@/state/LanguageContext";
+import { PATHWAY_LABEL } from "@/engine/explain";
 import { RiskBadge } from "@/components/RiskBadge";
 import { TrendLabel, type SiteRow } from "@/components/SamplingPriorityList";
 import { CATEGORY_STYLE } from "@/lib/risk";
-import { PATHWAYS } from "@/engine/pathways";
 import type { Category, CitizenReport } from "@/types";
 
 const ATTRIBUTION =
@@ -77,6 +81,7 @@ function FitSites({ points, center, zoom }: { points: [number, number][]; center
 const PIN_SHAPE = "[clip-path:polygon(4px_0,100%_0,100%_100%,4px_100%,0_50%)]";
 
 function Legend({ showPins }: { showPins: boolean }) {
+  const { lang } = useLang();
   return (
     <div className="mt-2 md:absolute md:bottom-3 md:left-3 md:z-[1000] md:mt-0 md:rounded-sm md:border md:border-input md:bg-card md:px-3 md:py-1">
       <ul className="flex flex-wrap gap-x-4 gap-y-1 md:block md:space-y-0 md:divide-y md:divide-dashed md:divide-border">
@@ -90,7 +95,7 @@ function Legend({ showPins }: { showPins: boolean }) {
                 aria-hidden
               />
               <Icon className="size-3.5 shrink-0" strokeWidth={1.75} aria-hidden />
-              <span className="font-sans font-medium md:w-16">{c}</span>
+              <span className="font-sans font-medium md:w-16">{RISK_WORD[lang][c]}</span>
               <span className="text-muted-foreground">{RANGES[c]}</span>
             </li>
           );
@@ -105,7 +110,7 @@ function Legend({ showPins }: { showPins: boolean }) {
                 <span className="absolute top-[4.5px] left-1 size-0.5 rounded-full bg-card" />
               </span>
             </span>
-            <span className="font-sans font-medium">Community report</span>
+            <span className="font-sans font-medium">{DASHBOARD[lang].mapCommunity}</span>
           </li>
         )}
       </ul>
@@ -119,6 +124,8 @@ export function RiskMap({ rows, center, zoom }: { rows: SiteRow[]; center: [numb
     [rows],
   );
   const { reports } = useRegion();
+  const { lang } = useLang();
+  const s = DASHBOARD[lang];
   const [showPins, setShowPins] = useState(true);
   const pins = useMemo(() => {
     const byId = new Map(rows.map((r) => [r.site.id, r]));
@@ -159,7 +166,7 @@ export function RiskMap({ rows, center, zoom }: { rows: SiteRow[]; center: [numb
             position={[r.site.lat, r.site.lon]}
             icon={icons[i]}
             zIndexOffset={r.result.siteScore * 10}
-            title={`${r.site.name}, risk ${r.result.siteScore}, ${r.result.category}`}
+            title={fmt(s.mapMarkerTitle, { name: r.site.name, score: r.result.siteScore, category: RISK_WORD[lang][r.result.category] })}
           >
             <Popup autoPanPaddingTopLeft={[16, 64]}>
               <p className="border-b border-dashed pb-2 font-heading text-xl leading-[1.3]">{r.site.name}</p>
@@ -167,8 +174,8 @@ export function RiskMap({ rows, center, zoom }: { rows: SiteRow[]; center: [numb
                 <RiskBadge category={r.result.category} score={r.result.siteScore} size="md" />
               </div>
               <p className="mt-2 text-[0.8125rem] leading-[1.4] text-olive">
-                <span>Leading pathway: </span>
-                {PATHWAYS[r.result.leadingPathway].label}
+                <span>{s.mapLeading}</span>
+                {PATHWAY_LABEL[lang][r.result.leadingPathway]}
               </p>
               <div className="mt-1">
                 <TrendLabel trend={r.trend} />
@@ -177,7 +184,7 @@ export function RiskMap({ rows, center, zoom }: { rows: SiteRow[]; center: [numb
                 to={`/site/${r.site.id}`}
                 className="mt-3 inline-flex items-center gap-1 text-sm font-medium text-primary hover:underline"
               >
-                View analysis
+                {s.mapViewAnalysis}
                 <ArrowRight className="size-4" strokeWidth={1.75} aria-hidden />
               </Link>
             </Popup>
@@ -190,20 +197,20 @@ export function RiskMap({ rows, center, zoom }: { rows: SiteRow[]; center: [numb
               position={[row.site.lat, row.site.lon]}
               icon={icon}
               zIndexOffset={10000}
-              title={`Community report at ${row.site.name}`}
+              title={fmt(s.mapPinTitle, { name: row.site.name })}
             >
               <Popup>
-                <p className="font-mono text-xs font-medium text-primary">Community report</p>
+                <p className="font-mono text-xs font-medium text-primary">{s.mapCommunity}</p>
                 <p className="mt-1 border-b border-dashed pb-2 font-heading text-xl leading-[1.3]">{row.site.name}</p>
-                <p className="mt-2 font-mono text-xs text-muted-foreground">{formatReportTime(report.createdAt)}</p>
-                <p className="mt-2 text-sm">{reportSummary(report)}</p>
-                <SpecimenTag className="mt-2">{REPORT_TAG_LABEL[report.dataTag]}</SpecimenTag>
+                <p className="mt-2 font-mono text-xs text-muted-foreground">{formatReportTime(report.createdAt, lang)}</p>
+                <p className="mt-2 text-sm">{reportSummary(report, lang)}</p>
+                <SpecimenTag className="mt-2">{TAG[lang][report.dataTag]}</SpecimenTag>
                 <div>
                   <Link
                     to={`/site/${row.site.id}`}
                     className="mt-3 inline-flex items-center gap-1 text-sm font-medium text-primary hover:underline"
                   >
-                    View site
+                    {s.mapViewSite}
                     <ArrowRight className="size-4" strokeWidth={1.75} aria-hidden />
                   </Link>
                 </div>
@@ -213,7 +220,7 @@ export function RiskMap({ rows, center, zoom }: { rows: SiteRow[]; center: [numb
       </MapContainer>
       <label className="absolute top-3 left-3 z-[1000] flex items-center gap-2 rounded-sm border border-input bg-card px-3 py-2 text-sm font-medium">
         <Switch checked={showPins} onCheckedChange={setShowPins} />
-        Community reports ({reports.filter((r) => rows.some((x) => x.site.id === r.siteId)).length})
+        {fmt(s.mapCommunityToggle, { n: reports.filter((r) => rows.some((x) => x.site.id === r.siteId)).length })}
       </label>
       </div>
       <Legend showPins={showPins} />

@@ -8,15 +8,15 @@ import { StatHero } from "@/components/StatHero";
 import { SamplingPriorityList, type SiteRow } from "@/components/SamplingPriorityList";
 import { coimbraDataStatus } from "@/data/oah/coimbra";
 import { scoreSite, trend } from "@/engine/score";
+import { DASHBOARD } from "@/i18n/dashboard";
+import { fmt } from "@/i18n/lang";
+import { useStrings } from "@/state/LanguageContext";
 import { useRegion } from "@/state/RegionContext";
 
-const COIMBRA_LABEL = {
-  "synthetic-demo": "Synthetic demo, structured as a Resilience Map export",
-  "resilience-map-export": "Resilience Map export, Coimbra",
-} as const;
 
 export default function Dashboard() {
   const { regionId, config, sites, reports } = useRegion();
+  const s = useStrings(DASHBOARD);
 
   const rows: SiteRow[] = useMemo(
     () =>
@@ -31,7 +31,8 @@ export default function Dashboard() {
     [sites, config, reports],
   );
 
-  const dataLabel = regionId === "lake-mead" ? "Prototype demonstration data" : COIMBRA_LABEL[coimbraDataStatus];
+  const dataLabel = 
+    regionId === "lake-mead" ? s.dataLakeMead : coimbraDataStatus === "synthetic-demo" ? s.dataSynthetic : s.dataExport;
 
   return (
     <div className="flex flex-col gap-8 md:gap-12">
@@ -41,10 +42,10 @@ export default function Dashboard() {
         </div>
         <div className="flex flex-col gap-1 xl:flex-row xl:items-baseline xl:gap-4">
           <h1 className="text-[1.75rem] leading-[1.1] tracking-[-0.015em] md:text-[2rem]">
-            Where to sample first at {config.name}
+            {fmt(s.title, { name: config.name })}
           </h1>
           <p className="max-w-[68ch] text-sm text-muted-foreground">
-            Scores combine satellite signals, environmental data and shore reports.
+            {s.subtitle}
           </p>
           <SpecimenTag className="mt-1 xl:mt-0 xl:ml-auto">{dataLabel}</SpecimenTag>
         </div>
