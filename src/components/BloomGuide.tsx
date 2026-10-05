@@ -1,6 +1,8 @@
 import type { ReactNode } from "react";
 import { SpecimenTag } from "@/components/FieldMarks";
 import { cn } from "@/lib/utils";
+import { useStrings } from "@/state/LanguageContext";
+import { GUIDE } from "@/i18n/report";
 
 // Drawings, not photos. Colours come from the Section 11.3 tokens only.
 // Source for the descriptions: Illinois EPA, Identifying Cyanobacteria Blooms (row C11).
@@ -90,16 +92,16 @@ const MacroAlgae = ({ className }: { className?: string }) => (
 );
 
 const BLOOM = [
-  { label: "Spilled green paint", Art: PaintSpill },
-  { label: "Green crust along the shore", Art: ShoreCrust },
-  { label: "Puffy green scum", Art: PuffyScum },
-  { label: "Swirls under the surface", Art: Swirls },
-];
+  { key: "paint", Art: PaintSpill },
+  { key: "crust", Art: ShoreCrust },
+  { key: "scum", Art: PuffyScum },
+  { key: "swirls", Art: Swirls },
+] as const;
 const LOOKALIKE = [
-  { label: "Duckweed: tiny separate leaves", Art: Duckweed },
-  { label: "Long strands of green algae", Art: LongStrands },
-  { label: "Filamentous macro-algae", Art: MacroAlgae },
-];
+  { key: "duckweed", Art: Duckweed },
+  { key: "strands", Art: LongStrands },
+  { key: "macro", Art: MacroAlgae },
+] as const;
 
 /** Small drawing for the answer tiles in the report flow. */
 export function GuideThumb({ kind, className }: { kind: "bloom" | "lookalike"; className?: string }) {
@@ -124,12 +126,13 @@ function Group({ heading, items }: { heading: string; items: { label: string; Ar
 }
 
 export function BloomGuide() {
+  const s = useStrings(GUIDE);
   return (
     <section className="flex flex-col gap-4" aria-labelledby="bloom-guide-title">
-      <h3 id="bloom-guide-title" className="text-xl leading-[1.3]">Is it a bloom?</h3>
-      <Group heading="Looks like a bloom" items={BLOOM} />
-      <Group heading="Often mistaken for one" items={LOOKALIKE} />
-      <p className="font-mono text-xs text-muted-foreground">Guide based on Illinois EPA, Identifying Cyanobacteria Blooms. Drawings, not photos.</p>
+      <h3 id="bloom-guide-title" className="text-xl leading-[1.3]">{s.title}</h3>
+      <Group heading={s.bloomHeading} items={BLOOM.map(({ key, Art }) => ({ label: s[key], Art }))} />
+      <Group heading={s.lookalikeHeading} items={LOOKALIKE.map(({ key, Art }) => ({ label: s[key], Art }))} />
+      <p className="font-mono text-xs text-muted-foreground">{s.note}</p>
     </section>
   );
 }

@@ -21,7 +21,10 @@ import {
 } from "lucide-react";
 import { useRegion } from "@/state/RegionContext";
 import { applyCitizenReport, scoreSite } from "@/engine/score";
-import { PATHWAYS } from "@/engine/pathways";
+import { PATHWAY_LABEL } from "@/engine/explain";
+import { fmt } from "@/i18n/lang";
+import { REPORT } from "@/i18n/report";
+import { useLang, useStrings } from "@/state/LanguageContext";
 import { RiskBadge } from "@/components/RiskBadge";
 import { BloomGuide, GuideThumb } from "@/components/BloomGuide";
 import { InkRule, Ripple, SpecimenTag } from "@/components/FieldMarks";
@@ -53,18 +56,13 @@ function CountUp({ target, from, className }: { target: number; from?: number; c
   return <span ref={ref} className={cn("inline-block min-w-[2ch] tabular-nums lining-nums", className)} />;
 }
 
-const WARNING = "A citizen report does not confirm a harmful algal bloom. Laboratory or agency testing is required for confirmation.";
-
 const GUIDE_ID = "guide";
 const GUIDE_OPTIONS = ["Looks like a bloom", "Looks like a look-alike", "Not sure"];
-const PICK_ONE = "Pick one";
-const PICK_MANY = "Pick all that apply";
 const pick = (ids: string[]) => ids.map((id) => reportFields.find((f) => f.id === id)).filter((f): f is ReportField => !!f);
 const SLIME = pick(["algae"])[0];
 const WATER = pick(["foam"])[0];
 const ANIMALS = pick(["wildlife"])[0];
 const MORE_FIELDS = pick(["riparian", "hydrology", "diptera", "ticks"]);
-const STEP_TITLES = ["Where are you?", "What do you see?", "Check and send"];
 
 const SHEET = "flex flex-col gap-5 rounded-[3px] border border-border bg-card p-4 shadow-[inset_0_1px_0_rgb(255_255_255/0.6)] md:p-6";
 const SHEET_TITLE = "text-xl leading-[1.3]";
@@ -149,6 +147,12 @@ function Question({
 }
 
 export default function Report() {
+  const s = useStrings(REPORT);
+  const { lang } = useLang();
+  const L: Record<string, string> = s;
+  const fieldLabel = (f: ReportField) => L[`field:${f.id}`] ?? f.label;
+  const optLabel = (o: string) => L[`o:${o}`] ?? o;
+  const stepTitles = [s.step1, s.step2, s.step3];
   const { config, sites, addReport } = useRegion();
   const [params] = useSearchParams();
   const [step, setStep] = useState(1);
@@ -190,7 +194,7 @@ export default function Report() {
   };
 
   const useLocation = () => {
-    const fail = () => setLocMsg("Location unavailable. Pick a site below.");
+    const fail = () => setLocMsg(s.locUnavailable);
     if (!("geolocation" in navigator)) return fail();
     try {
       navigator.geolocation.getCurrentPosition(
@@ -198,7 +202,7 @@ export default function Report() {
           const near = nearestSite(pos.coords.latitude, pos.coords.longitude, sites);
           if (!near) return fail();
           chooseSite(near.id);
-          setLocMsg(`Nearest site: ${near.name}`);
+          setLocMsg(fmt(s.nearest, { name: near.name }));
         },
         fail,
         { timeout: 8000 },
@@ -266,7 +270,7 @@ export default function Report() {
     <div className="flex items-center justify-between gap-3 lg:flex-col lg:items-stretch lg:gap-1">
       <div className="min-w-0">
         <p className="font-heading text-xl leading-[1.3]">{site.name}</p>
-        <p className="font-mono text-xs text-muted-foreground">Leading pathway: {PATHWAYS[current.leadingPathway].label}</p>
+        <p className="font-mono text-xs text-muted-foreground">{fmt(s.leadingPathway, { pathway: PATHWAY_LABEL[lang][current.leadingPathway] })}</p>
       </div>
       <p className="flex shrink-0 items-center gap-3 lg:items-baseline">
         <CountUp target={current.siteScore} className="font-heading text-[2rem] leading-none lg:text-[2.5rem]" />
@@ -282,12 +286,12 @@ export default function Report() {
         <div className="w-[88px] shrink-0">
           {step > 1 && (
             <Button type="button" variant="outline" className="h-11 w-full" onClick={() => setStep(step - 1)}>
-              Back
+              {s.back}
             </Button>
           )}
         </div>
         <div className="flex flex-1 flex-col items-center gap-1.5">
-          <p className="font-mono text-xs text-muted-foreground">Step {step} of 3</p>
+          <p className="font-mono text-xs text-muted-foreground">{fmt(s.stepOf, { n: step })}</p>
           <div className="flex w-full max-w-[96px] gap-1" aria-hidden>
             {[1, 2, 3].map((n) => (
               <span key={n} className={cn("h-[3px] flex-1 rounded-full", n <= step ? "bg-primary" : "bg-border")} />
@@ -297,11 +301,11 @@ export default function Report() {
         <div className="flex w-[132px] shrink-0 justify-end">
           {step < 3 ? (
             <Button key="next" type="button" className="h-11 min-w-[120px]" onClick={next}>
-              Next
+              {s.next}
             </Button>
           ) : (
             <Button key="submit" type="submit" className="h-11 min-w-[132px]">
-              Submit report
+              {s.submit}
             </Button>
           )}
         </div>
@@ -310,10 +314,10 @@ export default function Report() {
   );
 
   const tileGrid = (f: ReportField) =>
-    f.options.length === 3 && f.options.every((o) => o.length <= 5) ? "grid-cols-3" : "grid-cols-2";
+    f.options.length === 3 && f.options.every((o) => optLabel(o).length <= 5) ? "grid-cols-3" : "grid-cols-2";
 
-  const choiceField = (f: ReportField, title = f.question) => (
-    <Question key={f.id} title={title} hint={f.multi ? PICK_MANY : PICK_ONE}>
+  const choiceField = (f: ReportField, title = L[`q:${f.id}`] ?? f.question) => (
+    <Question key={f.id} title={title} hint={f.multi ? s.pickMany : s.pickOne}>
       <div className={cn("grid gap-2", tileGrid(f))} role={f.multi ? "group" : "radiogroup"} aria-label={title}>
         {f.options.map((o) => {
           const Icon = f.id === "algae" ? undefined : OPTION_ICON[o];
@@ -325,27 +329,28 @@ export default function Report() {
               onClick={() => (f.multi ? toggleMulti(f, o) : setOne(f.id, o))}
               icon={Icon && <Icon className="size-4 shrink-0 text-muted-foreground" strokeWidth={1.75} aria-hidden />}
             >
-              {o}
+              {optLabel(o)}
             </Tile>
           );
         })}
       </div>
-      {f.id === "wildlife" && <p className="text-sm text-muted-foreground">Animals present: {animalsPresent ? "yes" : "no"}</p>}
+      {f.id === "wildlife" && <p className="text-sm text-muted-foreground">{fmt(s.animalsPresent, { answer: animalsPresent ? s.yes : s.no })}</p>}
     </Question>
   );
 
-  const obs = observations();
+  const obs = observations().map(([k, v]): [string, string] => {
+    const field = reportFields.find((f) => f.label === k);
+    return k === "Guide match"
+      ? [s.guideMatch, v.split(", ").map((x) => L[`guide:${x}`] ?? x).join(", ")]
+      : [field ? fieldLabel(field) : k, v.split(", ").map(optLabel).join(", ")];
+  });
 
   return (
     <div className="flex flex-col gap-8 pb-24 md:gap-12 lg:pb-0">
       <header className="flex max-w-[68ch] flex-col gap-2">
-        <h1 className="text-[1.875rem] leading-[1.05] tracking-[-0.015em] md:text-[2.5rem]">Report a Bloom</h1>
-        <p className="leading-[1.55] text-muted-foreground">
-          Agencies sample a few points a few times a month. You see the water today. Your report raises this site's citizen evidence and can move it up the Sampling priority list.
-        </p>
-        <p className="w-fit rounded-[3px] border border-dashed border-border px-3 py-2 font-mono text-xs text-muted-foreground">
-          Questions from the OneAquaHealth citizen-science stream survey, via a public copy not yet checked against the official OAH app.
-        </p>
+        <h1 className="text-[1.875rem] leading-[1.05] tracking-[-0.015em] md:text-[2.5rem]">{s.title}</h1>
+        <p className="leading-[1.55] text-muted-foreground">{s.intro}</p>
+        <p className="w-fit rounded-[3px] border border-dashed border-border px-3 py-2 font-mono text-xs text-muted-foreground">{s.source}</p>
       </header>
 
       <div className="flex flex-col gap-6 lg:flex-row lg:items-start lg:gap-12">
@@ -355,7 +360,7 @@ export default function Report() {
             done && "lg:hidden",
           )}
         >
-          {summary ?? <p className="text-sm text-muted-foreground">Choose a site to see its current risk score.</p>}
+          {summary ?? <p className="text-sm text-muted-foreground">{s.chooseSiteSummary}</p>}
         </aside>
 
         <div className="w-full max-w-[640px] lg:order-1">
@@ -363,17 +368,17 @@ export default function Report() {
             <div className="flex flex-col gap-6" role="status">
               <div className="flex flex-col gap-3">
                 <p ref={successRef} tabIndex={-1} className="scroll-mt-24 font-heading text-2xl leading-[1.25] tracking-[-0.01em] outline-none">
-                  Report received. Your observation has been added to the community monitoring layer.
+                  {s.received}
                 </p>
                 <div className="flex items-center gap-3">
                   <Ripple className="size-12 shrink-0 text-primary/50" />
-                  <p className="stamp verdant-stamp w-fit bg-card px-3 py-1.5 font-mono text-sm font-medium text-primary [--stamp-bg:var(--card)]">{`Report ${done.code}`}</p>
+                  <p className="stamp verdant-stamp w-fit bg-card px-3 py-1.5 font-mono text-sm font-medium text-primary [--stamp-bg:var(--card)]">{fmt(s.reportCode, { code: done.code })}</p>
                 </div>
-                <p className="text-base">Your report is in the ranger queue.</p>
-                <p className="text-base text-muted-foreground">A ranger reviews it next. Check My reports to see what they found.</p>
+                <p className="text-base">{s.inQueue}</p>
+                <p className="text-base text-muted-foreground">{s.rangerNext}</p>
               </div>
               <div className="flex flex-col gap-3 rounded-[3px] border border-border border-l-[3px] border-l-primary bg-card p-4 md:p-6">
-                <p className="text-sm text-muted-foreground">{done.site.name} risk score</p>
+                <p className="text-sm text-muted-foreground">{fmt(s.siteRiskScore, { site: done.site.name })}</p>
                 <div className="flex flex-wrap items-center gap-x-4 gap-y-2">
                   <span className="font-heading text-[2rem] leading-none tabular-nums lining-nums text-muted-foreground line-through">{done.before}</span>
                   <ArrowRight className="size-6 text-muted-foreground" strokeWidth={1.75} aria-hidden />
@@ -382,28 +387,28 @@ export default function Report() {
                 </div>
                 {done.evBefore !== null && done.evAfter !== null && (
                   <p className="text-sm">
-                    Citizen evidence {done.evBefore} to {done.evAfter}. Your report added {done.after - done.before} points to this score.
+                    {fmt(s.evidenceLine, { before: done.evBefore, after: done.evAfter, points: done.after - done.before })}
                   </p>
                 )}
               </div>
               <div className="flex flex-col gap-4">
                 <div className="flex flex-wrap gap-x-6 gap-y-2">
-                  <Link to={`/site/${done.site.id}`} className="w-fit text-sm font-medium text-primary underline underline-offset-[3px]">View updated site</Link>
-                  <Link to="/" className="w-fit text-sm font-medium text-primary underline underline-offset-[3px]">See it on the dashboard</Link>
+                  <Link to={`/site/${done.site.id}`} className="w-fit text-sm font-medium text-primary underline underline-offset-[3px]">{s.viewSite}</Link>
+                  <Link to="/" className="w-fit text-sm font-medium text-primary underline underline-offset-[3px]">{s.seeDashboard}</Link>
                 </div>
                 <div className="flex flex-col gap-3 sm:flex-row">
                   <Link to="/my-reports" className={cn(buttonVariants(), "h-11 w-full px-4 sm:w-auto")}>
                     <ListChecks strokeWidth={1.75} aria-hidden />
-                    Track it in My reports
+                    {s.trackIt}
                   </Link>
-                  <Button type="button" variant="outline" className="h-11 w-full sm:w-auto" onClick={reset}>File another report</Button>
+                  <Button type="button" variant="outline" className="h-11 w-full sm:w-auto" onClick={reset}>{s.another}</Button>
                 </div>
               </div>
             </div>
           ) : (
             <form onSubmit={submit} className="flex flex-col gap-5" noValidate>
               <h2 ref={stepHeading} tabIndex={-1} className="scroll-mt-24 text-[1.5rem] leading-[1.15] tracking-[-0.01em] outline-none md:text-[1.75rem]">
-                {STEP_TITLES[step - 1]}
+                {stepTitles[step - 1]}
               </h2>
 
               {step === 1 && (
@@ -411,14 +416,14 @@ export default function Report() {
                   <div className="flex flex-col gap-2">
                     <Button type="button" variant="outline" className="h-11 w-full sm:w-fit" onClick={useLocation}>
                       <LocateFixed strokeWidth={1.75} aria-hidden />
-                      Use my location
+                      {s.useLocation}
                     </Button>
                     {locMsg && <p className="text-sm text-muted-foreground" role="status">{locMsg}</p>}
                   </div>
                   <fieldset ref={siteGroup} tabIndex={-1} className="flex flex-col gap-2 outline-none">
-                    <legend className="sr-only">Site</legend>
-                    <p className="text-[0.8125rem] leading-[1.4] text-muted-foreground">{PICK_ONE}</p>
-                    <div className="grid grid-cols-1 gap-2 sm:grid-cols-2" role="radiogroup" aria-label="Site">
+                    <legend className="sr-only">{s.site}</legend>
+                    <p className="text-[0.8125rem] leading-[1.4] text-muted-foreground">{s.pickOne}</p>
+                    <div className="grid grid-cols-1 gap-2 sm:grid-cols-2" role="radiogroup" aria-label={s.site}>
                       {sites.map((s) => (
                         <button
                           key={s.id}
@@ -444,7 +449,7 @@ export default function Report() {
                     </div>
                     {siteError && (
                       <p className="text-sm text-destructive" role="alert">
-                        Choose the place you are reporting from.
+                        {s.siteError}
                       </p>
                     )}
                   </fieldset>
@@ -453,7 +458,7 @@ export default function Report() {
 
               {step === 2 && (
                 <>
-                  <p className="-mt-2 text-[0.9375rem] leading-[1.45] text-muted-foreground">Every question is optional. Skip what you are not sure about.</p>
+                  <p className="-mt-2 text-[0.9375rem] leading-[1.45] text-muted-foreground">{s.optionalNote}</p>
 
                   <section className={SHEET}>
                     <div className="flex items-center gap-3">
@@ -462,11 +467,11 @@ export default function Report() {
                         className="flex h-16 min-w-0 flex-1 cursor-pointer items-center justify-center gap-3 rounded-[3px] border-2 border-dashed border-input bg-card text-base font-medium transition-colors focus-within:ring-2 focus-within:ring-ring focus-within:ring-offset-2 focus-within:ring-offset-background hover:bg-muted"
                       >
                         {photo ? (
-                          <img src={photo} alt="Selected photo preview" className="size-12 rounded-[3px] border border-border object-cover" />
+                          <img src={photo} alt={s.photoPreviewAlt} className="size-12 rounded-[3px] border border-border object-cover" />
                         ) : (
                           <Camera className="size-6" strokeWidth={1.75} aria-hidden />
                         )}
-                        {photo ? "Change photo" : "Add a photo"}
+                        {photo ? s.changePhoto : s.addPhoto}
                         <input
                           id="photo"
                           type="file"
@@ -479,17 +484,17 @@ export default function Report() {
                           }}
                         />
                       </label>
-                      <SpecimenTag className="shrink-0">Optional</SpecimenTag>
+                      <SpecimenTag className="shrink-0">{s.optional}</SpecimenTag>
                     </div>
-                    <p className="-mt-3 text-sm text-muted-foreground">Photo stays on your device</p>
+                    <p className="-mt-3 text-sm text-muted-foreground">{s.photoStays}</p>
                   </section>
 
                   <InkRule className="text-border" />
 
                   <section className={SHEET}>
                     <BloomGuide />
-                    <Question title="Which matches what you see?" hint={PICK_ONE}>
-                      <div className="grid grid-cols-1 gap-2" role="radiogroup" aria-label="Which matches what you see?">
+                    <Question title={s.guideQuestion} hint={s.pickOne}>
+                      <div className="grid grid-cols-1 gap-2" role="radiogroup" aria-label={s.guideQuestion}>
                         {GUIDE_OPTIONS.map((o, i) => (
                           <Tile
                             key={o}
@@ -500,7 +505,7 @@ export default function Report() {
                               i === 0 ? <GuideThumb kind="bloom" /> : i === 1 ? <GuideThumb kind="lookalike" /> : <CircleHelp className="size-7 shrink-0 text-muted-foreground" strokeWidth={1.5} aria-hidden />
                             }
                           >
-                            {o}
+                            {L[`guide:${o}`]}
                           </Tile>
                         ))}
                       </div>
@@ -510,14 +515,14 @@ export default function Report() {
                   <InkRule className="text-border" />
 
                   <section className={SHEET}>
-                    <h3 className={SHEET_TITLE}>Water and animals</h3>
+                    <h3 className={SHEET_TITLE}>{s.waterAnimals}</h3>
                     {choiceField(SLIME)}
                     {choiceField(WATER)}
                     {choiceField(ANIMALS)}
                   </section>
 
                   <details className="group rounded-[3px] border border-border bg-card px-4">
-                    <summary className="flex min-h-12 cursor-pointer items-center text-base font-medium">More questions (optional)</summary>
+                    <summary className="flex min-h-12 cursor-pointer items-center text-base font-medium">{s.moreQuestions}</summary>
                     <div className="flex flex-col gap-6 pt-2 pb-4">{MORE_FIELDS.map((f) => choiceField(f))}</div>
                   </details>
                 </>
@@ -528,23 +533,23 @@ export default function Report() {
                   <section className={SHEET}>
                     <div className="flex items-start justify-between gap-4">
                       <div className="min-w-0">
-                        <p className="font-mono text-xs text-muted-foreground">Site</p>
+                        <p className="font-mono text-xs text-muted-foreground">{s.site}</p>
                         <p className="font-heading text-xl leading-[1.3]">{site?.name}</p>
                       </div>
                       <button type="button" className="min-h-11 shrink-0 text-sm font-medium text-primary underline underline-offset-[3px]" onClick={() => setStep(1)}>
-                        Edit
+                        {s.edit}
                       </button>
                     </div>
                     <InkRule className="-my-2 text-border" />
                     <div className="flex items-start justify-between gap-4">
                       <div className="flex min-w-0 flex-col gap-2">
-                        <p className="font-mono text-xs text-muted-foreground">Photo and answers</p>
+                        <p className="font-mono text-xs text-muted-foreground">{s.reviewPhotoAnswers}</p>
                         {photo ? (
-                          <img src={photo} alt="Selected photo preview" className="size-16 rounded-[3px] border border-border object-cover" />
+                          <img src={photo} alt={s.photoPreviewAlt} className="size-16 rounded-[3px] border border-border object-cover" />
                         ) : (
-                          <p className="text-[0.9375rem]">No photo</p>
+                          <p className="text-[0.9375rem]">{s.noPhoto}</p>
                         )}
-                        {photo && <p className="sr-only">Photo added</p>}
+                        {photo && <p className="sr-only">{s.photoAdded}</p>}
                         {obs.length > 0 ? (
                           <ul className="flex flex-col gap-1 text-[0.9375rem] leading-[1.4]">
                             {obs.map(([k, v]) => (
@@ -555,21 +560,21 @@ export default function Report() {
                             ))}
                           </ul>
                         ) : (
-                          <p className="text-[0.9375rem] text-muted-foreground">No answers added.</p>
+                          <p className="text-[0.9375rem] text-muted-foreground">{s.noAnswers}</p>
                         )}
                       </div>
                       <button type="button" className="min-h-11 shrink-0 text-sm font-medium text-primary underline underline-offset-[3px]" onClick={() => setStep(2)}>
-                        Edit
+                        {s.edit}
                       </button>
                     </div>
                   </section>
                   <div className="flex flex-col gap-2">
-                    <Label htmlFor="notes">Anything else? (optional)</Label>
+                    <Label htmlFor="notes">{s.anythingElse}</Label>
                     <Textarea id="notes" value={notes} onChange={(e) => setNotes(e.target.value)} rows={3} />
                   </div>
                   <Alert className="rounded-[3px] border-border bg-muted text-foreground">
                     <TriangleAlert />
-                    <AlertDescription className="text-foreground">{WARNING}</AlertDescription>
+                    <AlertDescription className="text-foreground">{s.warning}</AlertDescription>
                   </Alert>
                 </>
               )}
@@ -579,8 +584,8 @@ export default function Report() {
           )}
           <section className="mt-8 flex max-w-[68ch] flex-col gap-2 pt-2">
             <InkRule className="mb-4 text-border" />
-            <h2 className="text-[1.5rem] leading-[1.2]">Why citizen observations matter</h2>
-            <p className="leading-[1.55]">Agencies sample a lake at a few points and a few times a month. Reports from people at the shore fill the gaps between those samples. Several reports at one site are a reason to look there sooner.</p>
+            <h2 className="text-[1.5rem] leading-[1.2]">{s.whyTitle}</h2>
+            <p className="leading-[1.55]">{s.whyBody}</p>
           </section>
         </div>
       </div>
