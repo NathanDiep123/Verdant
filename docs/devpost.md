@@ -1,89 +1,106 @@
-# Verdant
+> In three years, 18 US states alone reported 389 human and 413 animal illnesses from harmful algal blooms. Verdant shows water managers where to sample first, from a US lake to a Portuguese city. A guided citizen report goes to ranger review, and the reporter sees the outcome.
 
-**See the bloom before it becomes a warning.**
-
-## Elevator pitch
-
-Rangers rely on citizen bloom reports that are often unreliable. Verdant makes reporting easy, triages each report, and shows reporters what it led to.
-
-## Try it out
-
-- Live demo: https://verdant.albert14059.workers.dev
-- Source: https://github.com/heliaval/Verdant
-
-## Track alignment
-
-Track 6, Resilience Informatics. Verdant turns scattered environmental and citizen signals into early warning and monitoring priorities for freshwater sites.
+![Verdant dashboard: risk map, sampling priority list and score breakdown](https://raw.githubusercontent.com/heliaval/Verdant/main/docs/gallery/01-dashboard.png)
 
 ## Inspiration
 
-Across the United States, 18 states reported 421 harmful algal bloom events, 389 cases of human illness and 413 cases of animal illness during 2016–2018 (CDC national count; no Lake Mead figure found). At Lake Mead, the National Park Service says blooms occur, can seriously sicken or kill dogs, and are most common from August through December.
+Water ecosystem health connects people, animals, and the environment. Across eighteen U.S. states, 421 harmful algal bloom events were reported during 2016–2018, alongside 389 human illnesses and at least 413 animal illnesses. These are national figures, not Lake Mead counts ([CDC, MMWR 69(50)](https://www.cdc.gov/mmwr/volumes/69/wr/mm6950a2.htm)). Agencies everywhere face the same gap. They cannot watch every shoreline, and the people near the water rarely hear whether their report helped.
 
-Rangers cannot watch every cove, so they depend on citizen reports. Those reports are often unreliable, and reporters rarely hear what happened next. We wanted to fix that loop.
+We built Verdant to connect those steps: people report, rangers prioritize follow-up, and reporters see the outcome.
 
 ## What it does
 
-- Reporting is easy: a three-step guided report with a photo and an "Is it a bloom?" picture guide. A "Report what you see" button is on every page.
-- Rangers triage each report in a demonstration Report queue that shows the reporter's track record.
-- Reporters see what their report led to in My reports, with a status timeline and outcomes such as "You got it right."
-- Evidence is review-weighted: a new report adds 10 points, one confirmed by field sample adds 20, one ruled Not a bloom adds 0. Callville Bay goes 79 to 81 on submit, 82 once confirmed, and back to 79 if ruled Not a bloom.
-- Each site is scored on hazard pathways. The highest pathway sets the score and is named, with factor contributions and a recommendation.
-- The dashboard has a risk map with community pins, a Community reports feed and a Sampling priority list.
-- The OneAquaHealth cities page runs the same engine on Coimbra, with a satellite signal chart from a Resilience Map export. Coimbra site scores are synthetic.
+Verdant is a working demonstration of a report-to-outcome workflow, with six pages and an interface in seven languages (English, Portuguese, Spanish, French, Italian, Dutch, Norwegian).
 
-A report never confirms a bloom by itself. All ranger outcomes, seed reports and Lake Mead values are demonstration data and are labelled that way.
+| Step | What happens |
+|---|---|
+| 1. Find a site | A risk map (Satellite or Map basemap) and a sampling priority list show where follow-up is recommended. |
+| 2. Understand the score | Each site breaks its score into factor contributions and names its hazard pathway. |
+| 3. Report | A three-step form with a bloom and look-alike guide. Every question and the photo are optional, and the photo can come from the camera or the phone library. |
+| 4. Review | A demonstration ranger queue lets users request sampling and record a simulated outcome. |
+| 5. See what happened | My reports shows the same report with its status history and outcome. |
+
+Review changes how much a report counts. A new report adds 10 citizen-evidence points, a confirmed one adds 20, and one ruled not a bloom adds 0. Here is Callville Bay:
+
+| Event | Overall score |
+|---|---|
+| Starting score | 79 |
+| Report submitted | 81 |
+| Simulated confirmation | 82 |
+| Ruled not a bloom instead | back to 79 |
+
+**These weights are demonstration rules, not validated. A citizen report never confirms a bloom, and every ranger outcome here is simulated.**
+
+### What is real and what is demonstration data
+
+| Item | Status |
+|---|---|
+| Lake Mead scores and reports | Demonstration data |
+| Lake Mead elevation (1,037.93 ft on 2026-10-03) | Official U.S. Bureau of Reclamation snapshot, labelled separately |
+| Coimbra satellite chart | Real Resilience Map export (monthly NDVI and NDWI area means) |
+| Coimbra site scores | Synthetic; the chart does not drive them |
+| Review outcomes | Simulated |
+| Translations (pt, es, fr, it, nl, nb) | Machine-drafted, pending native-speaker review |
+| FHIR-shaped JSON export | Demonstration format, not validated against the OneAquaHealth guide |
+
+![Callville Bay with the ranger queue showing how a review changes the score](https://raw.githubusercontent.com/heliaval/Verdant/main/docs/gallery/04-ranger-and-payoff.png)
 
 ## How we built it
 
-A tested TypeScript risk engine with fixed, published weights, plus a tested report lifecycle that applies the review weights. The interface is React with Leaflet and Recharts. Each city is a `SiteConfig`, and a parser reads Resilience Map CSV exports. FHIR-shaped JSON export. Coimbra's only export is an area-level NDVI and NDWI summary, so its 20 sites use real Resilience Map names with synthetic scores. There is no backend.
+React, TypeScript and Vite, with Leaflet maps, Recharts charts, PapaParse for CSV parsing and Tailwind with shadcn components. The scoring engine is tested TypeScript with fixed, published weights, and a separate tested module applies the review weights. A tested parser reads Resilience Map CSV exports. Each region is one config object, so the same app runs Lake Mead and Coimbra. The interface strings live in one typed dictionary per language. The project has 151 automated tests in 20 files. There is no backend: reports stay in the browser's local storage.
 
 ## Challenges
 
-We could not retrieve the official OneAquaHealth protocol fields, so report questions are placeholders. The FHIR guide's build returned 404, so its profile ids are unverified. No score is validated.
+- **Area-level data.** The Coimbra export holds monthly area means, not the site-level measurements scoring needs. We kept the real chart and gave the 20 sites real Resilience Map names with synthetic scores, labelled as such.
+- **Recommendation versus advisory.** A sampling priority is not a confirmed hazard or an official advisory. We worded every score as "where to look first" and put the disclaimer next to it.
+- **Seven languages.** Each language is a typed copy of the English dictionary, so a missing key fails the type check. The six translations are still machine drafts, and some phrasing needs native review.
+- **Open verification.** We could not retrieve the official OneAquaHealth survey fields, so some report questions are placeholders, and the FHIR guide's profile ids are unverified. Duplicate and malicious reports are unsolved.
 
 ## Accomplishments
 
-- One engine for a US reservoir and a European urban stream network.
+- A full loop from guided report to simulated ranger review to the reporter's status history.
+- Review-weighted evidence with a tested example: 79, 81, 82, and back to 79.
 - Scores that explain themselves, factor by factor.
-- A full report-to-outcome loop that works end to end.
+- One engine for a US reservoir and a Portuguese city, switched by config.
+- A tested seven-language interface, a Satellite or Map basemap that remembers its setting, and a layout that works on a phone.
 
 ## What we learned
 
-A score is only useful if people can see why it is high, and a report is only worth sending if the reporter sees what it led to.
+A score is more useful when people can see why it is high. A report is worth sending when the reporter sees what it led to. Weighting evidence by review status also made us decide what a citizen report is worth, and that choice needs field data before anyone should rely on it. A working demonstration is the first step, and testing with citizens and rangers comes before operational use.
 
 ## What's next
 
-1. Validate scores against field-sample results.
-2. Real-time Sentinel-2 ingestion; NDCI stays an experimental proxy.
-3. Live weather APIs.
-4. Agency monitoring integration.
-5. Native mobile reporting and automated alerts.
-6. FHIR server submission.
+1. Test with citizens and rangers: reporting completion, clarity, and usefulness for review.
+2. Validate scores against field measurements and revise the weights.
+3. Add shared storage, ranger accounts, and privacy controls.
+4. Handle duplicates, location uncertainty, and malicious reports.
+5. Verify OneAquaHealth fields, add live satellite and weather feeds, and validate exports with partners. None of these exist today.
+6. Have native speakers review the translations.
 
 ## Impact & Alignment
 
-Verdant links freshwater conditions to human and animal health. Every score names its hazard pathway, its evidence and a next step for rangers, water agencies, researchers, residents and visitors. Citizens, rangers and reporters share one loop. Lake Mead is the pilot. The same engine runs on OneAquaHealth's Coimbra data and is configured for Benevento, Ghent, Oslo and Toulouse. Lake Mead is not a OneAquaHealth case-study site, so the cities page and the site configuration carry the alignment.
+Verdant supports OneAquaHealth and **Track 6: Resilience Informatics** by linking citizen observations to explainable monitoring priorities. Lake Mead is the US pilot and Coimbra, Portugal, is a OneAquaHealth case-study city. Benevento, Ghent, Oslo, and Toulouse are configured and need site data. The header already shows "More cities soon". The intended benefits are more useful reports, clearer sampling priorities, and feedback for contributors. We have not measured any of them.
 
 ## Innovation & Creativity
 
-A citizen report changes the risk score on screen, weighted by the ranger's review. Every score breaks down into factor contributions. One configuration switch moves Verdant from a US reservoir to a European urban stream network.
+An observation enters review, its review status changes its weight in the score, and the reporter sees the outcome. The bloom guide, score explanations, and status timeline make that loop readable to both reporters and rangers.
+
+![The same app in three languages](https://raw.githubusercontent.com/heliaval/Verdant/main/docs/gallery/05-three-languages.png)
 
 ## Technical Implementation
 
-A tested TypeScript risk engine with fixed, published weights and partial-data coverage. A Resilience Map CSV parser. A tested report lifecycle with review-weighted evidence. FHIR-shaped JSON export that uses the OneAquaHealth FHIR implementation guide's canonical base URL and profile names; the profile ids are unverified. React, TypeScript, Leaflet and Recharts.
+The engine combines pathway factors with fixed weights, handles partial data, and explains each contribution. Separate modules cover the report lifecycle, the CSV parser, the basemap choice, and a FHIR-shaped JSON export. Everything is typed, and the logic is covered by the 151 tests. The next milestone is a shared service for citizens and rangers in place of one browser.
 
 ## Usability & User Experience
 
-Six pages, one path from map to explanation to action, and a report form a first-time visitor can finish in three steps. Disclaimers sit next to every score, and the layout works on a phone in the field.
+The path is map, explanation, report, outcome. The interface offers a header language switch with flags and a Satellite or Map toggle. The report form has three steps and optional answers. Layouts adapt to phone screens. We have not tested accessibility or usability with intended users yet.
 
 ## Feasibility & Scalability
 
-Adding a city takes a CSV export, a column map and a site config. There is no backend to run. All scores are unvalidated today, and the first future-work step is comparing them with in-situ field-sample results. Further steps are live Sentinel-2 and weather feeds, validated local models, agency integration and FHIR server submission.
+The region config is the unit of reuse. A new city needs site coordinates, suitable data (such as a Resilience Map CSV and a column map), a validated scoring model, and a local review process. There is no server to run today. We would start with a small agency-supported pilot, measure report quality and ranger workload, and expand from there.
 
-## Built with
+**Verdant flags conditions associated with higher bloom risk. It does not confirm toxins or replace field sampling, and its scores are not an official advisory.**
 
-React, TypeScript, Vite, Tailwind CSS, shadcn, Leaflet, react-leaflet, Recharts, react-router, PapaParse, Vitest, OpenStreetMap tiles.
+---
 
-Sources: see the Data sources and citations table on the Methodology page and in the README
-
-<!-- story chars: 2987 -->
+[Live prototype](https://verdant.albert14059.workers.dev/) · [Methodology and sources](https://verdant.albert14059.workers.dev/methodology) · [GitHub repository](https://github.com/heliaval/Verdant)
