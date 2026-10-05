@@ -83,9 +83,9 @@ A score is more useful when people can see why it is high. A report is worth sen
 5. Verify OneAquaHealth fields, add live satellite and weather feeds, and validate exports with partners. None of these exist today.
 6. Have native speakers review the translations.
 
-## Impact & Alignment
+## Impact & Alignment with the OneAquaHealth mission
 
-Verdant supports OneAquaHealth and **Track 6: Resilience Informatics**. It turns scattered citizen and environmental signals into explainable monitoring priorities for freshwater sites.
+Verdant supports OneAquaHealth and **Track 6: Resilience Informatics**. It turns scattered citizen and environmental signals into explainable monitoring priorities for freshwater sites, and it supports monitoring, protection and awareness by keeping water, human, animal and environmental health on one screen.
 
 **Expected impact on ecosystems and human health.** Blooms threaten the water that people, pets and wildlife depend on. Verdant aims to shorten the time between someone seeing a bloom and someone qualified deciding whether to sample: clearer reports, a ranked list of sites, and visible follow-up. Earlier sampling can mean earlier warnings for people and animals, and a record that links water conditions to human and animal health, the One Health idea behind the program. We have not measured any of this, and field validation comes first.
 
@@ -93,21 +93,21 @@ Lake Mead is the US pilot and Coimbra, Portugal, is a OneAquaHealth case-study c
 
 ## Innovation & Creativity
 
-An observation enters review, its review status changes its weight in the score, and the reporter sees the outcome. The bloom guide, score explanations, and status timeline make that loop readable to both reporters and rangers.
+Citizen science often ends when the report is sent. In Verdant the report keeps going. An observation enters review, its review status changes its weight in the score, and the reporter sees the outcome. The bloom guide, score explanations, and status timeline make that loop readable to both reporters and rangers.
 
 ![The same app in three languages](https://raw.githubusercontent.com/heliaval/Verdant/main/docs/gallery/05-three-languages.png)
 
-## Technical Implementation
+## Architecture
 
-The engine combines pathway factors with fixed weights, handles partial data, and explains each contribution. Separate modules cover the report lifecycle, the CSV parser, the basemap choice, and a FHIR-shaped JSON export. Everything is typed, and the logic is covered by the 151 tests. The next milestone is a shared service for citizens and rangers in place of one browser.
+The engine combines pathway factors with fixed weights, handles partial data, and explains each contribution. Separate modules cover the report lifecycle, the CSV parser, the basemap choice, and a FHIR-shaped JSON export. Everything is typed, and the logic is covered by the 151 tests. It draws on CDC counts (cited), a U.S. Bureau of Reclamation elevation snapshot, a Resilience Map CSV export for Coimbra, and Esri map tiles. The next milestone is a shared service for citizens and rangers in place of one browser.
 
-## Usability & User Experience
+## UX
 
-The path is map, explanation, report, outcome. The interface offers a header language switch with flags and a Satellite or Map toggle. The report form has three steps and optional answers. Layouts adapt to phone screens. We have not tested accessibility or usability with intended users yet.
+The path is map, explanation, report, outcome. The interface offers a header language switch with flags and a Satellite or Map toggle. The report form has three steps and optional answers. Controls carry screen-reader labels, the switches work from the keyboard, and layouts adapt to phone screens. We have not tested accessibility or usability with intended users yet.
 
-## Feasibility & Scalability
+## Scale
 
-The region config is the unit of reuse. A new city needs site coordinates, suitable data (such as a Resilience Map CSV and a column map), a validated scoring model, and a local review process. There is no server to run today. We would start with a small agency-supported pilot, measure report quality and ranger workload, and expand from there.
+The region config is the unit of reuse. A new city needs site coordinates, suitable data (such as a Resilience Map CSV and a column map), a validated scoring model, and a local review process. Existing systems connect through the CSV import and the FHIR-shaped export, and both need validation with partners. There is no server to run today. We would start with a small agency-supported pilot, measure report quality and ranger workload, and expand from there.
 
 ---
 
