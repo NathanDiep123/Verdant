@@ -83,31 +83,48 @@ A score is more useful when people can see why it is high. A report is worth sen
 5. Verify OneAquaHealth fields, add live satellite and weather feeds, and validate exports with partners. None of these exist today.
 6. Have native speakers review the translations.
 
-## Impact & Alignment
+## Impact & Alignment with the OneAquaHealth mission
 
-Verdant supports OneAquaHealth and **Track 6: Resilience Informatics**. It turns scattered citizen and environmental signals into explainable monitoring priorities for freshwater sites.
+Verdant supports OneAquaHealth and **Track 6: Resilience Informatics**. It turns scattered citizen and environmental signals into explainable monitoring priorities for freshwater sites, and it keeps water, human, animal and environmental health on one screen.
 
-**Expected impact on ecosystems and human health.** Blooms threaten the water that people, pets and wildlife depend on. Verdant aims to shorten the time between someone seeing a bloom and someone qualified deciding whether to sample: clearer reports, a ranked list of sites, and visible follow-up. Earlier sampling can mean earlier warnings for people and animals, and a record that links water conditions to human and animal health, the One Health idea behind the program. We have not measured any of this, and field validation comes first.
+- **Monitoring.** A ranked sampling list sends limited field time to the sites whose conditions look worst.
+- **Protection.** Every score names its hazard pathway and gives a next step, and the site page carries visitor guidance for people and pets.
+- **Awareness.** The bloom and look-alike guide teaches reporters what a bloom looks like before they send anything.
+- **One Health.** Each site page has an environment, human health and animal health panel next to the score.
+
+**Expected impact on ecosystems and human health.** Blooms threaten the water that people, pets and wildlife depend on. Verdant aims to shorten the time between someone seeing a bloom and someone qualified deciding whether to sample: clearer reports, a ranked list of sites, and visible follow-up. Earlier sampling can mean earlier warnings for people and animals, and a record that links water conditions to human and animal health. We have not measured any of this, and field validation comes first.
 
 Lake Mead is the US pilot and Coimbra, Portugal, is a OneAquaHealth case-study city. Benevento, Ghent, Oslo, and Toulouse are configured and need site data. The header already shows "More cities soon".
 
 ## Innovation & Creativity
 
-An observation enters review, its review status changes its weight in the score, and the reporter sees the outcome. The bloom guide, score explanations, and status timeline make that loop readable to both reporters and rangers.
+Citizen science often ends when the report is sent. In Verdant the report keeps going. It enters ranger review, its review status changes how much it counts toward the site score, and the reporter sees the outcome in a status timeline. That feedback loop is the idea.
+
+The technology serves it. Scores break down into factor contributions so anyone can see why a site ranks where it does. Review weights are explicit and tested. One config object defines a region, so the same engine runs a US reservoir and a Portuguese city. The interface runs in seven languages from one typed dictionary per language.
 
 ![The same app in three languages](https://raw.githubusercontent.com/heliaval/Verdant/main/docs/gallery/05-three-languages.png)
 
-## Technical Implementation
+## Architecture
 
-The engine combines pathway factors with fixed weights, handles partial data, and explains each contribution. Separate modules cover the report lifecycle, the CSV parser, the basemap choice, and a FHIR-shaped JSON export. Everything is typed, and the logic is covered by the 151 tests. The next milestone is a shared service for citizens and rangers in place of one browser.
+| Layer | What we used |
+|---|---|
+| Scoring | A tested TypeScript engine with fixed, published weights, partial-data handling and a separate tested module for review weights |
+| Data sources | CDC MMWR counts (cited), a U.S. Bureau of Reclamation elevation snapshot, a Resilience Map CSV export for Coimbra parsed with PapaParse, and labelled demonstration scores for Lake Mead |
+| Maps and charts | Leaflet with Esri satellite and light-gray tiles, and Recharts |
+| Interface | React, TypeScript, Vite, Tailwind and shadcn components |
+| Integration | A FHIR-shaped JSON export for the OneAquaHealth guide (profile ids unverified) |
+| Storage | The browser's local storage, with no backend yet |
+| Quality | 151 automated tests in 20 files, and a type check that fails the build when a translation key is missing |
 
-## Usability & User Experience
+The next milestone is a shared service for citizens and rangers in place of one browser.
 
-The path is map, explanation, report, outcome. The interface offers a header language switch with flags and a Satellite or Map toggle. The report form has three steps and optional answers. Layouts adapt to phone screens. We have not tested accessibility or usability with intended users yet.
+## UX
 
-## Feasibility & Scalability
+The path is map, explanation, report, outcome. Reporting takes three steps with optional answers, a bloom and look-alike guide, and a photo from the camera or the phone library. A header switch changes the language, with flags and codes, and the page language updates for screen readers. Controls carry screen-reader labels, the switches work from the keyboard, and layouts adapt to phone screens. We have not run an accessibility audit or tested with intended users yet.
 
-The region config is the unit of reuse. A new city needs site coordinates, suitable data (such as a Resilience Map CSV and a column map), a validated scoring model, and a local review process. There is no server to run today. We would start with a small agency-supported pilot, measure report quality and ranger workload, and expand from there.
+## Scale
+
+The region config is the unit of reuse. A new city needs site coordinates, suitable data (such as a Resilience Map CSV and a column map), a validated scoring model, and a local review process. Existing systems connect through the CSV import and the FHIR-shaped export, and both need validation with partners. There is no server to run today. We would start with a small agency-supported pilot, measure report quality and ranger workload, and expand from there.
 
 **Verdant flags conditions associated with higher bloom risk. It does not confirm toxins or replace field sampling, and its scores are not an official advisory.**
 
