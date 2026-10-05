@@ -31,6 +31,12 @@ Review changes how much a report counts. A new report adds 10 citizen-evidence p
 
 **These weights are demonstration rules, not validated. A citizen report never confirms a bloom, and every ranger outcome here is simulated.**
 
+### Who it's for
+
+- **Reporters:** visitors, residents and boaters at a lake or stream, who get a guide for what they see and a status for what they send.
+- **Rangers and water managers:** the staff who decide where to sample first and need reports they can act on.
+- **Researchers and public-health partners:** OneAquaHealth teams who could use consistent, reviewed observations alongside monitoring data.
+
 ### What is real and what is demonstration data
 
 | Item | Status |
@@ -79,7 +85,11 @@ A score is more useful when people can see why it is high. A report is worth sen
 
 ## Impact & Alignment
 
-Verdant supports OneAquaHealth and **Track 6: Resilience Informatics** by linking citizen observations to explainable monitoring priorities. Lake Mead is the US pilot and Coimbra, Portugal, is a OneAquaHealth case-study city. Benevento, Ghent, Oslo, and Toulouse are configured and need site data. The header already shows "More cities soon". The intended benefits are more useful reports, clearer sampling priorities, and feedback for contributors. We have not measured any of them.
+Verdant supports OneAquaHealth and **Track 6: Resilience Informatics**. It turns scattered citizen and environmental signals into explainable monitoring priorities for freshwater sites.
+
+**Expected impact on ecosystems and human health.** Blooms threaten the water that people, pets and wildlife depend on. Verdant aims to shorten the time between someone seeing a bloom and someone qualified deciding whether to sample: clearer reports, a ranked list of sites, and visible follow-up. Earlier sampling can mean earlier warnings for people and animals, and a record that links water conditions to human and animal health, the One Health idea behind the program. We have not measured any of this, and field validation comes first.
+
+Lake Mead is the US pilot and Coimbra, Portugal, is a OneAquaHealth case-study city. Benevento, Ghent, Oslo, and Toulouse are configured and need site data. The header already shows "More cities soon".
 
 ## Innovation & Creativity
 
