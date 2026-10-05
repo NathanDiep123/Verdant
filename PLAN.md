@@ -1323,3 +1323,152 @@ Risk words inside uppercase stamps (`MUITO ALTO`, `MUY ALTO`) must fit the stamp
   - Run `superpowers:requesting-code-review` plus `ponytail-review` on the whole diff; run an `impeccable` audit of the map and header against 24.2 and 24.3; walk every page in all three languages at the 24.3 widths; grep the T5, T6 and T7 files for leftover hardcoded English JSX text.
   - Then `npx tsc --noEmit && npx vitest run && npm run build`. The orchestrator's PROGRESS end entry lists the PT/ES files as "pending native-speaker review": `src/i18n/*.ts` and `src/engine/explain.ts`.
   - Done: all three commands exit 0, the walk finds no overflow and no stray English outside 24.1 items 3 and 4, and the review findings are resolved.
+
+## 25. Map | Satellite switch, flag and focus fix, four more languages (IT / FR / NL / NO)
+
+**Why (user, 2026-10-05, verbatim):** (1) "i'd like it if it was a cleaner map, or if there was an option to alternate between the two maps we already have"; (2) a screenshot of the language button with a heavy dark-green ring around the whole trigger and a dark ring around the flag; (3) "also add support for some other languages". The user answered "whatever you recommend", so every recommendation below is the agreed design. Written 2026-10-05 00:14 +00:00 by a planning-tier agent; graphify is not installed in this repo, so the reads behind this section were targeted bash reads (stated per AGENTS.md).
+
+**What stays:** Sections 23 and 24 (field notebook, header layout, i18n scope, glossary 24.4), every route and behaviour, and every EN, PT and ES string byte-identical (25.T1 adds a snapshot that proves it). No new dependency, no new CSS file: `src/index.css` is the only stylesheet touched. 24.1 item 7 ("satellite replaces the gray map") is superseded by 25.1 item 1.
+
+### 25.1 Decisions (all agreed)
+
+1. **Two basemaps, user's choice.** A `Map | Satellite` segmented control on the map. **Map** = the pre-24 Esri Light Gray Canvas with the Section 23 notebook-paper filter (the clean default). **Satellite** = the 24.2 themed imagery plus labels, unchanged. Choice persisted in localStorage key `verdant.basemap` (`"map"` | `"satellite"`, every access in try/catch, anything else → `"map"`). Attribution switches with the basemap.
+2. **Flags:** no outer ring. Each flag is a clean rounded rectangle (2px radius) with an inset hairline drawn inside the SVG, so white-edged flags (FR, IT, NL) still read on the paper card.
+3. **Focus:** the language trigger shows a focus ring only for keyboard focus. No ring on mouse click, while the menu is open, or after a mouse selection returns focus to the trigger. The keyboard ring is lighter than today (25.4).
+4. **Languages:** add Italiano (`it`), Français (`fr`), Nederlands (`nl`) and Norsk bokmål (`nb`, code shown `NO`), matching the OneAquaHealth cities Benevento, Toulouse, Ghent and Oslo. Seven languages total. Scope per language is exactly the PT/ES scope of 24.1 items 2 to 4 (header, nav, sheet, footer, Dashboard, Site detail incl. engine sentence, Report form and BloomGuide; Methodology, OAH Cities, Report queue and My reports show the English-only note). Register: IT `tu`, FR `vous`, NL `je`, NO `du`.
+5. **Language state:** `LANGS = ["en", "pt", "es", "fr", "it", "nl", "nb"]`. `pickLang` maps primary subtags `no` and `nn` to `nb` (Norwegian browsers send `nb-NO`, `no` or `nn-NO`). `HTML_LANG`: `it`, `fr`, `nl`, `nb`. `LOCALE`: `it-IT`, `fr-FR`, `nl-NL`, `nb-NO`. `LANG_NAME` endonyms: "Italiano", "Français", "Nederlands", "Norsk". `LANG_CODE`: `IT`, `FR`, `NL`, `NO`.
+6. **Per-language locale files.** All non-code strings for one language live in one file, `src/i18n/locales/<lang>.ts`, so each language is one agent, one file, one native-speaker review. The area files (`common.ts`, `shared.ts`, `dashboard.ts`, `siteDetail.ts`, `report.ts`) and `src/engine/explain.ts` keep their exported names and shapes (`COMMON`, `DASHBOARD`, `PHRASE`, `PATHWAY_LABEL`, …), so no component changes for the restructure.
+7. **Translation accuracy:** IT/FR/NL/NO text is drafted by the implementers against the 25.5 glossary (binding) and is marked "pending native-speaker review" together with PT/ES in the 25.T9 end entry.
+
+### 25.2 Design direction: basemap switch (`impeccable` builds from this; nothing reinterpreted)
+
+- **Map tiles (restored exactly from `git show 4deb644^:src/components/RiskMap.tsx`):** `https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Light_Gray_Base/MapServer/tile/{z}/{y}/{x}`, `maxZoom={16}`, no labels layer. Attribution (exact): `Tiles &copy; Esri, HERE, Garmin, &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors`.
+- **Satellite tiles:** the 24.2 imagery layer plus the labels `Pane`, labels rendered only in satellite mode. Attribution exactly as 24.2.
+- **Switching:** each `TileLayer` gets a `key` per basemap so react-leaflet unmounts the old layer and its attribution goes with it; the attribution control never shows both strings.
+- **Notebook treatment, `src/index.css`:** the map wrapper carries `data-basemap="map" | "satellite"`. Scope the existing rules by it:
+  - `[data-basemap="map"] .leaflet-tile-pane { filter: sepia(0.35) saturate(0.85) hue-rotate(-6deg) contrast(0.96) brightness(1.02); }` (the pre-24 filter). Intent: warm notebook paper, shoreline and roads still crisp, water a quiet grey-green distinct from land; it must not look washed out. The implementer may tune contrast and brightness by at most ±0.1 against screenshots of both regions and records the final values in the report.
+  - `[data-basemap="satellite"] .leaflet-tile-pane` keeps the 24.2 filter.
+  - Container and wrapper background: `#e9e1cc` for map, `#26332a` for satellite (both the `.leaflet-container` rule and the wrapper's `bg-[…]` class follow the attribute), so loading tiles never flash the wrong colour.
+- **Markers, pins, popups, legend:** unchanged from 24.2. The seal's surface border + ink ring + soft lift and the pin drop-shadow already read on pale and dark ground; verify on both.
+- **Control:** `role="group"`, `aria-label` = `mapBasemap` ("Basemap"), two `button`s with `aria-pressed`, labels `mapStyleMap` ("Map") and `mapStyleSatellite` ("Satellite"). Solid paper: `rounded-sm border border-input bg-card`, buttons `h-7 px-2.5 font-mono text-xs`, the pressed one uses the RegionSwitch pressed treatment (`bg-primary text-primary-foreground`), unpressed `hover:bg-muted`, divider `border-l border-input`, keyboard focus `focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring` (same as RegionSwitch). No icons, no shadow, no blur.
+- **Placement:** top-right, directly below the zoom control, right edges aligned with it, 8px gap (`absolute right-[10px] z-[1000]`, top = zoom control bottom + 8px, measured in the browser). This collides with nothing: the community-reports toggle is top-left, the legend bottom-left (md+) or below the map (<md), attribution bottom-right. If a marker in either region sits under the control at 1440 or 390, raise `FitSites` `paddingBottomRight` x (or `paddingTopLeft` y if needed) just enough to clear it.
+- **Anti-slop check:** no floating pill with a drop shadow, no map-style thumbnails, no globe icon; it reads like a tab stuck onto the photo.
+
+### 25.3 Flags (`src/components/Flags.tsx`)
+
+- Drop `ring-1 ring-foreground/25` from the `svg`; keep `shrink-0`, change `rounded-[1px]` to `rounded-[2px]` and add `overflow-hidden` (inline SVG clips to its border-radius with overflow hidden). Add, last inside every flag, `<rect x="0.25" y="0.25" width="19.5" height="13.5" rx="1.5" fill="none" stroke="#1E2B22" strokeOpacity="0.14" strokeWidth="0.5" />` (inset hairline, ink token hex as in the pins).
+- New art, `viewBox="0 0 20 14"`:
+  - IT: three vertical bands, `#009246` x 0-6.67, white 6.67-13.33, `#CE2B37` 13.33-20.
+  - FR: three vertical bands, `#000091` 0-6.67, white 6.67-13.33, `#E1000F` 13.33-20.
+  - NL: three horizontal bands, `#AE1C28` y 0-4.67, white 4.67-9.33, `#21468B` 9.33-14.
+  - NO (key `nb`): `#BA0C2F` field; white cross: vertical rect x 5.5 w 3.6, horizontal rect y 5.25 h 3.5; blue `#00205B` cross: vertical x 6.4 w 1.8, horizontal y 6.1 h 1.8 (the 22:16 Norwegian proportions scaled into 20×14).
+- `ART` is typed `Record<FlagId, ReactNode>` with `type FlagId = "en" | "pt" | "es" | "fr" | "it" | "nl" | "nb"` and `Flag` takes `lang: Lang`, so it compiles before and after 25.T4 widens `Lang`. 25.T4 replaces `FlagId` with `Lang`.
+
+### 25.4 Language switch: focus and the 7-item menu (`src/components/LanguageSwitch.tsx`)
+
+- **Cause:** the shadcn `SelectTrigger` draws `focus-visible:ring-2 ring-ring ring-offset-2` (dark green), and Chrome treats the focus that base-ui restores after the popup closes as `:focus-visible`, so the heavy ring appears after a mouse pick.
+- **Fix (LanguageSwitch only; `src/components/ui/select.tsx` untouched, it is a shared primitive):** a `pointer` flag in a ref plus a `data-pointer` attribute on the trigger, set on `onPointerDown`, cleared on `onKeyDown` and `onBlur` of the trigger. Trigger classes override the ring: `focus-visible:ring-1 focus-visible:ring-ring/60 focus-visible:ring-offset-1 data-[pointer]:focus-visible:ring-0 data-[pointer]:focus-visible:border-border`. Result: Tab onto the trigger shows a thin ring; click, open, pick with the mouse shows none; open with keyboard, pick with Enter, focus returns with the thin ring.
+- **Menu with 7 items:** no scroll and no group labels. Order: EN, PT, ES (pilot regions), then a dashed separator (`SelectSeparator` restyled `border-t border-dashed border-input bg-transparent`, or a plain `div` with those classes if the primitive has no separator), then FR, IT, NL, NO. Rows keep flag, endonym, mono code, check. Popup `min-w-44` holds "Nederlands"; 7 rows × 32px fit under the header at 360×640. `LANGS` order equals menu order.
+- **Header width:** every `LANG_CODE` is two letters, so the trigger width does not change. The longest new chrome strings (FR "D'autres villes bientôt", FR "Signaler une prolifération", IT "Segnala ciò che vedi") are checked by 25.T9 under the 24.3 rules; the fallbacks are the glossary short nav labels (25.5) and the 24.3 short more-cities label up to `2xl`, set in that language's locale file.
+
+### 25.5 Glossary (binding for every IT / FR / NL / NO string; extends 24.4)
+
+| EN | IT | FR | NL | NO (nb) |
+|---|---|---|---|---|
+| Dashboard | Pannello | Tableau de bord (nav short: Tableau) | Dashboard | Oversikt |
+| Report a Bloom | Segnala fioritura | Signaler une prolifération (nav short: Signaler) | Bloei melden | Meld oppblomstring |
+| My reports | Le mie segnalazioni | Mes signalements | Mijn meldingen | Mine meldinger |
+| Report queue | Coda segnalazioni | File des signalements | Meldingenwachtrij | Meldingskø |
+| OAH Cities | Città OAH | Villes OAH | OAH-steden | OAH-byer |
+| Methodology | Metodologia | Méthodologie | Methodologie | Metode |
+| Report what you see | Segnala ciò che vedi | Signalez ce que vous voyez | Meld wat je ziet | Meld det du ser |
+| Community report | Segnalazione dei cittadini | Signalement citoyen | Burgermelding | Innbyggermelding |
+| Region / Language | Regione / Lingua | Région / Langue | Regio / Taal | Region / Språk |
+| More cities soon (short) | Altre città in arrivo (Altre città) | D'autres villes bientôt (Autres villes) | Binnenkort meer steden (Meer steden) | Flere byer snart (Flere byer) |
+| Risk | Rischio | Risque | Risico | Risiko |
+| Low / Moderate / High / Very High | Basso / Moderato / Alto / Molto alto | Faible / Modéré / Élevé / Très élevé | Laag / Matig / Hoog / Zeer hoog | Lav / Moderat / Høy / Svært høy |
+| Increasing / Decreasing / Stable | In aumento / In calo / Stabile | En hausse / En baisse / Stable | Stijgend / Dalend / Stabiel | Økende / Synkende / Stabil |
+| Leading pathway | Via principale | Voie dominante | Hoofdroute | Viktigste vei |
+| View analysis / View site | Vedi analisi / Vedi sito | Voir l'analyse / Voir le site | Analyse bekijken / Locatie bekijken | Se analyse / Se stedet |
+| Algal bloom | Fioritura algale | Prolifération d'algues | Algenbloei | Algeoppblomstring |
+| Waterborne pathogen | Patogeni nell'acqua | Pathogènes d'origine hydrique | Ziekteverwekkers in water | Vannbårne patogener |
+| Heat and low water | Caldo e livello basso dell'acqua | Chaleur et bas niveau d'eau | Hitte en laag water | Varme og lav vannstand |
+| Ecosystem stress | Stress dell'ecosistema | Stress de l'écosystème | Ecosysteemstress | Økosystemstress |
+| bloom (algal) | fioritura | prolifération | bloei | oppblomstring |
+| sample / sampling | campione / campionamento | échantillon / échantillonnage | monster / bemonstering | prøve / prøvetaking |
+| ranger | guardiaparco | garde du parc | parkwachter | parkvokter |
+| received | Ricevuta | Reçu | Ontvangen | Mottatt |
+| reviewing | In esame dal guardiaparco | En examen par un garde | In beoordeling bij parkwachter | Under vurdering hos parkvokter |
+| sample-requested | Campione richiesto | Échantillon demandé | Monster aangevraagd | Prøve bestilt |
+| confirmed | Confermata da campione | Confirmé par échantillon | Bevestigd door monster | Bekreftet av prøve |
+| not-bloom | Non è una fioritura | Pas une prolifération | Geen bloei | Ikke oppblomstring |
+| more-info | Servono più informazioni | Informations manquantes | Meer informatie nodig | Trenger mer informasjon |
+| Map / Satellite / Basemap | Mappa / Satellite / Mappa di base | Carte / Satellite / Fond de carte | Kaart / Satelliet / Basiskaart | Kart / Satellitt / Bakgrunnskart |
+| English-only note | Questa pagina è disponibile solo in inglese. | Cette page n'est disponible qu'en anglais. | Deze pagina is alleen in het Engels beschikbaar. | Denne siden er bare tilgjengelig på engelsk. |
+
+- "Ranger" is a different word in every language (PT `guarda`, ES `guardabosques`, IT `guardiaparco`, FR `garde du parc`, NL `parkwachter`, NO `parkvokter`); never reuse another language's term.
+- Gender follows the noun the status describes: IT `segnalazione` (f.) → Ricevuta, Confermata; FR `signalement` (m.) → Reçu, Confirmé.
+- French typography: a no-break space (U+00A0) before `:`, `;`, `?`, `!` and inside « »; apostrophes are U+2019 in visible text.
+- Stamps (`MOLTO ALTO`, `TRÈS ÉLEVÉ`, `ZEER HOOG`, `SVÆRT HØY`) must fit without wrapping (24.4 rule).
+
+### 25.6 i18n restructure (25.T1 builds it; EN/PT/ES output byte-identical)
+
+- `src/i18n/locales/en.ts` exports `EN`, one object with a section per existing table: `common`, `riskWord`, `status`, `nextStep`, `tag`, `reportMisc`, `recommend`, `trend`, `dashboard`, `siteDetail`, `factorLabel`, `report`, `guide`, and `explain: { phrase, pathway, sentence }`. EN values move verbatim, and the code-derived ones stay code-derived (`STATUS_LABEL`, `NEXT_STEP_LABEL`, `recommend()`, `PATHWAYS`), with the existing `satisfies Record<Category | ReportStatus | DataTag | Trend, string>` checks kept.
+- Same file: `export type Locale = Strings<typeof EN>`, where `Strings<T>` maps every string leaf to `string`, keeps function members as their signature, and recurses into objects. `src/i18n/locales/pt.ts` and `es.ts` export `PT` / `ES` as object literals `satisfies Locale`, so a missing or extra key fails `tsc`. Values move verbatim from today's files (including the `// … pending native-speaker review` header comment).
+- `src/i18n/locales/index.ts`: `export const LOCALES: Record<Lang, Locale> = { en: EN, pt: PT, es: ES }` and `byLang<K extends keyof Locale>(k: K): Record<Lang, Locale[K]>`. Area files become one-liners: `export const COMMON = byLang("common")`, etc. `PHRASE`, `PATHWAY_LABEL` and `SENTENCE` in `explain.ts` are built the same way; `explain()` keeps its signature. `defineStrings` is removed from `lang.ts` (replaced by `satisfies Locale`).
+- Import order check: `en.ts` imports `reportLoop`, `engine/score` and `engine/pathways`, none of which import `src/i18n` or `explain.ts`; keep it that way (no cycle).
+- New `src/i18n/locales/snapshot.test.ts`, committed **before** the move: for every exported table (`COMMON`, `RISK_WORD`, `STATUS`, `NEXT_STEP`, `TAG`, `REPORT_MISC`, `RECOMMEND`, `TREND`, `DASHBOARD`, `SITE_DETAIL`, `FACTOR_LABEL`, `REPORT`, `GUIDE`, `PHRASE`, `PATHWAY_LABEL`) and for `explain()` on the `explain.test.ts` fixture, snapshot the `en`, `pt` and `es` slices only (`toMatchSnapshot`). The move must leave the snapshot untouched; it stays as the permanent byte-identity guard (new languages are not in it).
+
+### 25.7 Engine sentence per language (`explain` section of each locale)
+
+- IT: `Il rischio è elevato soprattutto per condizioni di {pathway}: {a} e {b}.` Use `ed` instead of `e` before a phrase starting with `e`.
+- FR: `Le risque est élevé surtout en raison de conditions de {pathway} : {a} et {b}.` Elide `de` → `d’` before a vowel or mute h (the 25.5 pathway labels all start with a consonant; the rule still lives in the function).
+- NL: `Het risico is vooral verhoogd door omstandigheden rond {pathway}: {a} en {b}.`
+- NO: `Risikoen er forhøyet hovedsakelig på grunn av forhold knyttet til {pathway}: {a} og {b}.`
+- Pathway labels are lowercased mid-sentence (as `explain()` and `SiteDetail.tsx` already do); NL compounds and NO nouns stay lowercase, which is correct for all four languages.
+- Factor phrases (12 per language, keyed by `FactorId`) carry their own article where the language needs one, as PT/ES do (e.g. IT `un forte segnale di clorofilla`, FR `un signal de chlorophylle fort`, NL `een sterk chlorofylsignaal`, NO `et sterkt klorofyllsignal`); each language agent writes all 12 against the EN list in `en.ts`.
+
+### 25.8 Task list
+
+**Rules for every task:** the execution tier implements it (`model: "sonnet"`) through `superpowers:subagent-driven-development`; the brief carries the AGENTS.md point 10 checklist: the `ponytail` ladder, graphify-first reading (or a stated fallback while graphify is missing), `impeccable` plus this section for visual work, `no-ai-slop` once on new English copy (only the three basemap strings are new English), conventional commits with no AI trailer. The orchestrator writes the PROGRESS.md entries. **TDD applies to T1, T2 (the `basemap` helper), T4 and T5-T8 (locale tests).** Visual tasks are verified with `npm run dev` in a browser. Every task finishes with `npx tsc --noEmit && npx vitest run && npm run build` all exiting 0.
+
+**Waves** (no file is owned by two tasks in the same wave):
+- Wave 1 = T1, T3.
+- Wave 2 (after T1; T4 also after T3) = T2, T4.
+- Wave 3 (after T2 and T4) = T5, T6, T7, T8, one agent per language, in parallel.
+- Wave 4 = T9. Wave 5 = T10.
+
+- **25.T1 Locale restructure.** Depends: none.
+  - Files: `src/i18n/locales/snapshot.test.ts` (new, first commit), `src/i18n/locales/en.ts`, `pt.ts`, `es.ts`, `index.ts` (new), `src/i18n/common.ts`, `shared.ts`, `dashboard.ts`, `siteDetail.ts`, `report.ts`, `src/i18n/lang.ts` (remove `defineStrings` only), `src/engine/explain.ts`.
+  - Build per 25.6. Components, pages and the existing i18n tests are not edited.
+  - Done: the snapshot written before the move passes unchanged after it; `git diff` of the snapshot file is empty after the first commit; a missing key in `pt.ts` fails `tsc` (check by deleting one key locally, then restoring).
+- **25.T2 Basemap switch.** Depends: T1.
+  - Files: `src/lib/basemap.ts` + `src/lib/basemap.test.ts` (new: `type Basemap = "map" | "satellite"`, `loadBasemap(storage?)`, `saveBasemap(b, storage?)`, same `defaultStorage()` / try-catch pattern as `src/i18n/lang.ts`), `src/components/RiskMap.tsx`, `src/index.css` (leaflet rules only), `src/i18n/locales/en.ts`, `pt.ts`, `es.ts` (`dashboard` section only: `mapBasemap`, `mapStyleMap`, `mapStyleSatellite`; PT "Mapa base / Mapa / Satélite", ES "Mapa base / Mapa / Satélite").
+  - Tests (`basemap.test.ts`): missing value → `"map"`; `"satellite"` round-trips; an unknown stored value → `"map"`; throwing storage → `"map"` and save does not throw; undefined storage safe.
+  - Run `impeccable` against 25.2.
+  - Done: the control toggles both regions between the two basemaps, the choice survives a reload, attribution matches the active basemap exactly, markers, pins, legend, toggle and popups are legible on both, the 25.6 snapshot is updated only by the three new keys, screenshots of both basemaps at 1440 and 390 attached to the report.
+- **25.T3 Flags and focus.** Depends: none.
+  - Files: `src/components/Flags.tsx`, `src/components/LanguageSwitch.tsx` (focus fix only).
+  - Build per 25.3 (all seven flags, `FlagId`) and the 25.4 focus fix.
+  - Done: in Chrome and Firefox, mouse open + mouse pick leaves no ring; Tab shows the thin ring; keyboard open + Enter shows the thin ring on return; no dark ring around any flag; the US, PT and ES flags look unchanged apart from the ring; the four new flags render (check by temporarily rendering them in the dev console or a scratch route that is not committed).
+- **25.T4 Seven languages: types, menu, scaffolds, tests.** Depends: T1, T3.
+  - Files: `src/i18n/lang.ts`, `src/i18n/lang.test.ts`, `src/i18n/locales/index.ts`, `src/i18n/locales/it.ts`, `fr.ts`, `nl.ts`, `nb.ts` (new scaffolds: `export const IT: Locale = EN;` with a `// scaffold: replaced by 25.T5` comment), `src/components/LanguageSwitch.tsx` (menu order and separator per 25.4), `src/components/Flags.tsx` (`FlagId` → `Lang`), `src/i18n/locales/parity.test.ts` (new), `src/i18n/dashboard.test.ts` (delete; replaced by the parity test), `src/engine/explain.test.ts` (loops already use `LANGS`; only adjust if a hardcoded pt/es remains).
+  - `lang.ts` per 25.1 item 5, including the `no`/`nn` → `nb` alias inside `pickLang`.
+  - Tests:
+    - `lang.test.ts`: the two existing cases that use `"fr"` as an unsupported language switch to `"de"` (`pickLang("de", ["pt-PT"])` → pt; `["de", "es-MX"]` → es); new: `["fr-CA"]` → fr, `["it"]` → it, `["nl-BE"]` → nl, `["nb-NO"]` → nb, `["no"]` → nb, `["nn-NO"]` → nb, stored `"nb"` wins; `LANGS`, `HTML_LANG`, `LOCALE`, `LANG_NAME`, `LANG_CODE` all have 7 entries.
+    - `parity.test.ts`: for every `Lang` and every string leaf of `EN`: the key exists, the value is non-empty, and the `{placeholder}` set equals EN's (generalises `dashboard.test.ts` to every table and language); `explain()` on the fixture returns a non-empty sentence ending in `.` for every `Lang`.
+  - Done: the menu shows 7 languages with the separator; picking IT/FR/NL/NO sets `<html lang>` to `it`/`fr`/`nl`/`nb`, persists across reload, and shows English text (scaffold) with no crash; 360px header still one row.
+- **25.T5 Italian.** Depends: T2, T4. Files: `src/i18n/locales/it.ts`, `src/i18n/locales/it.test.ts` (new).
+- **25.T6 French.** Depends: T2, T4. Files: `src/i18n/locales/fr.ts`, `src/i18n/locales/fr.test.ts` (new).
+- **25.T7 Dutch.** Depends: T2, T4. Files: `src/i18n/locales/nl.ts`, `src/i18n/locales/nl.test.ts` (new).
+- **25.T8 Norwegian bokmål.** Depends: T2, T4. Files: `src/i18n/locales/nb.ts`, `src/i18n/locales/nb.test.ts` (new).
+  - Shared brief for T5-T8: replace the scaffold with a full object literal `satisfies Locale`, every value translated against the 25.5 glossary and register (25.1 item 4), the `explain` section per 25.7, header comment `// <Language> text drafted against the PLAN.md 25.5 glossary: pending native-speaker review.` Data values (site, lake and city names, "Verdant", "OneAquaHealth", "OAH", "CDC", "FHIR", numbers, units, `observationTypes` values) stay as in EN (24.1 item 4). Read `en.ts` for the keys and `pt.ts` for how placeholders and code-derived tables were handled; touch no other file.
+  - Tests (`<lang>.test.ts`): `explain()` on the `explain.test.ts` fixture equals the exact expected sentence for that language (the agent writes it out); the four risk words and six status words equal the 25.5 glossary; at least 80% of string leaves differ from EN (guards against a leftover scaffold).
+  - Done: tests pass; in a browser, Dashboard, Site detail (both regions) and the full Report flow show that language with no English except 24.1 items 3-4; stamps fit on one line.
+- **25.T9 Integration and review.** Depends: T1 to T8.
+  - Run `superpowers:requesting-code-review` plus `ponytail-review` on the whole diff; run an `impeccable` audit of the basemap switch on both basemaps, the flags and the language menu against 25.2-25.4.
+  - Walk every page in all seven languages at 360, 390, 768, 1024, 1280 and 1440 px against the 24.3 "Done when"; where a language overflows, apply the 25.4 fallbacks in that language's locale file only.
+  - Then `npx tsc --noEmit && npx vitest run && npm run build`. The orchestrator's PROGRESS end entry states: "PT/ES/IT/FR/NL/NO text pending native-speaker review: `src/i18n/locales/{pt,es,it,fr,nl,nb}.ts`".
+  - Done: all three commands exit 0, no overflow or stray English outside 24.1 items 3-4, review findings resolved.
+- **25.T10 Gallery re-run.** Depends: T9.
+  - Re-run the gallery plan already agreed with the user (6 varied 1800×1200 images in `docs/gallery/` plus the README carousel gif), as agreed; not redesigned here. Run after T9 so the images show the basemap switch and the new languages.
