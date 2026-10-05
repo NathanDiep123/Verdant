@@ -476,7 +476,6 @@ export default function Report() {
                           id="photo"
                           type="file"
                           accept="image/*"
-                          capture="environment"
                           className="sr-only"
                           onChange={(e) => {
                             const f = e.target.files?.[0];
