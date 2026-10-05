@@ -57,11 +57,11 @@ The header has six links (Dashboard, Report a Bloom, My reports, Report queue, O
 
 ![Methodology page with the architecture diagram](docs/screenshots/methodology.png)
 
-![Dashboard at phone width](docs/screenshots/dashboard-mobile.png)
-
-![Report a Bloom at phone width](docs/screenshots/report-mobile.png)
-
-![My reports at phone width](docs/screenshots/my-reports-mobile.png)
+<p align="center">
+  <img src="docs/screenshots/dashboard-mobile.png" alt="Dashboard at phone width" width="230">
+  <img src="docs/screenshots/report-mobile.png" alt="Report a Bloom at phone width" width="230">
+  <img src="docs/screenshots/my-reports-mobile.png" alt="My reports at phone width" width="230">
+</p>
 
 ## 2. Problem and solution
 
