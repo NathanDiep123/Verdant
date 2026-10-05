@@ -55,8 +55,6 @@ The header has six links (Dashboard, Report a Bloom, My reports, Report queue, O
 
 ![Verdant for OneAquaHealth cities page with five city cards](docs/screenshots/oah-cities.png)
 
-![Coimbra dashboard with its sites and the satellite signal chart](docs/screenshots/coimbra-dashboard.png)
-
 ![Methodology page with the architecture diagram](docs/screenshots/methodology.png)
 
 ![Dashboard at phone width](docs/screenshots/dashboard-mobile.png)
