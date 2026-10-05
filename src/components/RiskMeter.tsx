@@ -1,4 +1,8 @@
 import type { Category } from "@/types";
+import { fmt } from "@/i18n/lang";
+import { RISK_WORD } from "@/i18n/shared";
+import { SITE_DETAIL } from "@/i18n/siteDetail";
+import { useLang } from "@/state/LanguageContext";
 
 const SEGMENTS: { category: Category; key: string }[] = [
   { category: "Low", key: "low" },
@@ -8,9 +12,11 @@ const SEGMENTS: { category: Category; key: string }[] = [
 ];
 
 export function RiskMeter({ score, category }: { score: number; category: Category }) {
+  const { lang } = useLang();
+  const s = SITE_DETAIL[lang];
   const pos = Math.min(100, Math.max(0, score));
   return (
-    <div role="img" aria-label={`Risk meter: ${score} out of 100, ${category}`} className="w-full pt-6">
+    <div role="img" aria-label={fmt(s.meterLabel, { score, category: RISK_WORD[lang][category] })} className="w-full pt-6">
       <div className="relative">
         <div className="grid grid-cols-4 gap-0.5">
           {SEGMENTS.map((s) => (
@@ -31,7 +37,7 @@ export function RiskMeter({ score, category }: { score: number; category: Catego
       </div>
       <div className="mt-2 grid grid-cols-4 gap-0.5 text-center text-xs text-muted-foreground">
         {SEGMENTS.map((s) => (
-          <span key={s.key}>{s.category}</span>
+          <span key={s.key}>{RISK_WORD[lang][s.category]}</span>
         ))}
       </div>
       <div className="mt-1 flex justify-between font-mono text-xs tabular-nums text-muted-foreground">

@@ -1,5 +1,10 @@
 import { Line, LineChart, ReferenceArea, ReferenceLine, ResponsiveContainer, XAxis, YAxis } from "recharts";
 import type { Category } from "@/types";
+import { fmt as tpl } from "@/i18n/lang";
+import { LOCALE } from "@/i18n/lang";
+import { RISK_WORD } from "@/i18n/shared";
+import { SITE_DETAIL } from "@/i18n/siteDetail";
+import { useLang } from "@/state/LanguageContext";
 
 const BANDS = [
   { y1: 0, y2: 25, key: "low" },
@@ -13,12 +18,13 @@ function bandKey(score: number): string {
 }
 
 const END = new Date(2026, 9, 4);
-const fmt = new Intl.DateTimeFormat("en-US", { month: "short", day: "numeric" });
 const tick = { fontSize: 12, fontFamily: "var(--font-mono)", fill: "var(--muted-foreground)" };
 
 type DotProps = { cx?: number; cy?: number; index?: number; payload?: { score: number } };
 
 export function TrendChart({ history, category }: { history: number[]; category: Category }) {
+  const { lang } = useLang();
+  const fmt = new Intl.DateTimeFormat(LOCALE[lang], { month: "short", day: "numeric" });
   const data = history.map((score, i) => {
     const d = new Date(END);
     d.setDate(END.getDate() - (history.length - 1 - i));
@@ -27,7 +33,11 @@ export function TrendChart({ history, category }: { history: number[]; category:
   return (
     <div
       role="img"
-      aria-label={`Seven-day site score history, ${data[0].score} to ${data[data.length - 1].score}, currently ${category}`}
+      aria-label={tpl(SITE_DETAIL[lang].chartLabel, {
+        from: data[0].score,
+        to: data[data.length - 1].score,
+        category: RISK_WORD[lang][category],
+      })}
       className="h-[260px] w-full"
     >
       <ResponsiveContainer width="100%" height="100%">

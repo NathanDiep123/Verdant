@@ -1,0 +1,221 @@
+import type { Category, FactorId, Trend } from "../types";
+import { defineStrings } from "./lang";
+
+export const SITE_DETAIL = defineStrings({
+  en: {
+    notFound: "Site not found",
+    notFoundBody: 'There is no site called "{id}" in the current region.',
+    backToDashboard: "Back to the dashboard",
+    dashboard: "Dashboard",
+    prototypeData: "Prototype data",
+    demoData: "Demonstration data",
+    updated: "{kind}, updated {date}",
+    disclaimer:
+      "Verdant identifies conditions associated with increased bloom risk. It does not confirm toxin presence or replace field sampling.",
+    recommendation: "Verdant recommendation",
+    firstTarget: "Recommended first sampling target",
+    advisory: "Official advisory: none issued",
+    whyElevated: "Why is risk elevated?",
+    last7: "Last 7 days",
+    scoreByDay: "Site score by day",
+    communityH: "Community observations",
+    evidenceLabel: "Citizen evidence",
+    evidence: "Citizen evidence: {value}/100, adds {points} points to the {pathway} score.",
+    noEvidence: "No citizen evidence in this score yet.",
+    noReports: "No community reports for this site yet.",
+    addObservation: "Add an observation at {site}",
+    pathwayScores: "Pathway scores",
+    leading: "(leading)",
+    partial: "Partial data: {pct}% of factors",
+    exportFhir: "Export FHIR JSON",
+    noData: "No data: {list}",
+    pts: "pts",
+    meterLabel: "Risk meter: {score} out of 100, {category}",
+    chartLabel: "Seven-day site score history, {from} to {to}, currently {category}",
+    oneHealth: "One Health",
+    environment: "Environment",
+    environmentText:
+      "Ecological stress, nutrient and runoff inputs, water and air temperature, and lake hydrology all feed the score.",
+    humanHealth: "Human health",
+    humanHealthText:
+      "Recreational exposure: swimming, boating and shoreline use bring people into contact with the water.",
+    animalHealth: "Animal health",
+    animalHealthText: "Pets and wildlife drink from and wade in shallow water, which raises their exposure.",
+    visitorGuidance: "Visitor guidance",
+    guidanceMead:
+      "The National Park Service reports that harmful blue-green algae blooms occur at Lake Mead, most often from August through December. Exposure can cause nausea, vomiting and breathing problems, and dogs and other animals can become seriously ill or die. Where water looks green, scummy or discolored, a cautious choice is to stay out, keep pets away, and follow posted park notices.",
+    guidanceGeneric:
+      "Where water looks green, scummy or discolored, a cautious choice is to stay out, keep pets away, and follow notices from the local authority.",
+    guidanceNote:
+      "This guidance is general. A high score is a reason to sample the water, not a finding that it is unsafe.",
+  },
+  pt: {
+    notFound: "Local não encontrado",
+    notFoundBody: 'Não existe nenhum local chamado "{id}" na região atual.',
+    backToDashboard: "Voltar ao painel",
+    dashboard: "Painel",
+    prototypeData: "Dados de protótipo",
+    demoData: "Dados de demonstração",
+    updated: "{kind}, atualizado em {date}",
+    disclaimer:
+      "O Verdant identifica condições associadas a um maior risco de floração. Não confirma a presença de toxinas nem substitui a amostragem de campo.",
+    recommendation: "Recomendação do Verdant",
+    firstTarget: "Primeiro local de amostragem recomendado",
+    advisory: "Aviso oficial: nenhum emitido",
+    whyElevated: "Porque é que o risco está elevado?",
+    last7: "Últimos 7 dias",
+    scoreByDay: "Pontuação do local por dia",
+    communityH: "Observações da comunidade",
+    evidenceLabel: "Evidência de cidadãos",
+    evidence: "Evidência de cidadãos: {value}/100, acrescenta {points} pontos à pontuação de {pathway}.",
+    noEvidence: "Ainda não há evidência de cidadãos nesta pontuação.",
+    noReports: "Ainda não há relatos da comunidade para este local.",
+    addObservation: "Adicionar uma observação em {site}",
+    pathwayScores: "Pontuação por via",
+    leading: "(dominante)",
+    partial: "Dados parciais: {pct}% dos fatores",
+    exportFhir: "Exportar FHIR JSON",
+    noData: "Sem dados: {list}",
+    pts: "pts",
+    meterLabel: "Indicador de risco: {score} em 100, {category}",
+    chartLabel: "Histórico de sete dias da pontuação do local, de {from} a {to}, atualmente {category}",
+    oneHealth: "Saúde Única",
+    environment: "Ambiente",
+    environmentText:
+      "O stress ecológico, os nutrientes e a escorrência, a temperatura da água e do ar e a hidrologia do lago contribuem todos para a pontuação.",
+    humanHealth: "Saúde humana",
+    humanHealthText:
+      "Exposição recreativa: nadar, andar de barco e usar a margem põem as pessoas em contacto com a água.",
+    animalHealth: "Saúde animal",
+    animalHealthText:
+      "Animais de estimação e fauna selvagem bebem e entram em águas pouco profundas, o que aumenta a sua exposição.",
+    visitorGuidance: "Orientações para visitantes",
+    guidanceMead:
+      "O National Park Service informa que ocorrem florações nocivas de cianobactérias no Lake Mead, mais frequentemente de agosto a dezembro. A exposição pode causar náuseas, vómitos e problemas respiratórios, e cães e outros animais podem ficar gravemente doentes ou morrer. Quando a água parece verde, com espuma ou descolorada, uma escolha prudente é não entrar, manter os animais afastados e seguir os avisos afixados no parque.",
+    guidanceGeneric:
+      "Quando a água parece verde, com espuma ou descolorada, uma escolha prudente é não entrar, manter os animais afastados e seguir os avisos da autoridade local.",
+    guidanceNote:
+      "Estas orientações são gerais. Uma pontuação alta é um motivo para recolher amostras da água, não a conclusão de que é insegura.",
+  },
+  es: {
+    notFound: "Sitio no encontrado",
+    notFoundBody: 'No hay ningún sitio llamado "{id}" en la región actual.',
+    backToDashboard: "Volver al panel",
+    dashboard: "Panel",
+    prototypeData: "Datos de prototipo",
+    demoData: "Datos de demostración",
+    updated: "{kind}, actualizado el {date}",
+    disclaimer:
+      "Verdant identifica condiciones asociadas a un mayor riesgo de floración. No confirma la presencia de toxinas ni sustituye el muestreo de campo.",
+    recommendation: "Recomendación de Verdant",
+    firstTarget: "Primer sitio de muestreo recomendado",
+    advisory: "Aviso oficial: ninguno emitido",
+    whyElevated: "¿Por qué es elevado el riesgo?",
+    last7: "Últimos 7 días",
+    scoreByDay: "Puntuación del sitio por día",
+    communityH: "Observaciones de la comunidad",
+    evidenceLabel: "Evidencia ciudadana",
+    evidence: "Evidencia ciudadana: {value}/100, suma {points} puntos a la puntuación de {pathway}.",
+    noEvidence: "Aún no hay evidencia ciudadana en esta puntuación.",
+    noReports: "Aún no hay avisos de la comunidad para este sitio.",
+    addObservation: "Añadir una observación en {site}",
+    pathwayScores: "Puntuación por vía",
+    leading: "(dominante)",
+    partial: "Datos parciales: {pct}% de los factores",
+    exportFhir: "Exportar FHIR JSON",
+    noData: "Sin datos: {list}",
+    pts: "pts",
+    meterLabel: "Medidor de riesgo: {score} de 100, {category}",
+    chartLabel: "Historial de siete días de la puntuación del sitio, de {from} a {to}, actualmente {category}",
+    oneHealth: "Una Sola Salud",
+    environment: "Medio ambiente",
+    environmentText:
+      "El estrés ecológico, los aportes de nutrientes y escorrentía, la temperatura del agua y del aire y la hidrología del lago alimentan la puntuación.",
+    humanHealth: "Salud humana",
+    humanHealthText:
+      "Exposición recreativa: nadar, navegar y usar la orilla ponen a las personas en contacto con el agua.",
+    animalHealth: "Salud animal",
+    animalHealthText:
+      "Las mascotas y la fauna beben y se meten en aguas poco profundas, lo que aumenta su exposición.",
+    visitorGuidance: "Guía para visitantes",
+    guidanceMead:
+      "El National Park Service informa de que en el Lake Mead se producen floraciones nocivas de algas verdeazuladas, sobre todo de agosto a diciembre. La exposición puede causar náuseas, vómitos y problemas respiratorios, y los perros y otros animales pueden enfermar gravemente o morir. Si el agua se ve verde, con espuma o descolorida, lo prudente es no entrar, mantener alejadas a las mascotas y seguir los avisos del parque.",
+    guidanceGeneric:
+      "Si el agua se ve verde, con espuma o descolorida, lo prudente es no entrar, mantener alejadas a las mascotas y seguir los avisos de la autoridad local.",
+    guidanceNote:
+      "Esta guía es general. Una puntuación alta es un motivo para tomar muestras del agua, no la conclusión de que sea insegura.",
+  },
+});
+
+export const TREND_WORD = defineStrings({
+  en: { Increasing: "Increasing", Decreasing: "Decreasing", Stable: "Stable" } satisfies Record<Trend, string>,
+  pt: { Increasing: "A subir", Decreasing: "A descer", Stable: "Estável" },
+  es: { Increasing: "En aumento", Decreasing: "En descenso", Stable: "Estable" },
+});
+
+/** Output of engine `recommend()`; English values must match it. */
+export const RECOMMEND = defineStrings({
+  en: {
+    Low: "Routine observation",
+    Moderate: "Continue monitoring",
+    High: "Prioritize follow-up observation",
+    "Very High": "Recommend field sampling",
+  } satisfies Record<Category, string>,
+  pt: {
+    Low: "Observação de rotina",
+    Moderate: "Continuar a monitorizar",
+    High: "Dar prioridade à observação de seguimento",
+    "Very High": "Recomendar amostragem de campo",
+  },
+  es: {
+    Low: "Observación de rutina",
+    Moderate: "Seguir monitoreando",
+    High: "Priorizar la observación de seguimiento",
+    "Very High": "Recomendar muestreo de campo",
+  },
+});
+
+export const FACTOR_LABEL = defineStrings({
+  en: {
+    chlorophyll: "Chlorophyll",
+    water_temperature: "Water temperature",
+    calm_wind: "Calm wind",
+    citizen_evidence: "Citizen evidence",
+    seasonality: "Bloom season",
+    runoff: "Runoff",
+    recreation_exposure: "Recreation exposure",
+    air_temperature: "Air temperature",
+    low_water: "Low water",
+    lab_pathogen_risk: "Lab pathogen reading",
+    contamination: "Contamination",
+    ecosystem_health_deficit: "Ecosystem health deficit",
+  } satisfies Record<FactorId, string>,
+  pt: {
+    chlorophyll: "Clorofila",
+    water_temperature: "Temperatura da água",
+    calm_wind: "Vento fraco",
+    citizen_evidence: "Evidência de cidadãos",
+    seasonality: "Época de floração",
+    runoff: "Escorrência",
+    recreation_exposure: "Exposição recreativa",
+    air_temperature: "Temperatura do ar",
+    low_water: "Nível de água baixo",
+    lab_pathogen_risk: "Leitura laboratorial de agentes patogénicos",
+    contamination: "Contaminação",
+    ecosystem_health_deficit: "Défice de saúde do ecossistema",
+  },
+  es: {
+    chlorophyll: "Clorofila",
+    water_temperature: "Temperatura del agua",
+    calm_wind: "Viento en calma",
+    citizen_evidence: "Evidencia ciudadana",
+    seasonality: "Temporada de floraciones",
+    runoff: "Escorrentía",
+    recreation_exposure: "Exposición recreativa",
+    air_temperature: "Temperatura del aire",
+    low_water: "Nivel bajo del agua",
+    lab_pathogen_risk: "Lectura de patógenos en laboratorio",
+    contamination: "Contaminación",
+    ecosystem_health_deficit: "Déficit de salud del ecosistema",
+  },
+});
