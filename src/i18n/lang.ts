@@ -45,11 +45,3 @@ export function saveLang(lang: Lang, storage: Storage | undefined = defaultStora
 export function fmt(template: string, vars: Record<string, string | number>): string {
   return template.replace(/\{(\w+)\}/g, (m, k: string) => (k in vars ? String(vars[k]) : m));
 }
-
-export function defineStrings<T extends Record<string, string>>(d: {
-  en: T;
-  pt: Record<keyof T, string>;
-  es: Record<keyof T, string>;
-}): Record<Lang, Record<keyof T, string>> {
-  return d;
-}
