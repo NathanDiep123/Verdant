@@ -114,6 +114,9 @@ export const EN = {
     // RiskMap
     mapCommunity: "Community report",
     mapCommunityToggle: "Community reports ({n})",
+    mapBasemap: "Basemap",
+    mapStyleMap: "Map",
+    mapStyleSatellite: "Satellite",
     mapMarkerTitle: "{name}, risk {score}, {category}",
     mapPinTitle: "Community report at {name}",
     mapLeading: "Leading pathway: ",

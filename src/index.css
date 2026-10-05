@@ -156,7 +156,7 @@
   }
   .leaflet-container {
     font-family: var(--font-sans);
-    background: #26332a;
+    background: #e9e1cc;
     isolation: isolate;
   }
   .leaflet-popup-content h1,
@@ -177,7 +177,13 @@
 }
 
 /* Mute the imagery to the notebook palette. Tile pane only: the labels pane, markers, popups and controls stay unfiltered. */
-.leaflet-tile-pane {
+[data-basemap="map"] .leaflet-tile-pane {
+  filter: sepia(0.35) saturate(0.85) hue-rotate(-6deg) contrast(0.96) brightness(1.02);
+}
+[data-basemap="satellite"] .leaflet-container {
+  background: #26332a;
+}
+[data-basemap="satellite"] .leaflet-tile-pane {
   filter: saturate(0.55) sepia(0.28) hue-rotate(-8deg) contrast(1.05) brightness(0.92);
 }
 .leaflet-labels-pane {

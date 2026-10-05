@@ -9,6 +9,8 @@ import { useRegion } from "@/state/RegionContext";
 import { formatReportTime, reportSummary } from "@/lib/communityReports";
 import { DASHBOARD } from "@/i18n/dashboard";
 import { fmt } from "@/i18n/lang";
+import { cn } from "@/lib/utils";
+import { loadBasemap, saveBasemap, type Basemap } from "@/lib/basemap";
 import { RISK_WORD, TAG } from "@/i18n/shared";
 import { useLang } from "@/state/LanguageContext";
 import { PATHWAY_LABEL } from "@/engine/explain";
@@ -17,8 +19,16 @@ import { TrendLabel, type SiteRow } from "@/components/SamplingPriorityList";
 import { CATEGORY_STYLE } from "@/lib/risk";
 import type { Category, CitizenReport } from "@/types";
 
-const ATTRIBUTION =
-  "Imagery &copy; Esri, Maxar, Earthstar Geographics, and the GIS User Community; labels &copy; Esri";
+const ATTRIBUTION: Record<Basemap, string> = {
+  map: 'Tiles &copy; Esri, HERE, Garmin, &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+  satellite: "Imagery &copy; Esri, Maxar, Earthstar Geographics, and the GIS User Community; labels &copy; Esri",
+};
+const ESRI = "https://server.arcgisonline.com/ArcGIS/rest/services";
+const TILES: Record<Basemap, string> = {
+  map: `${ESRI}/Canvas/World_Light_Gray_Base/MapServer/tile/{z}/{y}/{x}`,
+  satellite: `${ESRI}/World_Imagery/MapServer/tile/{z}/{y}/{x}`,
+};
+const LABELS = `${ESRI}/Reference/World_Boundaries_and_Places/MapServer/tile/{z}/{y}/{x}`;
 
 const RANGES: Record<Category, string> = { Low: "0-25", Moderate: "26-50", High: "51-75", "Very High": "76-100" };
 const CATEGORIES: Category[] = ["Low", "Moderate", "High", "Very High"];
@@ -59,7 +69,7 @@ function pinIcon(k: number, n: number, siteDiameter: number) {
 }
 
 /** Fits the region's sites with padding on load and on region switch; the toggle sits top-left, so the top gets more room. */
-function FitSites({ points, center, zoom }: { points: [number, number][]; center: [number, number]; zoom: number }) {
+function FitSites({ points, center, zoom, top }: { points: [number, number][]; center: [number, number]; zoom: number; top: number }) {
   const map = useMap();
   const key = points.join("|");
   useEffect(() => {
@@ -68,14 +78,43 @@ function FitSites({ points, center, zoom }: { points: [number, number][]; center
       return;
     }
     map.fitBounds(L.latLngBounds(points), {
-      paddingTopLeft: [40, 56],
+      paddingTopLeft: [40, top],
       paddingBottomRight: [40, 40],
       maxZoom: zoom + 1,
       animate: false,
     });
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [map, key, center, zoom]);
+  }, [map, key, center, zoom, top]);
   return null;
+}
+
+function BasemapSwitch({ value, onChange }: { value: Basemap; onChange: (b: Basemap) => void }) {
+  const { lang } = useLang();
+  const s = DASHBOARD[lang];
+  const options: [Basemap, string][] = [["map", s.mapStyleMap], ["satellite", s.mapStyleSatellite]];
+  return (
+    <div
+      role="group"
+      aria-label={s.mapBasemap}
+      className="absolute top-[82px] right-[10px] z-[1000] flex rounded-sm border border-input bg-card"
+    >
+      {options.map(([id, label], i) => (
+        <button
+          key={id}
+          type="button"
+          aria-pressed={value === id}
+          onClick={() => onChange(id)}
+          className={cn(
+            "h-7 px-2.5 font-mono text-xs transition-colors duration-[120ms] focus-visible:relative focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring",
+            i > 0 && "border-l border-input",
+            value === id ? "bg-primary text-primary-foreground" : "hover:bg-muted",
+          )}
+        >
+          {label}
+        </button>
+      ))}
+    </div>
+  );
 }
 
 const PIN_SHAPE = "[clip-path:polygon(4px_0,100%_0,100%_100%,4px_100%,0_50%)]";
@@ -127,6 +166,11 @@ export function RiskMap({ rows, center, zoom }: { rows: SiteRow[]; center: [numb
   const { lang } = useLang();
   const s = DASHBOARD[lang];
   const [showPins, setShowPins] = useState(true);
+  const [basemap, setBasemap] = useState<Basemap>(loadBasemap);
+  const pickBasemap = (b: Basemap) => {
+    setBasemap(b);
+    saveBasemap(b);
+  };
   const pins = useMemo(() => {
     const byId = new Map(rows.map((r) => [r.site.id, r]));
     const bySite = new Map<string, CitizenReport[]>();
@@ -144,22 +188,22 @@ export function RiskMap({ rows, center, zoom }: { rows: SiteRow[]; center: [numb
 
   return (
     <div className="relative xl:h-full">
-      <div className="relative h-[420px] overflow-hidden rounded-sm border bg-[#26332a] xl:h-full">
+      <div
+        data-basemap={basemap}
+        className={cn(
+          "relative h-[420px] overflow-hidden rounded-sm border xl:h-full",
+          basemap === "map" ? "bg-[#e9e1cc]" : "bg-[#26332a]",
+        )}
+      >
       <MapContainer center={center} zoom={zoom} zoomControl={false} scrollWheelZoom={!touch} className="h-full w-full">
         <ZoomControl position="topright" />
-        <TileLayer
-          url="https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}"
-          maxZoom={16}
-          attribution={ATTRIBUTION}
-        />
-        <Pane name="labels" style={{ zIndex: 350 }}>
-          <TileLayer
-            url="https://server.arcgisonline.com/ArcGIS/rest/services/Reference/World_Boundaries_and_Places/MapServer/tile/{z}/{y}/{x}"
-            maxZoom={16}
-            pane="labels"
-          />
-        </Pane>
-        <FitSites points={points} center={center} zoom={zoom} />
+        <TileLayer key={basemap} url={TILES[basemap]} maxZoom={16} attribution={ATTRIBUTION[basemap]} />
+        {basemap === "satellite" && (
+          <Pane name="labels" style={{ zIndex: 350 }}>
+            <TileLayer url={LABELS} maxZoom={16} pane="labels" />
+          </Pane>
+        )}
+        <FitSites points={points} center={center} zoom={zoom} top={touch ? 120 : 56} />
         {rows.map((r, i) => (
           <Marker
             key={r.site.id}
@@ -218,6 +262,7 @@ export function RiskMap({ rows, center, zoom }: { rows: SiteRow[]; center: [numb
             </Marker>
           ))}
       </MapContainer>
+      <BasemapSwitch value={basemap} onChange={pickBasemap} />
       <label className="absolute top-3 left-3 z-[1000] flex items-center gap-2 rounded-sm border border-input bg-card px-3 py-2 text-sm font-medium">
         <Switch checked={showPins} onCheckedChange={setShowPins} />
         {fmt(s.mapCommunityToggle, { n: reports.filter((r) => rows.some((x) => x.site.id === r.siteId)).length })}
